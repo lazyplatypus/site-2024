@@ -51,6 +51,9 @@ export default async function Home() {
       <div className="text-gray-800 space-y-4 leading-snug">
         <p>Welcome to my little piece of the internet. I'm currently the Head of Developer Relations at <Link href="https://www.cerebras.ai" className="text-blue-500 hover:text-blue-700">Cerebras Systems</Link>, the world's fastest provider of AI Inference built on the Cerebras Wafer-Scale Engine. Before this, I led Developer Relations at <Link href="https://www.newrelic.com" className="text-blue-500 hover:text-blue-700">New Relic</Link>.</p>
         <p>I live in sunny and foggy San Francisco, CA. You can find me relaxing in the park, eating spicy noodles, and recently running!
+          </p>
+          <p>
+            This website was forked from  <Link href="https://leerob.io" className="text-blue-500 hover:text-blue-700">Lee Robinson</Link>'s website.
           </p>        
         <p>
           Here are some of my writings:
