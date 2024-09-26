@@ -24,10 +24,10 @@ async function getWritings() {
 function AnimatedName() {
   return (
     <h1 className="font-medium pt-12 transition-element">
-      <span className="sr-only">by Daniel Kim</span>
+      <span className="sr-only">./danielkim.sh</span>
       <span aria-hidden="true" className="block overflow-hidden group relative">
         <span className="inline-block transition-all duration-300 ease-in-out">
-          {'by Daniel Kim'.split('').map((letter, index) => (
+          {'./danielkim.sh'.split('').map((letter, index) => (
             <span
               key={index}
               className="inline-block"

@@ -9,8 +9,8 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   metadataBase: new URL('https://leerob.io'),
   title: {
-    default: 'by Daniel Kim',
-    template: '%s | by Daniel Kim',
+    default: './danielkim.sh',
+    template: '%s | ./danielkim.sh',
   },
   description: 'Frontend developer, optimist, community builder.',
 };
