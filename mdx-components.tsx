@@ -20,7 +20,7 @@ const components: MDXComponents = {
   h3: (props: HeadingProps) => (
     <h3 className="text-gray-800 font-medium text-xl mt-6 mb-2" {...props} />
   ),
-  h4: (props: HeadingProps) => <h4 className="font-medium" {...props} />,
+  h4: (props: HeadingProps) => <h4 className="font-medium pt-12 mb-0 fade-in" {...props} />,
   p: (props: ParagraphProps) => (
     <p className="text-gray-800 leading-snug" {...props} />
   ),
