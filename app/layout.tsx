@@ -1,7 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { ViewTransitions } from 'next-view-transitions';
+import { Link, ViewTransitions } from 'next-view-transitions';
 import { Analytics } from '@vercel/analytics/react';
 import Script from 'next/script';
 
@@ -61,6 +61,8 @@ function Footer() {
           </a>
         ))}
       </div>
+      <p className="text-gray-400">This website was forked from  <Link href="https://github.com/leerob/site" className="text-blue-500 hover:text-blue-700">Lee Robinson</Link>'s website.
+      </p>
     </footer>
   );
 }

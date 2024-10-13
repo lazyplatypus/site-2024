@@ -58,10 +58,7 @@ export default async function Home() {
             height="100"
           />
           <p>I live in sunny and foggy San Francisco, CA. You can find me relaxing in the park, eating spicy noodles, and recently running!
-          </p>
-          <p>
-            This website was forked from  <Link href="https://leerob.io" className="text-blue-500 hover:text-blue-700">Lee Robinson</Link>'s website.
-          </p>        
+          </p>  
         <p>
           Here are some of my writings:
         </p>
@@ -74,7 +71,7 @@ export default async function Home() {
               <span className="text-gray-500 text-sm ml-2">{date}</span>
             </li>
           ))}
-        </ul>
+        </ul>  
       </div>
     </>
   );
