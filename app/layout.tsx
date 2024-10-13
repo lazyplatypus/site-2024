@@ -7,12 +7,12 @@ import { Analytics } from '@vercel/analytics/react';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://leerob.io'),
+  metadataBase: new URL('https://danielkim.sh'),
   title: {
     default: './danielkim.sh',
     template: '%s | ./danielkim.sh',
   },
-  description: 'Frontend developer, optimist, community builder.',
+  description: 'Daniel Kim. Software Engineer. Creator. Vibes.',
 };
 
 export default function RootLayout({
