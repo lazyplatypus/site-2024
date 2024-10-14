@@ -51,8 +51,8 @@ export default async function Home() {
       <div className="text-gray-800 space-y-4 leading-snug">
         <br></br>
         <p>Welcome to my little piece of the internet. I'm currently the Head of Developer Relations at <Link href="https://www.cerebras.ai" className="text-blue-500 hover:text-blue-700">Cerebras Systems</Link>, the world's fastest provider of AI Inference built on the Cerebras Wafer-Scale Engine. Before this, I led Developer Relations at <Link href="https://www.newrelic.com" className="text-blue-500 hover:text-blue-700">New Relic</Link>.</p>
-        <Image 
-            src="/profile.jpg" 
+        <img 
+            src="https://github.com/lazyplatypus/site-2024/blob/main/public/profile.jpg?raw=true" 
             alt="Profile"
             width="1000" 
             height="100"
