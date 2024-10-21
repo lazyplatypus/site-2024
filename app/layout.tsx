@@ -33,6 +33,18 @@ export default function RootLayout({
             <Analytics />
           </div>
           <Script src="https://scripts.simpleanalyticscdn.com/latest.js" />
+          <Script
+            src="https://www.googletagmanager.com/gtag/js?id=G-FDLW39M12W"
+            strategy="afterInteractive"
+          />
+          <Script id="google-analytics" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-FDLW39M12W');
+            `}
+          </Script>
         </body>
       </html>
     </ViewTransitions>
