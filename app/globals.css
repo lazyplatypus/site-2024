@@ -182,3 +182,14 @@ table {
     opacity: 0;
   }
 }
+a {
+  color: grey;
+}
+
+a:hover {
+  color: darkblue;
+  text-decoration-line: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: darkblue; /* Change underline color to darkblue on hover */
+}
+
