@@ -12,7 +12,6 @@ At Cerebras, we're pushing the boundaries of what's possible with our Llama 3.1 
 
 ![Cerebras Benchmarks](https://utfs.io/f/Ftq6SQId0j8S0lGdf2e5mXRtuGf3ja6NUbidEHosLnepD74I)
 To put this into perspective, this is ~16x faster than the leading GPU-based provider, Fireworks. Here's a behind-the-scenes look at how we do it.
-
 # LLM Inference Is Bottlenecked by Memory Bandwidth
 
 Large language models (LLMs), like Llama 3.1, generate text one word (or token) at a time, following a sequential process. For instance, given a prompt like "When was Taylor Swift born?", the model generates a response by passing through multiple layers of computation, each building on the previous.
@@ -48,6 +47,16 @@ The WSE's on-chip mesh network allows each core to access its own compute and di
 GPUs face memory bandwidth bottlenecks due to shared memory across multiple chips and frequent off-chip communication, resulting in higher latency.
 
 In Cerebras' pipelined execution for AI inference, model layers are mapped onto different regions of the wafer. Each region on the wafer is responsible for executing one or more model layers, with the region size dynamically determined based on memory and compute requirements. The on-chip fabric interconnect allows ultra-low latency communication between regions, with logically adjacent pipeline stages placed next to each other to further reduce latency.
+
+<div className="flex justify-center">
+  <div className="w-1/2">
+    <img
+      src="https://utfs.io/f/Ftq6SQId0j8SfdoDBi5oIsFR0Hm4eLNEPUMQGvwZBJCO9qAK"
+      alt="Pipeline Execution Mode"
+      className="w-full"
+    />
+  </div>
+</div>
 
 Since a single request utilizes only a fraction of the total memory bandwidth, Cerebras can support high multi-request throughput, running additional requests in parallel. Each request gets full access to the model without any performance compromise, as all pipeline stages run concurrently.
 
