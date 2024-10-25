@@ -19,7 +19,11 @@ export default function NewsletterPopup() {
         >
           ×
         </button>
-        <p className="text-gray-600 mb-6">Get more of my thoughts directly in your email.</p>
+        <img 
+          src="https://utfs.io/f/Ftq6SQId0j8SjfJYUDNpdZxPseMzDB9S8iHtvYhnKQX0LIuO" 
+          alt="Newsletter banner"
+          className="w-1/2 mb-4 rounded-lg mx-auto block"
+        />
         <form
           action="https://buttondown.email/api/emails/embed-subscribe/dgkim197"
           method="post"
