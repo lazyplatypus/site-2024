@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google';
 import { Link, ViewTransitions } from 'next-view-transitions';
 import { Analytics } from '@vercel/analytics/react';
 import Script from 'next/script';
+import NewsletterPopup from './components/newsletter';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -24,6 +25,12 @@ export default function RootLayout({
   return (
     <ViewTransitions>
       <html lang="en" className={`${inter.className} [scrollbar-gutter:stable]`}>
+        <head>
+          <link
+            rel="icon"
+            href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍜</text></svg>"
+          />
+        </head>
         <body className="antialiased tracking-tight">
           <div className="min-h-screen flex flex-col justify-between pt-0 md:pt-8 p-8 bg-white text-gray-900">
             <main className="max-w-[60ch] mx-auto w-full space-y-6">
@@ -31,6 +38,7 @@ export default function RootLayout({
             </main>
             <Footer />
             <Analytics />
+            <NewsletterPopup />
           </div>
           <Script src="https://scripts.simpleanalyticscdn.com/latest.js" />
           <Script

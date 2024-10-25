@@ -4,7 +4,7 @@ export const metadata = {
   title: 'Why is Cerebras Fast?',
 };
 
-#### Why is Cerebras Fast?
+#### How is Cerebras so Fast?
 
 <AnimatedName />
 
@@ -14,25 +14,35 @@ At Cerebras, we're pushing the boundaries of what's possible with our Llama 3.1 
 To put this into perspective, this is ~16x faster than the leading GPU-based provider, Fireworks. Here's a behind-the-scenes look at how we do it.
 # LLM Inference Is Bottlenecked by Memory Bandwidth
 
-Large language models (LLMs), like Llama 3.1, generate text one word (or token) at a time, following a sequential process. For instance, given a prompt like "When was Taylor Swift born?", the model generates a response by passing through multiple layers of computation, each building on the previous.
+Large language models (LLMs), like Llama 3.1, generate text one word (or token) at a time, following a sequential process. 
+
+![How LLMs Generate Text](https://utfs.io/f/Ftq6SQId0j8SLA4XFoJaLtrplFAv8jY61sz2NfUyim9DOqoE)
+
+For instance, to generate the response "The Quick Brown Fox Jumps", the model generates a response one token at a time by passing the input through multiple layers of computation, each building on the previous.
 
 <strong>Each Token Requires Moving All Model Weights from Memory to Compute Cores</strong>
 ![](https://utfs.io/f/Ftq6SQId0j8SL26qrEJaLtrplFAv8jY61sz2NfUyim9DOqoE)
-The weights are initially stored in memory, and during token generation, they are moved to the compute cores. This movement is necessary for each token generated, making the process sequential and dependent on memory bandwidth. This naturally leads to the concept of caching, which plays a crucial role in optimizing efficiency.
+
+To generate each token, all model weights must be transferred from memory to the compute cores for each layer of the model. This movement occurs layer by layer and is repeated for every token, making the process inherently sequential and highly reliant on memory bandwidth.
 
 <strong>To Enhance Efficiency, LLMs Use Caching to Store Intermediate Outputs</strong>
 ![Caching](https://utfs.io/f/Ftq6SQId0j8StInB2jF6gXQpIDMH6hZoBLkqCYWOmJtAGjf7)
 
-Caching reduces the need to recompute values for each layer during subsequent token creation, speeding up the overall process. However, each new token generated still relies on its predecessor, making parallelization impossible. This means memory bandwidth is a critical factor—each time data is moved between memory and compute, latency is introduced, slowing inference.
+Caching reduces the need to recompute values for each layer during subsequent token creation, speeding up the overall process. However, all of the computed values that are cached must be stored and accessed from memory, which adds to the memory bandwidth required for inference.
 
-Despite caching, the need to move model weights for each token makes memory bandwidth the primary bottleneck. The efficiency of generating text is constrained by how quickly data can move between memory and compute cores.
+<b>Each new token generated still relies on its predecessor, making parallelization impossible.</b> This means memory bandwidth is a critical factor—each time data is moved between memory and compute, latency is introduced, slowing inference.
+
+Despite caching, the need to move model weights and access cached values for each token makes memory bandwidth the primary bottleneck. **The efficiency of generating text is constrained by how quickly data can move between memory and compute cores.**
 
 # Inference Without Memory Bandwidth Limits
 
 Cerebras has made multiple innovations to achieve these speeds, particularly at the chip architecture level, the execution mode, and through software optimizations.
 
 ## Cerebras WSE Chip Architecture
-GPUs use a hierarchical memory system, involving multiple layers with varying capacities and access speeds. This setup includes a small, fast on-chip cache, followed by larger but slower off-chip memory. While effective in some scenarios, it often leads to bottlenecks for large AI models due to frequent data transfers between memory levels.
+GPUs use a hierarchical memory system, involving multiple layers with varying capacities and access speeds. 
+![Hierarchical Memory System](https://utfs.io/f/Ftq6SQId0j8SDQqSgPipyX7jYVURH2mGavB3M8x5wbghDsdq)
+
+This setup includes a small, fast on-chip cache (L1), a slightly larger but slower L2 cache, and high-bandwidth memory (HBM) for off-chip storage. While effective in some scenarios, scaling to larger AI models introduces complexity and latency as the frequent data transfers between these memory levels—particularly between the L2 cache and HBM—become bottlenecks. This limits the available memory bandwidth, making it harder to sustain performance as models grow in size and demand more memory resources.
 
 In contrast, the Cerebras Wafer Scale Engine (WSE) is designed to eliminate these bottlenecks through a unique architecture that tightly couples compute and memory at the core level. 
 
