@@ -50,7 +50,11 @@ In contrast, the Cerebras Wafer Scale Engine (WSE) is designed to eliminate thes
 
 Each core in the WSE has its own high-performance compute capabilities, tightly integrated with 48kB of SRAM memory and a 512B local cache. This direct integration ensures sufficient bandwidth to achieve full SIMD performance and reduces the need for off-chip data transfers.
 
-The WSE's on-chip mesh network allows each core to access its own compute and direct access to SRAM, which drastically reduces latency. The reason for this massive efficiency advantage is simple: it's just physics. In traditional GPU setups, data must move through SerDes serial links, connectors, circuit boards, and switch chips, introducing significant latency. In contrast, moving bits less than a millimeter on silicon within the WSE is far more efficient. As a result, the WSE architecture increases memory bandwidth and avoids the bottlenecks GPUs face.
+The WSE's on-chip mesh network allows each core to access its own compute and direct access to SRAM, which drastically reduces latency. The reason for this massive efficiency advantage is simple: it's just physics. 
+
+![Cerebras vs GPU networking](https://utfs.io/f/Ftq6SQId0j8Sg5efjaOtPyhd16qLvOigDAf0CwpZeInMxm7G)
+
+In traditional GPU setups, data must move through SerDes serial links, connectors, circuit boards, and switch chips, introducing significant latency. In contrast, moving bits less than a millimeter on silicon within the WSE is far more efficient. As a result, the WSE architecture increases memory bandwidth and avoids the bottlenecks GPUs face.
 
 ## Pipeline Execution Mode
 
