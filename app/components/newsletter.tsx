@@ -48,16 +48,6 @@ export default function NewsletterPopup() {
           >
             {isLoading ? 'Subscribing...' : 'gimme more'}
           </button>
-          <p className="text-xs text-gray-500 text-center">
-            <a 
-              href="https://buttondown.email/refer/dgkim197" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="hover:underline"
-            >
-              Powered by Buttondown
-            </a>
-          </p>
         </form>
       </div>
     </div>
