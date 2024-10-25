@@ -11,7 +11,7 @@ export default function NewsletterPopup() {
 
   return (
     <div className="fixed bottom-4 right-4 z-50 animate-slide-up">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+      <div className="bg-white p-6 rounded-lg border border-gray-200 w-80">
         <button
           onClick={() => setIsVisible(false)}
           className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
