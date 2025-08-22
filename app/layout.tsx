@@ -4,7 +4,6 @@ import { Inter } from 'next/font/google';
 import { Link, ViewTransitions } from 'next-view-transitions';
 import { Analytics } from '@vercel/analytics/react';
 import Script from 'next/script';
-import NewsletterPopup from './components/newsletter';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -38,7 +37,6 @@ export default function RootLayout({
             </main>
             <Footer />
             <Analytics />
-            <NewsletterPopup />
           </div>
           <Script src="https://scripts.simpleanalyticscdn.com/latest.js" />
           <Script
@@ -68,7 +66,8 @@ function Footer() {
 
   return (
     <footer className="mt-12 text-center">
-      <div className="flex justify-center space-x-4 tracking-tight">
+      <h3 className="text-lg font-medium mb-4">Where I've Been</h3>
+      <div className="flex justify-center space-x-4 tracking-tight mt-8">
         {links.map((link) => (
           <a
             key={link.name}
