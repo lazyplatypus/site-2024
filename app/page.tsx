@@ -61,7 +61,7 @@ export default async function Home() {
       <AnimatedName />
       <div className="text-gray-800 space-y-4 leading-snug">
         <br></br>
-        <p>Welcome to my little piece of the internet. I'm currently the Head of Developer Relations at <Link href="https://www.cerebras.ai" className="text-blue-500 hover:text-blue-700">Cerebras Systems</Link>, the world's fastest provider of AI Inference built on the Cerebras Wafer-Scale Engine. Before this, I led Developer Relations at <Link href="https://www.newrelic.com" className="text-blue-500 hover:text-blue-700">New Relic</Link>.</p>
+        <p>Welcome to my little piece of the internet. I'm currently the Head of Developer Relations at <Link href="https://www.cerebras.ai" className="text-blue-500 hover:text-blue-700 no-underline hover:no-underline">Cerebras Systems</Link>, the world's fastest provider of AI Inference built on the Cerebras Wafer-Scale Engine. Before this, I led Developer Relations at <Link href="https://www.newrelic.com" className="text-blue-500 hover:text-blue-700 no-underline hover:no-underline">New Relic</Link>.</p>
         <img 
             src="https://utfs.io/f/Ftq6SQId0j8SwnnA8a706FZCxJXe54z1r9oYbuQKHsUOgkvT" 
             alt="Profile"
@@ -76,7 +76,7 @@ export default async function Home() {
         <ul className="space-y-2 list-none pl-0">
           {writings.map(({ slug, title, date }) => (
             <li key={slug}>
-              <Link href={`/blog/${slug}`} className="text-blue-500 hover:text-blue-700">
+              <Link href={`/blog/${slug}`} className="text-blue-500 hover:text-blue-700 no-underline hover:no-underline">
                 {title}
               </Link>
               <span className="text-gray-500 text-sm ml-2">{date}</span>

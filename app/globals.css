@@ -188,8 +188,52 @@ a {
 
 a:hover {
   color: darkblue;
-  text-decoration-line: underline;
-  text-decoration-style: wavy;
-  text-decoration-color: darkblue; /* Change underline color to darkblue on hover */
+  /* Removed underline on hover */
+}
+
+/* Override for curl command in comments */
+.curl-command-pre {
+  background-color: #16161e !important;
+  color: #c9d1d9 !important;
+}
+
+.curl-command-pre code {
+  color: #c9d1d9 !important;
+  background-color: transparent !important;
+}
+
+/* Text highlighting styles */
+.text-highlight {
+  background-color: #fef08a;
+  padding: 0.1em 0.2em;
+  border-radius: 0.2em;
+  transition: background-color 0.2s ease;
+}
+
+.text-highlight:hover {
+  background-color: #fde047;
+}
+
+/* Table of contents scrollbar styling */
+nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+nav::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+nav::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Smooth scroll behavior for anchor links */
+html {
+  scroll-behavior: smooth;
 }
 
