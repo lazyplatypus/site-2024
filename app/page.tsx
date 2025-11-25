@@ -8,15 +8,26 @@ async function getWritings() {
   const directory = path.join(process.cwd(), 'app/blog');
   const filenames = fs.readdirSync(directory);
   
-  const writings = filenames.map(filename => {
-    const filePath = path.join(directory, filename);
-    const stats = fs.statSync(filePath);
-    return {
-      slug: path.parse(filename).name,
-      title: path.parse(filename).name.replace(/-/g, ' '),
-      date: stats.mtime.toISOString().split('T')[0]
-    };
-  });
+  const writings = filenames
+    .filter(filename => {
+      const filePath = path.join(directory, filename);
+      const stats = fs.statSync(filePath);
+      // Only include directories that have a page.mdx file
+      if (stats.isDirectory()) {
+        const pagePath = path.join(filePath, 'page.mdx');
+        return fs.existsSync(pagePath);
+      }
+      return false;
+    })
+    .map(filename => {
+      const filePath = path.join(directory, filename);
+      const stats = fs.statSync(filePath);
+      return {
+        slug: path.parse(filename).name,
+        title: path.parse(filename).name.replace(/-/g, ' '),
+        date: stats.mtime.toISOString().split('T')[0]
+      };
+    });
 
   return writings.sort((a, b) => b.date.localeCompare(a.date));
 }

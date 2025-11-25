@@ -66,7 +66,6 @@ function Footer() {
 
   return (
     <footer className="mt-12 text-center">
-      <h3 className="text-lg font-medium mb-4">Where I've Been</h3>
       <div className="flex justify-center space-x-4 tracking-tight mt-8">
         {links.map((link) => (
           <a
@@ -80,8 +79,6 @@ function Footer() {
           </a>
         ))}
       </div>
-      <p className="text-gray-400">This website was forked from  <Link href="https://github.com/leerob/site" className="text-blue-500 hover:text-blue-700">Lee Robinson</Link>'s website.
-      </p>
     </footer>
   );
 }
