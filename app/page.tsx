@@ -8,26 +8,65 @@ async function getWritings() {
   const directory = path.join(process.cwd(), 'app/blog');
   const filenames = fs.readdirSync(directory);
   
-  const writings = filenames
-    .filter(filename => {
-      const filePath = path.join(directory, filename);
-      const stats = fs.statSync(filePath);
-      // Only include directories that have a page.mdx file
-      if (stats.isDirectory()) {
+  const writings = await Promise.all(
+    filenames
+      .filter(filename => {
+        const filePath = path.join(directory, filename);
+        const stats = fs.statSync(filePath);
+        // Only include directories that have a page.mdx file
+        if (stats.isDirectory()) {
+          const pagePath = path.join(filePath, 'page.mdx');
+          return fs.existsSync(pagePath);
+        }
+        return false;
+      })
+      .map(async (filename) => {
+        const filePath = path.join(directory, filename);
         const pagePath = path.join(filePath, 'page.mdx');
-        return fs.existsSync(pagePath);
-      }
-      return false;
-    })
-    .map(filename => {
-      const filePath = path.join(directory, filename);
-      const stats = fs.statSync(filePath);
-      return {
-        slug: path.parse(filename).name,
-        title: path.parse(filename).name.replace(/-/g, ' '),
-        date: stats.mtime.toISOString().split('T')[0]
-      };
-    });
+        const slug = path.parse(filename).name;
+        
+        // Try to read metadata from MDX file
+        let date: string;
+        let title: string = slug.replace(/-/g, ' ');
+        
+        try {
+          const fileContent = fs.readFileSync(pagePath, 'utf-8');
+          // Extract metadata export (using [\s\S] instead of . with s flag for compatibility)
+          const metadataMatch = fileContent.match(/export\s+const\s+metadata\s*=\s*\{([\s\S]+?)\}/);
+          if (metadataMatch) {
+            const metadataContent = metadataMatch[1];
+            // Extract date field
+            const dateMatch = metadataContent.match(/date:\s*['"]([^'"]+)['"]/);
+            if (dateMatch) {
+              date = dateMatch[1];
+            } else {
+              // Fallback to file modification time
+              const stats = fs.statSync(filePath);
+              date = stats.mtime.toISOString().split('T')[0];
+            }
+            // Extract title if available
+            const titleMatch = metadataContent.match(/title:\s*['"]([^'"]+)['"]/);
+            if (titleMatch) {
+              title = titleMatch[1];
+            }
+          } else {
+            // Fallback to file modification time
+            const stats = fs.statSync(filePath);
+            date = stats.mtime.toISOString().split('T')[0];
+          }
+        } catch (error) {
+          // Fallback to file modification time
+          const stats = fs.statSync(filePath);
+          date = stats.mtime.toISOString().split('T')[0];
+        }
+        
+        return {
+          slug,
+          title,
+          date
+        };
+      })
+  );
 
   return writings.sort((a, b) => b.date.localeCompare(a.date));
 }
