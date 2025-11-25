@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { TableOfContents } from './TableOfContents';
 import { TextHighlighting } from './TextHighlighting';
+import { SidebarNav } from './SidebarNav';
 
 interface Heading {
   id: string;
@@ -61,7 +61,7 @@ export function BlogLayout({ children }: BlogLayoutProps) {
           {children}
         </TextHighlighting>
       </div>
-      <TableOfContents headings={headings} />
+      <SidebarNav headings={headings} />
     </div>
   );
 }
