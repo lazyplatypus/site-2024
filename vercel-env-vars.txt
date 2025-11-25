@@ -1,0 +1,7 @@
+# Vercel Environment Variables
+# Copy these to Vercel Dashboard → Settings → Environment Variables
+# Apply to: Production, Preview, and Development
+
+NEXT_PUBLIC_SUPABASE_URL=https://qmwfpdwbzmxitclvjsus.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtd2ZwZHdiem14aXRjbHZqc3VzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQwODg2MjYsImV4cCI6MjA3OTY2NDYyNn0.D236yhOGX62ZcFXOsCRmH-HTG_lm78JdRGn-OQB822Y
+
