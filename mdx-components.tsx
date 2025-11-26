@@ -129,6 +129,25 @@ const components: MDXComponents = {
       {...props}
     />
   ),
+  img: (props: ComponentPropsWithoutRef<'img'>) => {
+    const { alt, src, ...rest } = props;
+    if (alt) {
+      return (
+        <figure className="my-6">
+          <img
+            src={src}
+            alt={alt}
+            className="w-full rounded-lg"
+            {...rest}
+          />
+          <figcaption className="mt-2 text-sm text-gray-600 text-center italic">
+            {alt}
+          </figcaption>
+        </figure>
+      );
+    }
+    return <img src={src} alt={alt} className="w-full rounded-lg my-6" {...rest} />;
+  },
 };
 
 export function useMDXComponents(
