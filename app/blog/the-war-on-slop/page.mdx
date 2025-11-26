@@ -56,10 +56,11 @@ We are moving from generic text prediction to optimizing for specific outcomes f
 ### Training on Actions, Not Just Text [Cursor] 
 
 When Cursor was training their "Composer" model, they didn't just train on generic text; they used RL to train on the actions of coding within the IDE. Through this process, the model discovered optimization strategies on its own, effectively becoming a power user of its own environment, being able to more effectively do:
+![Lee Killing his talk about how Cursor does RL to make composer super fast!](https://danielkimblog.b-cdn.net/war-on-slop/slop5.png)
 
-**Parallel Tool Calls:** The model learned that reading 10 files in parallel is more efficient than reading them sequentially. The model specifically now optimizes for parallel tool calls to reduce the overall time of the query.
+- Parallel Tool Calls: The model learned that reading 10 files in parallel is more efficient than reading them sequentially. The model specifically now optimizes for parallel tool calls to reduce the overall time of the query.
 
-**Semantic Search:** It learned specifically when to query the codebase via vector search versus when to rely on its internal weights.
+- Semantic Search: It learned specifically when to query the codebase via vector search versus when to rely on its internal weights.
 
 ### Making RL Accessible [Applied Compute + Prime Intellect] 
 
