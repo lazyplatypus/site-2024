@@ -49,6 +49,37 @@ export function SidebarNav({ headings }: SidebarNavProps) {
     };
   }, [headings]);
 
+  // Auto-scroll active item into view on mobile horizontal scroll
+  useEffect(() => {
+    if (!activeId) return;
+
+    // Only run on mobile (screen width <= 768px)
+    const isMobile = window.innerWidth <= 768;
+    if (!isMobile) return;
+
+    const sidebarContent = document.querySelector('.sidebar-content') as HTMLElement;
+    if (!sidebarContent) return;
+
+    const activeItem = sidebarContent.querySelector(`[data-section-id="${activeId}"]`) as HTMLElement;
+    if (!activeItem) return;
+
+    // Calculate scroll position to center the active item
+    const containerRect = sidebarContent.getBoundingClientRect();
+    const itemRect = activeItem.getBoundingClientRect();
+    const scrollLeft = sidebarContent.scrollLeft;
+    const itemLeft = itemRect.left - containerRect.left + scrollLeft;
+    const itemWidth = itemRect.width;
+    const containerWidth = containerRect.width;
+    
+    // Center the item in the container
+    const targetScroll = itemLeft - (containerWidth / 2) + (itemWidth / 2);
+    
+    sidebarContent.scrollTo({
+      left: targetScroll,
+      behavior: 'smooth',
+    });
+  }, [activeId]);
+
   if (headings.length === 0) {
     return null;
   }
