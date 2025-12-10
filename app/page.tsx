@@ -102,7 +102,7 @@ export default async function Home() {
         <br></br>
         <p>Welcome to my little piece of the internet. I'm currently the Head of Growth at <Link href="https://www.cerebras.ai" className="text-blue-500 hover:text-blue-700 no-underline hover:no-underline">Cerebras Systems</Link>, the world's fastest provider of AI Inference built on the Cerebras Wafer-Scale Engine. Before this, I led Developer Relations at <Link href="https://www.newrelic.com" className="text-blue-500 hover:text-blue-700 no-underline hover:no-underline">New Relic</Link>.</p>
         <img 
-            src="https://utfs.io/f/Ftq6SQId0j8SwnnA8a706FZCxJXe54z1r9oYbuQKHsUOgkvT" 
+            src="https://danielkimblog.b-cdn.net/profile.jpg" 
             alt="Profile"
             width="1000" 
             height="100"
