@@ -56,7 +56,7 @@ const components: MDXComponents = {
   },
   h4: (props: HeadingProps) => <h4 className="font-medium pt-12 mb-0 fade-in" {...props} />,
   p: (props: ParagraphProps) => (
-    <p className="text-gray-800 leading-relaxed" {...props} />
+    <p className="text-gray-800 leading-relaxed mb-4" {...props} />
   ),
   ol: (props: ListProps) => (
     <ol className="text-gray-800 list-decimal pl-5 space-y-2" {...props} />

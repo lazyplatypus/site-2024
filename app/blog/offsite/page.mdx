@@ -1,0 +1,95 @@
+import { OffsitePageTitle } from '../../components/OffsitePageTitle';
+import { OffsiteHero } from '../../components/OffsiteHero';
+import { HoverImageSequence } from '../../components/HoverImageSequence';
+import { Comments } from '../../components/Comments';
+
+export const metadata = {
+  title: 'Cerebras Code Offsite Postmortem',
+  date: '2026-02-04',
+};
+
+<OffsitePageTitle subtitle={'offsite postmortem'} />
+
+<OffsiteHero imageSrc="https://danielkimblog.b-cdn.net/offsite/offsite1.jpg" title={'36 hours. 0 code written. $10k in prizes.'} subtitle={'What we learned trying to win a hackathon during an offsite'} hideAnimatedName />
+
+We just wrapped an intense 48-hour hackathon + offsite combo, driving Cerebras' in-house AI coding agents + other SOTA coding harnesses against complex challenges.  
+
+The results speak for themselves: Cerebras employees took 4 out of the top 6 spots, including first and second place, at the GTM Hackathon in Utah.  
+
+We dove deep into the developer experience, agent capabilities, and the future of AI coding.
+
+![](https://danielkimblog.b-cdn.net/offsite/224B9A63-87D6-43E9-BD1F-92087EDC0182_1_105_c.jpeg)
+- 1st Place ($10k Winner): Isaac, Keilyn, and Josh (Isaac's siblings)
+
+- 2nd Place: Brandon Kang – Cerby, an innovative Tamagotchi for LLM tokens.
+
+- Finalist: Sebastian – An AI Voice Assistant designed for bike shop operations.
+
+- Finalist: Pearl – Sales Saver, a unified dashboard to prioritize sales activities.
+
+Here’s a breakdown of what we learned on the front lines.
+### 1. Developer Experience drives user preferences.
+
+People choose their tools based on "vibes" and onboarding friction.  
+Not benchmarks.  
+Most people don't even choose a specific model, they go with the default.
+
+- **The vast majority of hackathon attendees gravitated towards tools like Cursor/Copilot with default models.**  
+  The tools are approachable and onboarding is straightforward.  
+  The masses aren't chasing the bleeding edge if it means a steep learning curve.
+- **For power users, giving up the visual safety net of an IDE is a massive leap of faith.**  
+  However, once a TUI/CLI proves it can reliably handle long-running reasoning threads and orchestration, its speed and minimalism become an addictive advantage.  
+  The mental overhead drops, and productivity soars.
+- **Version Control should be a first principle in AI Coding.**  
+  During one session, an agent-made change entirely deleted Daniel's entire work, and it was un-recoverable due to a lack of proper source-of-truth tracking for AI edits.  
+  This experience highlighted a critical gap.  
+  Due to this, we've already integrated Git worktree natively into our tools, ensuring we provide a safety net where users can easily navigate, accept, or revert changes.
+
+### 2. Intelligence Trumps Speed for Complex Tasks
+
+GLM 4.7 is incredibly fast, but on the hardest problems, speed isn't a silver bullet.  
+It's still a "measure twice, cut once" world.
+
+- **Reasoning > Velocity:**  
+  Models like Claude 3.5 Sonnet often outperform purely on reasoning depth.  
+  If a model lacks the intuition to solve an edge case, the developer ends up back in the IDE fixing it manually.
+- **Plan Mode is a Game Changer:**  
+  Moving from "pray and paste" to a dedicated Plan Mode allows you to stress-test logic before a single line of code is written.
+- **The Winning Loop:**  
+  Use a high-intelligence model to architect the plan, then let fast Cerebras inference one-shot the execution.  
+  This maximizes accuracy while minimizing token waste.
+
+### 3. Efficient Orchestration is the Future of Autonomy
+
+The ability for agents to tackle complex tasks via sub-agents and sustained reasoning threads is transformative.
+
+- **Harnessing Frontier Results:**  
+  While an intelligence gap exists between OSS and frontier models, a robust "harness" bridges it.  
+  By designing a system that orchestrates tasks and employs a divide-and-conquer strategy, you can get frontier-level results from faster, specialized models.
+- **Concurrency is the Ultimate Speed Boost:**  
+  Even with fast GPUs, serial execution is a bottleneck.  
+  We saw GPU-based assistants finish faster simply because they were optimized to do multiple things at once.  
+  We need to standardize planning models that kick off parallel threads to see the real impact of fast inference.
+
+### 4. Strategy Requires Hyper-Focus
+
+Building a tool "for everyone" is a trap.  
+We must pick a lane to find true product-market fit.  
+You cannot cater to non-technical audiences while building high-floor features like agent swarms.
+
+We should strive for specific tools for specific personas.  
+For example, *Claude Code* for devs and *Claude Cowork* for general users.  
+Pick a specific audience and work aggressively to solve their unique pain points.
+
+### 5. In-Person Work Builds Unbreakable Trust
+
+<HoverImageSequence alt="Walking sequence from offsite" />
+
+Collaborating in person reminds you that teammates are more than just avatars on Slack.
+
+Whether it's a 6:00 AM run or late-night karaoke, shared physical intensity builds a level of trust that makes professional feedback smoother.
+
+It's much harder to have a "painful" integration or a tense PR review when you've spent the morning rapping with the person on the other side of the screen.  
+High-intensity environments build high-intensity bonds.
+
+<Comments page="offsite" />
