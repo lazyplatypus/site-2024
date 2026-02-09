@@ -39,7 +39,7 @@ export function OffsiteHero({ imageSrc, title = '', subtitle = '', imageOnly = f
   const subtitleLines = linesAfterPeriod(subtitle);
 
   return (
-    <header className="pt-12 mb-8 fade-in">
+    <header className="pt-8 mb-8 fade-in">
       <div className="flex flex-col sm:flex-row gap-6 sm:gap-8 items-start">
         <div className="w-full sm:w-auto sm:flex-shrink-0 sm:max-w-[280px]">
           <div className="aspect-[3/4] w-full sm:w-[280px] relative rounded-lg overflow-hidden bg-gray-100">
