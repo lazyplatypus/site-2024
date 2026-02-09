@@ -47,27 +47,27 @@ const components: MDXComponents = {
     const text = extractText(props.children);
     const id = props.id || generateId(text);
     return (
-      <h2 id={id} className="text-gray-800 font-medium text-2xl mt-8 mb-3 scroll-mt-8" {...props} />
+      <h2 id={id} className="text-gray-800 font-medium text-2xl mt-8 mb-1.5 scroll-mt-8" {...props} />
     );
   },
   h3: (props: HeadingProps) => {
     const text = extractText(props.children);
     const id = props.id || generateId(text);
     return (
-      <h3 id={id} className="text-gray-800 font-medium text-xl mt-6 mb-2 scroll-mt-8" {...props} />
+      <h3 id={id} className="text-gray-800 font-medium text-xl mt-6 mb-1.5 scroll-mt-8" {...props} />
     );
   },
   h4: (props: HeadingProps) => <h4 className="font-medium pt-12 mb-0 fade-in" {...props} />,
   p: (props: ParagraphProps) => (
-    <p className="text-gray-800 leading-relaxed mb-4" {...props} />
+    <p className="text-gray-800 leading-relaxed mb-2" {...props} />
   ),
   ol: (props: ListProps) => (
-    <ol className="text-gray-800 list-decimal pl-5 space-y-2" {...props} />
+    <ol className="text-gray-800 list-decimal pl-5 space-y-0 my-2" {...props} />
   ),
   ul: (props: ListProps) => (
-    <ul className="text-gray-800 list-disc pl-5 space-y-1" {...props} />
+    <ul className="text-gray-800 list-disc pl-5 space-y-0 my-2" {...props} />
   ),
-  li: (props: ListItemProps) => <li className="pl-1" {...props} />,
+  li: (props: ListItemProps) => <li className="pl-1 mb-2 last:mb-0" {...props} />,
   em: (props: ComponentPropsWithoutRef<'em'>) => (
     <em className="font-medium" {...props} />
   ),
