@@ -24,7 +24,7 @@ export function ImageGallery({ images, alt = '' }: ImageGalleryProps) {
               src={src}
               alt={alt ? `${alt} ${i + 1}` : ''}
               className="w-full h-full object-cover"
-              loading="lazy"
+              loading="eager"
             />
           </button>
         ))}

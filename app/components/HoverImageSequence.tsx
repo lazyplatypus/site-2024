@@ -25,6 +25,13 @@ export function HoverImageSequence({
   const lastTimeRef = useRef(0);
 
   useEffect(() => {
+    for (let i = START; i <= END; i++) {
+      const img = new Image();
+      img.src = frameUrl(i);
+    }
+  }, []);
+
+  useEffect(() => {
     const tick = (time: number) => {
       if (time - lastTimeRef.current >= FRAME_MS) {
         lastTimeRef.current = time;
