@@ -480,9 +480,11 @@ interface BlogPostTemplateProps {
         date?: string;
       };
       body: string;
+      id: string;
     };
   };
   pageContext: {
+    id: string;
     slug: string;
   };
 }
@@ -528,8 +530,8 @@ export const Head = ({ data }: BlogPostTemplateProps) => (
 );
 
 export const query = graphql`
-  query ($slug: String!) {
-    mdx(fileAbsolutePath: { regex: $slug }) {
+  query ($id: String!) {
+    mdx(id: { eq: $id }) {
       body
       frontmatter {
         title

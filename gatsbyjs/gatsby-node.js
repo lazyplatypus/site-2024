@@ -11,6 +11,7 @@ exports.createPages = async ({ graphql, actions }) => {
         nodes {
           name
           childMdx {
+            id
             frontmatter {
               title
               date
@@ -36,6 +37,7 @@ exports.createPages = async ({ graphql, actions }) => {
       path: `/blog/${node.name}`,
       component: blogPostTemplate,
       context: {
+        id: node.childMdx.id,
         slug: node.name,
       },
     });
