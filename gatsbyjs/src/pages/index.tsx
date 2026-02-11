@@ -1,7 +1,6 @@
 import React from 'react';
-import { Link, graphql, HeadFC } from 'gatsby';
+import { Link, graphql } from 'gatsby';
 import Layout from '../components/layout';
-import LayoutHead from '../components/layout-head';
 
 function AnimatedName() {
   return (
@@ -34,13 +33,18 @@ interface IndexPageProps {
   data: {
     allMdx: {
       nodes: Array<{
-        slug: string;
-        frontmatter?: {
-          date?: string;
-          title?: string;
-        };
-        parent?: {
-          name?: string;
+        fileAbsolutePath?: string;
+      }>;
+    };
+    allFile: {
+      nodes: Array<{
+        name: string;
+        relativeDirectory?: string;
+        childMdx?: {
+          frontmatter?: {
+            date?: string;
+            title?: string;
+          };
         };
       }>;
     };
@@ -48,13 +52,13 @@ interface IndexPageProps {
 }
 
 const IndexPage: React.FC<IndexPageProps> = ({ data }) => {
-  const writings: Writing[] = data.allMdx.nodes
+  const writings: Writing[] = data.allFile.nodes
     .map((node) => {
-      const slug = node.slug.startsWith('/') ? node.slug.slice(1) : node.slug;
+      const slug = node.name;
       return {
         slug,
-        title: node.frontmatter?.title || node.parent?.name?.replace(/-/g, ' ') || slug.replace(/-/g, ' '),
-        date: node.frontmatter?.date || '',
+        title: node.childMdx?.frontmatter?.title || slug.replace(/-/g, ' '),
+        date: node.childMdx?.frontmatter?.date || '',
       };
     })
     .filter((w) => w.date)
@@ -90,22 +94,22 @@ const IndexPage: React.FC<IndexPageProps> = ({ data }) => {
 
 export default IndexPage;
 
-export const Head: HeadFC = () => (
-  <LayoutHead />
+export const Head = () => (
+  <>
+    <title>./danielkim.sh</title>
+    <meta name="description" content="Daniel Kim. Software Engineer. Creator. Vibes." />
+  </>
 );
 
 export const query = graphql`
   query {
-    allMdx {
+    allFile(filter: { extension: { eq: "mdx" }, sourceInstanceName: { eq: "blog" } }) {
       nodes {
-        slug
-        frontmatter {
-          date
-          title
-        }
-        parent {
-          ... on File {
-            name
+        name
+        childMdx {
+          frontmatter {
+            date
+            title
           }
         }
       }
