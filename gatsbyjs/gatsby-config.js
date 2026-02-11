@@ -1,14 +1,19 @@
 /** @type {import('gatsby').GatsbyConfig} */
 module.exports = {
   siteMetadata: {
-    title: `GatsbyJS Site`,
-    description: `GatsbyJS refactored site`,
-    author: `@yourhandle`,
-    siteUrl: `https://www.yourdomain.tld`,
+    title: `./danielkim.sh`,
+    description: `Daniel Kim. Software Engineer. Creator. Vibes.`,
+    author: `@learnwdaniel`,
+    siteUrl: `https://danielkim.sh`,
   },
   plugins: [
     `gatsby-plugin-postcss`,
-    `gatsby-plugin-mdx`,
+    {
+      resolve: `gatsby-plugin-mdx`,
+      options: {
+        extensions: [`.mdx`, `.md`],
+      },
+    },
     `gatsby-plugin-sharp`,
     `gatsby-transformer-sharp`,
     {
@@ -23,6 +28,13 @@ module.exports = {
       options: {
         name: `blog`,
         path: `${__dirname}/src/content/blog`,
+      },
+    },
+    {
+      resolve: `gatsby-source-filesystem`,
+      options: {
+        name: `static`,
+        path: `${__dirname}/static`,
       },
     },
   ],
