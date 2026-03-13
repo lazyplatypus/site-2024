@@ -1050,72 +1050,6 @@ Never edit applied migration files.<br><br>
 </div>
 
 <!-- ══════════════════════════════════════════════
-     SLIDE 16 — Skills: Writing CASM
-══════════════════════════════════════════════ -->
-<div class="slide" data-index="16">
-  <h3>Skills in action</h3>
-  <h2>Using a skill to write CASM code</h2>
-  <div class="cols" style="gap:28px;">
-    <div class="col">
-      <p style="font-size:0.82rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); margin-bottom:8px;">.claude/skills/casm-write/SKILL.md</p>
-      <div class="skill-file" style="font-size:0.72rem; line-height:1.5;">
-        <span class="comment">---</span><br>
-        <span class="keyword">name:</span> <span class="val">casm-write</span><br>
-        <span class="keyword">description:</span> <span class="val">Directed test writer</span><br>
-        <span class="comment">---</span><br><br>
-        <span class="hl">Canonical CASM Structure</span><br>
-        1. Header comment + includes<br>
-        2. TASK_NUM_LIST comment<br>
-        3. Const definitions<br>
-        4. Memory layout (.dsm)<br>
-        5. DMA descriptors<br>
-        6. Task code patterns<br>
-        7. ADD_FAB validation<br><br>
-        <span class="hl">Key Requirements</span><br>
-        • Include macros.casm and<br>
-        &ensp;ce_addr_map_const.casm<br>
-        • Consistent indentation<br>
-        • Explicit section comments<br>
-        • Self-checking code<br>
-        • fab_in/out expected output<br><br>
-        <span class="hl">Use When</span><br>
-        • Writing directed tests<br>
-        • Validating instruction paths<br>
-        • Testing fabric I/O patterns<br>
-        • Verifying pipelines
-      </div>
-    </div>
-    <div class="col" style="overflow:hidden; display:flex; flex-direction:column;">
-      <p style="font-size:0.82rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); margin-bottom:8px;">CASM Directed Test Reference</p>
-      <div class="skill-file" style="flex:1; overflow:hidden; font-size:0.68rem; line-height:1.4;">
-        <span class="hl">Workflow</span><br>
-        Extract resource requirements<br>
-        → Derive CASM constants<br>
-        → Assign colors/queues<br>
-        → Layout SRAM → Write<br>
-        DMA descriptors → Task code<br>
-        → ADD_FAB stimulus<br><br>
-        <span class="hl">Sections</span><br>
-        • PVR-to-CASM mapping<br>
-        • Include files & macros<br>
-        • Task configuration<br>
-        • Queue configuration<br>
-        • Memory layout (SRAM)<br>
-        • DSR/DSD setup<br>
-        • DMA descriptor patterns<br>
-        • Task code patterns<br>
-        • Pipeline test patterns<br>
-        • FIFO/circular buffers<br>
-        • Self-checking validation<br>
-        • SBG/HBG handling<br>
-        • Test registration<br>
-        • Pre-submit checklist
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════
      SLIDE — cerebras/skills
 ══════════════════════════════════════════════ -->
 <div class="slide" style="justify-content:flex-start; padding-top:36px; padding-bottom:12px;">
@@ -1272,6 +1206,69 @@ Never edit applied migration files.<br><br>
 </div>
 
 <!-- ══════════════════════════════════════════════
+     SLIDE 16 — Skills: Writing CASM
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="16">
+  <h3>Skills in action</h3>
+  <h2>Using a skill to write CASM code</h2>
+  <div class="cols" style="gap:28px;">
+    <div class="col">
+      <p style="font-size:0.82rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); margin-bottom:8px;">.claude/skills/casm-write/SKILL.md</p>
+      <div class="skill-file" style="font-size:0.72rem; line-height:1.5;">
+        <span class="comment">---</span><br>
+        <span class="keyword">name:</span> <span class="val">casm-write</span><br>
+        <span class="keyword">description:</span> <span class="val">Directed test writer</span><br>
+        <span class="comment">---</span><br><br>
+        <span class="hl">Canonical CASM Structure</span><br>
+        1. Header comment + includes<br>
+        2. TASK_NUM_LIST comment<br>
+        3. Const definitions<br>
+        4. Memory layout (.dsm)<br>
+        5. DMA descriptors<br>
+        6. Task code patterns<br>
+        7. ADD_FAB validation<br><br>
+        <span class="hl">Key Requirements</span><br>
+        • Include macros.casm and<br>
+        &ensp;ce_addr_map_const.casm<br>
+        • Consistent indentation<br>
+        • Explicit section comments<br>
+        • Self-checking code<br>
+        • fab_in/out expected output<br><br>
+        <span class="hl">Use When</span><br>
+        • Writing directed tests<br>
+        • Validating instruction paths<br>
+        • Testing fabric I/O patterns<br>
+        • Verifying pipelines
+      </div>
+    </div>
+    <div class="col" style="overflow:hidden; display:flex; flex-direction:column; gap:16px;">
+      <p style="font-size:0.82rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); margin-bottom:0;">Usage</p>
+      <div style="background:var(--bg-deep, #1A1108); border-radius:10px; padding:18px 20px; font-family:'JetBrains Mono',monospace; font-size:0.82rem; line-height:1.7;">
+        <span style="color:#DA7756;">&#10095;</span> <span style="color:#E8DDD0;">/casm-write fix this directed test</span>
+      </div>
+      <div style="flex:1; display:flex; flex-direction:column; gap:10px;">
+        <p style="font-size:0.82rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); margin-bottom:0;">What happens</p>
+        <div class="skill-file" style="flex:1; overflow:hidden; font-size:0.72rem; line-height:1.55;">
+          <span class="hl">1. Skill activates</span><br>
+          Claude loads casm-write SKILL.md<br>
+          with canonical structure &amp; rules<br><br>
+          <span class="hl">2. Analyzes the test</span><br>
+          Reads existing .casm file<br>
+          → Identifies structural issues<br>
+          → Checks include files &amp; macros<br><br>
+          <span class="hl">3. Applies the fix</span><br>
+          Follows CASM conventions<br>
+          → Correct section ordering<br>
+          → Proper DMA descriptors<br>
+          → Self-checking validation<br>
+          → ADD_FAB stimulus patterns
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
      SLIDE — latest skills automatically sync
 ══════════════════════════════════════════════ -->
 <div class="slide" style="justify-content:flex-start; padding-top:44px; padding-bottom:20px;">
@@ -1366,26 +1363,49 @@ Never edit applied migration files.<br><br>
     <div class="col" style="flex:1.2; display:flex; flex-direction:column;">
       <div id="term-skill-update" class="terminal" style="flex:1; font-size:0.75rem;"></div>
     </div>
-    <!-- Right: how it works -->
-    <div class="col" style="flex:0.8; display:flex; flex-direction:column; gap:16px; justify-content:center;">
-      <div style="background:rgba(218,119,86,0.08); border:1.5px solid rgba(218,119,86,0.25); border-radius:12px; padding:20px;">
-        <p style="font-size:0.82rem; font-weight:700; color:var(--accent); margin-bottom:10px;">How it works</p>
-        <div style="font-size:0.78rem; color:var(--text); line-height:1.7;">
-          <div style="margin-bottom:6px;"><span style="color:var(--accent); font-weight:700;">1.</span> Forensic analysis of conversation gaps</div>
-          <div style="margin-bottom:6px;"><span style="color:var(--accent); font-weight:700;">2.</span> Root cause → reasoning procedures</div>
-          <div style="margin-bottom:6px;"><span style="color:var(--accent); font-weight:700;">3.</span> Edits SKILL.md with counterfactual validation</div>
-          <div><span style="color:var(--accent); font-weight:700;">4.</span> Opens PR with team reviewers from teams.json</div>
+    <!-- Right: animated avatar + diff result -->
+    <div class="col" style="flex:0.8; display:flex; flex-direction:column; gap:14px; align-items:center; justify-content:center;">
+      <!-- Mascot with file icon -->
+      <div style="display:flex; align-items:flex-end; gap:14px; margin-bottom:4px;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:1rem; white-space:pre; line-height:1.3; color:var(--accent); animation: mascot-float 3s ease-in-out infinite;">  ▐▛███▜▌
+ ▝▜█████▛▘
+  <span style="color:var(--text-dim);"> ▘▘  ▝▝</span></div>
+        <!-- File icon SVG -->
+        <svg width="48" height="72" viewBox="0 0 48 72" style="animation: mascot-float 3s ease-in-out infinite 0.5s; flex-shrink:0;">
+          <path d="M4,2 L30,2 L44,18 L44,70 L4,70 Z" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.4"/>
+          <path d="M30,2 L44,18 L30,18 Z" fill="#D4C9B8"/>
+          <line x1="10" y1="28" x2="36" y2="28" stroke="#C4B0A0" stroke-width="1.3"/>
+          <line x1="10" y1="36" x2="36" y2="36" stroke="#C4B0A0" stroke-width="1.3"/>
+          <line x1="10" y1="44" x2="28" y2="44" stroke="#C4B0A0" stroke-width="1.3"/>
+          <line x1="10" y1="52" x2="32" y2="52" stroke="#C4B0A0" stroke-width="1.3"/>
+        </svg>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:0.68rem; font-weight:600; color:var(--text); text-align:center; margin-top:-8px;">ws-kernel-bugfix-agent</div>
+
+      <!-- Diff block -->
+      <div style="background:rgba(91,164,126,0.06); border:1.5px solid rgba(91,164,126,0.25); border-radius:10px; padding:14px 16px; width:100%;">
+        <p style="font-size:0.68rem; font-weight:700; color:var(--green); margin-bottom:8px; font-family:'JetBrains Mono',monospace;">+ Added to SKILL.md</p>
+        <div style="font-size:0.65rem; color:var(--text); line-height:1.65; font-family:'JetBrains Mono',monospace;">
+          <div style="color:var(--green); margin-bottom:4px;">+ <strong>Validate the fix is reachable, not just passing</strong> — A test that passes without triggering the fixed code path proves nothing.</div>
+          <div style="color:var(--green);">+ Trace the trigger condition from diagnosis through test parameters to confirm the fix is exercised. Build artifacts (<code>.am</code>, <code>.lst</code>, <code>.o</code>) and <code>debug.out</code> routing evidence confirm the fixed component was instantiated.</div>
         </div>
       </div>
-      <div style="background:rgba(91,164,126,0.08); border:1.5px solid rgba(91,164,126,0.25); border-radius:12px; padding:16px;">
-        <p style="font-size:0.75rem; color:var(--green); line-height:1.6; margin:0;">
-          <span style="font-weight:700;">Key insight:</span> Encodes <em>reasoning procedures</em>, not just facts — so the whole team levels up.
-        </p>
-      </div>
+
+      <!-- See PR button -->
+      <a href="https://github.com/Cerebras/skills/pull/55/files" target="_blank" rel="noopener" style="display:inline-flex; align-items:center; gap:6px; padding:8px 18px; background:var(--accent); color:#fff; border-radius:8px; font-size:0.78rem; font-weight:600; text-decoration:none; font-family:'JetBrains Mono',monospace; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+        See PR ↗
+      </a>
     </div>
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════
+     SLIDE — Advanced usecases: Agents
+══════════════════════════════════════════════ -->
+<div class="slide" style="justify-content:center; align-items:center; text-align:center;">
+  <h3 style="margin-bottom:12px;">Advanced usecases</h3>
+  <h2 style="font-size:3.2rem; letter-spacing:-0.02em;">AGENTS</h2>
+</div>
 
 <!-- ══════════════════════════════════════════════
      SLIDE — Agent needs context + validation
@@ -1934,8 +1954,8 @@ Never edit applied migration files.<br><br>
     { name: 'Commands', slides: [7, 8, 9, 10, 11, 12, 13, 14] },
     { name: 'Context', slides: [15, 16, 17, 18, 19] },
     { name: 'Skills', slides: [20, 21, 22, 23] },
-    { name: 'Agents', slides: [24, 25, 26, 27, 28] },
-    { name: 'Find us', slides: [29] }
+    { name: 'Agents', slides: [24, 25, 26, 27, 28, 29] },
+    { name: 'Find us', slides: [30] }
   ];
 
   function getTopicForSlide(slideIndex) {
@@ -2751,8 +2771,8 @@ Never edit applied migration files.<br><br>
     1: ['term-whatisclaude'],
     2: ['term-surgeon', 'term-kevin'],
     3: ['term-plan'],
-    5: ['term-grepper'],
-    6: ['term-md-logs', 'term-md-findings'],
+    4: ['term-grepper'],
+    5: ['term-md-logs', 'term-md-findings'],
     7: ['term-rewind'],
     8: ['term-resume'],
     9: ['term-rename'],
@@ -2765,7 +2785,7 @@ Never edit applied migration files.<br><br>
     19: ['term-compact'],
     22: ['term-skills-sync'],
     23: ['term-skill-update'],
-    27: ['term-tasktool'],
+    28: ['term-tasktool'],
   };
 
   // ── Agent Duo conversation animation ─────────────────────────
@@ -2847,7 +2867,7 @@ Never edit applied migration files.<br><br>
     renderStep(current, step);
     // Play terminals on incoming slide
     (slideTerminals[current] || []).forEach(id => setTimeout(() => playTerm(id), 120));
-    if (current === 25) setTimeout(startAgentConvo, 200);
+    if (current === 26) setTimeout(startAgentConvo, 200);
     updateUI();
   }
 
