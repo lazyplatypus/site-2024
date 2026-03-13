@@ -157,6 +157,8 @@
 
   .arch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
 
+  .tree-hl { color: #DA7756 !important; background: rgba(218,119,86,0.12); border-radius: 5px; }
+
   .progress { position: fixed; bottom: 0; left: 0; height: 3px; background: var(--accent); transition: width 0.4s ease; z-index: 100; }
   .counter { position: fixed; bottom: 20px; right: 32px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-dim); z-index: 100; }
   .nav-hint { position: fixed; bottom: 20px; left: 32px; font-size: 0.8rem; color: #B8A898; z-index: 100; }
@@ -469,6 +471,12 @@
     0%, 100% { padding-top: 0; }
     50%       { padding-top: 7px; }
   }
+  @keyframes agent-walk {
+    0%   { left: 4%; }
+    80%  { left: 34%; }
+    90%  { left: 38%; }
+    100% { left: 34%; }
+  }
 </style>
 </head>
 <body>
@@ -539,7 +547,7 @@
      SLIDE 3 — M2 Concept: Plan Mode
 ══════════════════════════════════════════════ -->
 <div class="slide" data-index="3" style="position:relative;">
-  <h3>Mindset</h3>
+  <h3>Setting Context</h3>
   <h2>Plan Mode</h2>
   <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:14px;">
     <div class="arch-box">
@@ -593,7 +601,7 @@
      SLIDE 7 — M3: CLAUDE.md
 ══════════════════════════════════════════════ -->
 <div class="slide" data-index="4" id="slide-claudemd">
-  <h3>Memory</h3>
+  <h3>Setting Context</h3>
   <h2>CLAUDE.md — persistent project memory</h2>
   <div style="display:grid; grid-template-columns:1fr 1fr; gap:32px; margin-top:12px; height:calc(100vh - 200px); min-height:0;">
 
@@ -664,10 +672,45 @@ Never edit applied migration files.<br><br>
 </div>
 
 <!-- ══════════════════════════════════════════════
+     SLIDE — Claude is a grepper
+══════════════════════════════════════════════ -->
+<div class="slide" style="justify-content:flex-start; padding-top:44px;">
+  <h3>Setting Context</h3>
+  <h2 style="font-size:2rem; margin-bottom:6px;">Claude is a grepper</h2>
+  <p style="font-size:0.92rem; color:var(--text-dim); margin-bottom:18px; line-height:1.5;">When you ask a question, Claude searches and reads your files to figure out what's going on — no hand-holding needed.</p>
+  <div class="cols" style="gap:28px; align-items:stretch; flex:1; min-height:0;">
+    <!-- Terminal -->
+    <div class="col" style="display:flex; flex-direction:column; min-height:0;">
+      <div id="term-grepper" class="terminal" style="flex:1; overflow-y:auto; font-size:0.8rem; line-height:1.75;"></div>
+    </div>
+    <!-- File tree -->
+    <div class="col" style="display:flex; flex-direction:column; justify-content:center;">
+      <p style="font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); margin-bottom:10px;">payments-api/</p>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:0.8rem; line-height:2.15; color:var(--text-dim);">
+        <div id="tf-package" style="padding:0 8px; transition:color 0.25s, background 0.25s; border-radius:5px;">├── package.json</div>
+        <div id="tf-readme"  style="padding:0 8px; transition:color 0.25s, background 0.25s; border-radius:5px;">├── README.md</div>
+        <div id="tf-claude"  style="padding:0 8px; transition:color 0.25s, background 0.25s; border-radius:5px;">├── CLAUDE.md</div>
+        <div style="pointer-events:none;">├── apps/</div>
+        <div style="pointer-events:none;">│   ├── api/</div>
+        <div style="pointer-events:none;">│   │   └── src/</div>
+        <div id="tf-index"    style="padding:0 8px; transition:color 0.25s, background 0.25s; border-radius:5px;">│   │       ├── index.ts</div>
+        <div style="pointer-events:none;">│   │       └── routes/</div>
+        <div id="tf-payments" style="padding:0 8px; transition:color 0.25s, background 0.25s; border-radius:5px;">│   │           └── payments.ts</div>
+        <div style="pointer-events:none;">│   └── worker/</div>
+        <div id="tf-jobs"     style="padding:0 8px; transition:color 0.25s, background 0.25s; border-radius:5px;">│       └── jobs.ts</div>
+        <div style="pointer-events:none;">└── packages/</div>
+        <div style="pointer-events:none;">&nbsp;&nbsp;&nbsp;&nbsp;└── db/</div>
+        <div id="tf-schema"   style="padding:0 8px; transition:color 0.25s, background 0.25s; border-radius:5px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;└── schema.prisma</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
      SLIDE — Markdown memory files
 ══════════════════════════════════════════════ -->
 <div class="slide" style="justify-content:flex-start; padding-top:44px;">
-  <h3>Memory</h3>
+  <h3>Setting Context</h3>
   <h2 style="font-size:1.95rem; margin-bottom:8px;">Agents can write markdown to remember things too</h2>
   <p style="font-size:0.92rem; color:var(--text-dim); margin-bottom:18px; line-height:1.6;">When an agent discovers something useful mid-task, tell it to write the findings to a file. It can read them back next session — no re-analysis needed.</p>
   <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; flex:1; min-height:0; height:calc(100vh - 240px);">
@@ -690,6 +733,16 @@ Never edit applied migration files.<br><br>
   <h2>/rewind</h2>
   <p style="font-size:1.0rem; line-height:1.7; color:var(--text-dim); margin-bottom:14px;">Claude checkpoints as it works. If it goes sideways, <code style="font-family:'JetBrains Mono',monospace; font-size:0.88rem; background:var(--surface); padding:2px 8px; border-radius:4px;">/rewind</code> rolls back to any prior state — you don't lose the whole session, just the part that went wrong.</p>
   <div id="term-rewind" class="terminal" style="font-size:0.82rem; height:400px; width:100%;"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE — /resume
+══════════════════════════════════════════════ -->
+<div class="slide">
+  <h3>Commands</h3>
+  <h2>/resume</h2>
+  <p style="font-size:1.0rem; line-height:1.7; color:var(--text-dim); margin-bottom:14px;">Pick up any named session right where you left it — full context restored, no re-explaining needed. Pair with <code style="font-family:'JetBrains Mono',monospace; font-size:0.88rem; background:var(--surface); padding:2px 8px; border-radius:4px;">/rename</code> before clearing so the session is easy to find later.</p>
+  <div id="term-resume" class="terminal" style="font-size:0.82rem; height:400px; width:100%;"></div>
 </div>
 
 <!-- ══════════════════════════════════════════════
@@ -831,23 +884,112 @@ Never edit applied migration files.<br><br>
 </div>
 
 <!-- ══════════════════════════════════════════════
-     SLIDE 14 — /compact
+     SLIDE — /clear: 1 session vs 3 sessions
 ══════════════════════════════════════════════ -->
-<div class="slide" data-index="14">
+<div class="slide" style="justify-content:flex-start; padding-top:36px;">
   <h3>Context</h3>
-  <h2>/compact</h2>
-  <p style="font-size:1.05rem; line-height:1.7; color:var(--text-dim); margin-bottom:14px;">Add custom compaction instructions to tell Claude what to preserve during summarization.</p>
-  <div id="term-compact" class="terminal" style="font-size:0.82rem; height:400px; width:100%;"></div>
+  <h2 style="margin-bottom:6px;">One session vs separate sessions</h2>
+  <p style="font-size:0.9rem; color:var(--text-dim); margin-bottom:18px;">Context compounds. Every message re-sends the full history — using /clear between unrelated tasks keeps each session lean and cost predictable.</p>
+  <div class="cols" style="gap:32px; flex:1; min-height:0; align-items:stretch;">
+
+    <!-- LEFT: 1 session, 3 tasks -->
+    <div class="col" style="display:flex; flex-direction:column; gap:10px;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:2px;">
+        <div style="width:10px; height:10px; border-radius:50%; background:var(--red); flex-shrink:0;"></div>
+        <p style="font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--red); margin:0;">1 terminal &mdash; 3 tasks</p>
+      </div>
+      <div style="display:flex; justify-content:center; margin-bottom:2px;">
+        <div style="background:#1A1108; border-radius:6px; padding:5px 16px; font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:#DA7756;">$ claude</div>
+      </div>
+      <div>
+        <p style="font-size:0.72rem; color:var(--text-dim); margin-bottom:4px; font-family:'JetBrains Mono',monospace;">turn 1 &mdash; task A</p>
+        <div class="ctx-bar-wrap" style="height:40px;">
+          <div class="ctx-segment" style="width:30%; background:#DA7756;">task A</div>
+          <div class="ctx-segment" style="width:70%; background:#E8E0D4; color:var(--text-dim);">70% free</div>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:0.72rem; color:var(--text-dim); margin-bottom:4px; font-family:'JetBrains Mono',monospace;">turn 2 &mdash; task B (A still in context)</p>
+        <div class="ctx-bar-wrap" style="height:40px;">
+          <div class="ctx-segment" style="width:30%; background:#DA7756; opacity:0.6;">A</div>
+          <div class="ctx-segment" style="width:30%; background:#C0392B;">task B</div>
+          <div class="ctx-segment" style="width:40%; background:#E8E0D4; color:var(--text-dim);">40% free</div>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:0.72rem; color:var(--text-dim); margin-bottom:4px; font-family:'JetBrains Mono',monospace;">turn 3 &mdash; task C (A + B still in context)</p>
+        <div class="ctx-bar-wrap" style="height:40px;">
+          <div class="ctx-segment" style="width:30%; background:#DA7756; opacity:0.55;">A</div>
+          <div class="ctx-segment" style="width:30%; background:#C0392B; opacity:0.7;">B</div>
+          <div class="ctx-segment" style="width:30%; background:#C0392B;">task C</div>
+          <div class="ctx-segment" style="width:10%; background:#FDECEA; color:#C0392B; font-size:0.62rem;">10%</div>
+        </div>
+      </div>
+      <div style="margin-top:auto; background:rgba(192,57,43,0.08); border:1.5px solid rgba(192,57,43,0.25); border-radius:8px; padding:10px 14px;">
+        <p style="font-size:0.82rem; font-weight:700; color:var(--red); margin-bottom:3px;">Cost = A + (A+B) + (A+B+C)</p>
+        <p style="font-size:0.78rem; color:var(--text-dim);">Every new message re-sends tasks A and B. You pay for context you no longer need.</p>
+      </div>
+    </div>
+
+    <!-- RIGHT: 3 sessions, 1 task each -->
+    <div class="col" style="display:flex; flex-direction:column; gap:10px;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:2px;">
+        <div style="width:10px; height:10px; border-radius:50%; background:var(--green); flex-shrink:0;"></div>
+        <p style="font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--green); margin:0;">3 terminals &mdash; 1 task each (/clear between)</p>
+      </div>
+      <div style="display:flex; justify-content:center; gap:8px; margin-bottom:2px;">
+        <div style="background:#1A1108; border-radius:6px; padding:5px 10px; font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:#2D8B56;">$ claude</div>
+        <div style="background:#1A1108; border-radius:6px; padding:5px 10px; font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:#2D8B56;">$ claude</div>
+        <div style="background:#1A1108; border-radius:6px; padding:5px 10px; font-family:'JetBrains Mono',monospace; font-size:0.65rem; color:#2D8B56;">$ claude</div>
+      </div>
+      <div>
+        <p style="font-size:0.72rem; color:var(--text-dim); margin-bottom:4px; font-family:'JetBrains Mono',monospace;">session 1 &mdash; task A only</p>
+        <div class="ctx-bar-wrap" style="height:40px;">
+          <div class="ctx-segment" style="width:30%; background:#2D8B56;">task A</div>
+          <div class="ctx-segment" style="width:70%; background:#E5F2EB; color:#2D8B56; font-weight:700;">70% free</div>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:0.72rem; color:var(--text-dim); margin-bottom:4px; font-family:'JetBrains Mono',monospace;">session 2 &mdash; task B only</p>
+        <div class="ctx-bar-wrap" style="height:40px;">
+          <div class="ctx-segment" style="width:30%; background:#2D8B56;">task B</div>
+          <div class="ctx-segment" style="width:70%; background:#E5F2EB; color:#2D8B56; font-weight:700;">70% free</div>
+        </div>
+      </div>
+      <div>
+        <p style="font-size:0.72rem; color:var(--text-dim); margin-bottom:4px; font-family:'JetBrains Mono',monospace;">session 3 &mdash; task C only</p>
+        <div class="ctx-bar-wrap" style="height:40px;">
+          <div class="ctx-segment" style="width:30%; background:#2D8B56;">task C</div>
+          <div class="ctx-segment" style="width:70%; background:#E5F2EB; color:#2D8B56; font-weight:700;">70% free</div>
+        </div>
+      </div>
+      <div style="margin-top:auto; background:rgba(45,139,86,0.08); border:1.5px solid rgba(45,139,86,0.3); border-radius:8px; padding:10px 14px;">
+        <p style="font-size:0.82rem; font-weight:700; color:var(--green); margin-bottom:3px;">Cost = A + B + C</p>
+        <p style="font-size:0.78rem; color:var(--text-dim);">Each session starts fresh. No stale history means no wasted tokens.</p>
+      </div>
+    </div>
+
+  </div>
 </div>
 
 <!-- ══════════════════════════════════════════════
-     SLIDE 15 — /cost + /context
+     SLIDE — /cost + /context
 ══════════════════════════════════════════════ -->
 <div class="slide" data-index="15">
   <h3>Context</h3>
   <h2>/cost &amp; /context</h2>
   <p style="font-size:1.05rem; line-height:1.7; color:var(--text-dim); margin-bottom:14px;">Use /cost regularly to anticipate compaction and maintain control over your token budget. The status bar warns you at 80% that automatic compaction is approaching.</p>
   <div id="term-costctx" class="terminal" style="font-size:0.82rem; height:400px; width:100%;"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE — /compact
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="14">
+  <h3>Context</h3>
+  <h2>/compact</h2>
+  <p style="font-size:1.05rem; line-height:1.7; color:var(--text-dim); margin-bottom:14px;">Add custom compaction instructions to tell Claude what to preserve during summarization.</p>
+  <div id="term-compact" class="terminal" style="font-size:0.82rem; height:400px; width:100%;"></div>
 </div>
 
 <!-- ══════════════════════════════════════════════
@@ -913,210 +1055,6 @@ Never edit applied migration files.<br><br>
         • Pre-submit checklist
       </div>
     </div>
-  </div>
-</div>
-
-
-<!-- ══════════════════════════════════════════════
-     SLIDE 17 — Orchestrating Agents with CLAUDE.md
-══════════════════════════════════════════════ -->
-<div class="slide" data-index="17" style="justify-content:flex-start; padding-top:44px;">
-  <h3>Advanced usage</h3>
-  <h2 style="font-size:1.95rem; margin-bottom:20px;">Orchestrating agents with CLAUDE.md</h2>
-  <div class="cols" style="gap:32px; align-items:stretch;">
-    <div class="col">
-      <p style="font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); margin-bottom:8px;">.claude/CLAUDE.md</p>
-      <div class="terminal" style="font-size:0.82rem; line-height:1.85; flex:1;">
-        <span class="warn">## Agent Roles</span><br>
-        <span class="dim"># Planner — reads PVR, writes test_plan.md</span><br>
-        <span class="dim"># Coder   — generates .casm from plan</span><br>
-        <span class="dim"># Debug   — fixes dvsim failures</span><br>
-        <span class="dim"># Critic  — gates on style + correctness</span><br><br>
-        <span class="warn">## Workflow</span><br>
-        <span style="color:#DA7756; font-weight:700;">1.</span> Invoke <span style="color:#DA7756;">`/directed-test-migration-agent`</span><br>
-        <span style="color:#4A7FB5; font-weight:700;">2.</span> Planner reads PVR → <span style="color:#4A7FB5;">test_plan.md</span><br>
-        <span style="color:#7B5EA7; font-weight:700;">3.</span> Coder runs <span style="color:#7B5EA7;">per-PVR in parallel</span><br>
-        <span style="color:#C0392B; font-weight:700;">4.</span> dvsim gate → <span style="color:#C0392B;">Debug on FAIL</span><br>
-        <span style="color:#2D8B56; font-weight:700;">5.</span> Critic approves → <span style="color:#2D8B56;">directed_tests/</span>
-      </div>
-    </div>
-    <div class="col" style="display:flex; flex-direction:column; gap:8px; justify-content:center;">
-      <div style="background:rgba(218,119,86,0.1); border:1.5px solid rgba(218,119,86,0.35); border-radius:8px; padding:11px 14px; display:flex; align-items:center; gap:10px;">
-        <span style="font-size:1.1rem; font-weight:800; color:#DA7756; min-width:20px;">1</span>
-        <p style="font-size:0.88rem; color:var(--text-dim); line-height:1.5;">Skill invocation kicks off the orchestrator — no manual wiring needed</p>
-      </div>
-      <div style="background:rgba(74,127,181,0.1); border:1.5px solid rgba(74,127,181,0.3); border-radius:8px; padding:11px 14px; display:flex; align-items:center; gap:10px;">
-        <span style="font-size:1.1rem; font-weight:800; color:#4A7FB5; min-width:20px;">2</span>
-        <p style="font-size:0.88rem; color:var(--text-dim); line-height:1.5;">Planner uses <span style="font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:#4A7FB5;">dv-reference</span> skill to produce a grounded test plan</p>
-      </div>
-      <div style="background:rgba(123,94,167,0.1); border:1.5px solid rgba(123,94,167,0.3); border-radius:8px; padding:11px 14px; display:flex; align-items:center; gap:10px;">
-        <span style="font-size:1.1rem; font-weight:800; color:#7B5EA7; min-width:20px;">3</span>
-        <p style="font-size:0.88rem; color:var(--text-dim); line-height:1.5;">One Coder agent spawned per PVR — all run simultaneously</p>
-      </div>
-      <div style="background:rgba(192,57,43,0.08); border:1.5px solid rgba(192,57,43,0.25); border-radius:8px; padding:11px 14px; display:flex; align-items:center; gap:10px;">
-        <span style="font-size:1.1rem; font-weight:800; color:#C0392B; min-width:20px;">4</span>
-        <p style="font-size:0.88rem; color:var(--text-dim); line-height:1.5;">dvsim output gates the loop — Debug agent retries automatically on FAIL</p>
-      </div>
-      <div style="background:rgba(45,139,86,0.1); border:1.5px solid rgba(45,139,86,0.3); border-radius:8px; padding:11px 14px; display:flex; align-items:center; gap:10px;">
-        <span style="font-size:1.1rem; font-weight:800; color:#2D8B56; min-width:20px;">5</span>
-        <p style="font-size:0.88rem; color:var(--text-dim); line-height:1.5;">Critic reviews style + correctness before writing to <span style="font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:#2D8B56;">directed_tests/</span></p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════
-     SLIDE — Task Tool
-══════════════════════════════════════════════ -->
-<div class="slide" style="justify-content:center; align-items:center; text-align:center;">
-  <h3>Commands</h3>
-  <h1 style="font-size:5rem; font-weight:700; letter-spacing:-0.04em; margin-bottom:20px;">Task Tool</h1>
-  <p style="font-size:1.2rem; color:var(--text-dim); max-width:560px; margin:0 auto; line-height:1.7;">Tell Claude to use the task tool. It breaks the work into trackable steps and checks them off as it goes.</p>
-</div>
-
-<!-- ══════════════════════════════════════════════
-     SLIDE — Task Tool demo
-══════════════════════════════════════════════ -->
-<div class="slide" style="justify-content:flex-start; padding-top:40px; position:relative;">
-  <h3>Commands</h3>
-  <h2 style="margin-bottom:14px;">Task Tool</h2>
-  <div id="term-tasktool" class="terminal" style="font-size:0.82rem; flex:1; min-height:0; width:100%;"></div>
-
-  <!-- Task panel popup -->
-  <div id="task-panel" style="display:none; position:absolute; bottom:52px; left:50%; transform:translateX(-50%); width:min(760px,86%); background:#0d1117; border:1px solid #30363d; border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:0.84rem; padding:18px 22px; box-shadow:0 8px 40px rgba(0,0,0,0.7); z-index:100; line-height:1.8;">
-    <div><span style="color:#DA7756;">✻ Whirlpooling...</span> <span style="color:#6e7681; font-size:0.74rem;">(esc to interrupt · ctrl+t to hide tasks · thought for 2s)</span></div>
-    <div style="color:#6e7681; padding-left:2px;">  └</div>
-    <div style="padding-left:8px; display:flex; flex-direction:column; gap:2px;">
-      <div style="color:#e6edf3;">□ #1 &nbsp;Initialize project and install dependencies</div>
-      <div style="color:#e6edf3;">□ #2 &nbsp;Configure database connection</div>
-      <div style="color:#e6edf3;">□ #3 &nbsp;Create User model and schema</div>
-      <div style="color:#e6edf3;">□ #4 &nbsp;Implement password hashing and JWT utilities</div>
-      <div style="color:#e6edf3;">□ #5 &nbsp;Build auth routes (register/login/logout)</div>
-      <div style="color:#e6edf3;">□ #6 &nbsp;Create authentication middleware</div>
-      <div style="color:#e6edf3;">□ #7 &nbsp;Add protected user routes</div>
-      <div style="color:#e6edf3;">□ #8 &nbsp;Write tests for authentication flow</div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════════════
-     SLIDE 18 — Directed Testing Agent Workflow
-══════════════════════════════════════════════ -->
-<div class="slide" data-index="18" style="justify-content:flex-start; padding-top:40px; padding-bottom:40px;">
-  <h3>Skills in action</h3>
-  <h2 style="font-size:1.9rem; margin-bottom:16px;">Directed test migration — agent workflow</h2>
-  <div style="display:grid; grid-template-columns:1fr 260px; gap:28px; flex:1; min-height:0; align-items:stretch;">
-
-    <!-- Agent flow diagram -->
-    <div style="display:flex; align-items:stretch;">
-      <svg viewBox="0 0 680 470" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;">
-        <defs>
-          <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
-            <path d="M0,0 L0,7 L9,3.5 z" fill="#6B5D4F"/>
-          </marker>
-          <marker id="arr-red" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
-            <path d="M0,0 L0,7 L9,3.5 z" fill="#C0392B"/>
-          </marker>
-        </defs>
-
-        <!-- User -->
-        <rect x="28" y="22" width="90" height="40" rx="8" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.5"/>
-        <text x="73" y="47" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" fill="#1A1108">User</text>
-
-        <!-- Arrow User → Orchestrator -->
-        <line x1="118" y1="42" x2="164" y2="42" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
-
-        <!-- Orchestrator -->
-        <rect x="164" y="22" width="140" height="40" rx="8" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.5"/>
-        <text x="234" y="47" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" fill="#1A1108">Orchestrator</text>
-
-        <!-- Arrow Orchestrator → Planner -->
-        <line x1="234" y1="62" x2="234" y2="98" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
-
-        <!-- Agent 1: Planner -->
-        <rect x="168" y="98" width="132" height="58" rx="10" fill="#EBF2FF" stroke="#4A7FB5" stroke-width="2.5"/>
-        <text x="234" y="120" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#4A7FB5">AGENT 1</text>
-        <text x="234" y="142" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#1A1108">Planner</text>
-
-        <!-- Arrow Planner → parallel zone, with label -->
-        <line x1="234" y1="156" x2="234" y2="192" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
-        <text x="242" y="178" font-family="DM Sans,sans-serif" font-size="11" font-style="italic" fill="#6B5D4F">test_plan.md</text>
-
-        <!-- Diagonal arrow into Coder -->
-        <line x1="234" y1="192" x2="130" y2="232" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
-
-        <!-- Parallel zone border -->
-        <rect x="14" y="200" width="652" height="222" rx="10" fill="none" stroke="#C4B0A0" stroke-width="1.5" stroke-dasharray="6,4"/>
-        <text x="26" y="220" font-family="DM Sans,sans-serif" font-size="11" font-weight="600" fill="#8A7A6A" letter-spacing="1.5">PER PVR // PARALLEL</text>
-
-        <!-- Agent 2: Coder -->
-        <rect x="22" y="232" width="108" height="58" rx="10" fill="#EBF2FF" stroke="#4A7FB5" stroke-width="2.5"/>
-        <text x="76" y="254" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#4A7FB5">AGENT 2</text>
-        <text x="76" y="276" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#1A1108">Coder</text>
-
-        <!-- Coder → dvsim -->
-        <line x1="130" y1="261" x2="188" y2="261" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
-        <ellipse cx="232" cy="261" rx="44" ry="28" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.5"/>
-        <text x="232" y="266" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" fill="#1A1108">dvsim</text>
-
-        <!-- dvsim → PASS → Critic -->
-        <line x1="276" y1="261" x2="338" y2="261" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
-        <rect x="287" y="248" width="40" height="20" rx="10" fill="#E5F2EB" stroke="#2D8B56" stroke-width="1.5"/>
-        <text x="307" y="262" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#2D8B56">PASS</text>
-
-        <!-- Agent 3: Critic -->
-        <rect x="338" y="232" width="108" height="58" rx="10" fill="#EBF2FF" stroke="#4A7FB5" stroke-width="2.5"/>
-        <text x="392" y="254" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#4A7FB5">AGENT 3</text>
-        <text x="392" y="276" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#1A1108">Critic</text>
-
-        <!-- Critic → PASS → directed_tests/ -->
-        <line x1="446" y1="261" x2="504" y2="261" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
-        <rect x="455" y="248" width="40" height="20" rx="10" fill="#E5F2EB" stroke="#2D8B56" stroke-width="1.5"/>
-        <text x="475" y="262" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#2D8B56">PASS</text>
-        <rect x="504" y="244" width="148" height="36" rx="8" fill="#E5F2EB" stroke="#2D8B56" stroke-width="1.5"/>
-        <text x="578" y="267" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="600" fill="#2D8B56">directed_tests/</text>
-
-        <!-- dvsim FAIL → Debug -->
-        <line x1="232" y1="289" x2="232" y2="336" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
-        <rect x="196" y="296" width="40" height="20" rx="10" fill="#FDECEA" stroke="#C0392B" stroke-width="1.5"/>
-        <text x="216" y="310" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#C0392B">FAIL</text>
-
-        <!-- Agent 2.5: Debug -->
-        <rect x="168" y="336" width="128" height="58" rx="10" fill="#FFF8E8" stroke="#DA7756" stroke-width="2.5"/>
-        <text x="232" y="358" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#DA7756">AGENT 2.5</text>
-        <text x="232" y="380" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#1A1108">Debug</text>
-
-        <!-- Debug dashed back to Coder -->
-        <path d="M168 365 L76 365 L76 290" stroke="#C0392B" stroke-width="2" stroke-dasharray="6,4" fill="none" marker-end="url(#arr-red)"/>
-
-        <!-- Critic FAIL dashed back to Coder -->
-        <path d="M392 290 L392 406 L76 406 L76 290" stroke="#C0392B" stroke-width="2" stroke-dasharray="6,4" fill="none" marker-end="url(#arr-red)"/>
-        <rect x="348" y="290" width="40" height="20" rx="10" fill="#FDECEA" stroke="#C0392B" stroke-width="1.5"/>
-        <text x="368" y="304" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#C0392B">FAIL</text>
-
-        <!-- Summary Report -->
-        <line x1="392" y1="416" x2="392" y2="448" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
-        <text x="392" y="464" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" fill="#6B5D4F">Summary Report</text>
-      </svg>
-    </div>
-
-    <!-- Right panel: skills -->
-    <div style="display:flex; flex-direction:column; gap:14px; justify-content:center;">
-      <div style="background:white; border:1px solid var(--border); border-radius:10px; padding:16px 18px;">
-        <p style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--accent); margin-bottom:12px;">cerebras/skills</p>
-        <div style="display:flex; flex-direction:column; gap:12px;">
-          <div style="background:var(--surface); border-radius:8px; padding:12px 14px;">
-            <p style="font-size:0.85rem; font-weight:700; color:var(--blue); font-family:'JetBrains Mono',monospace; margin-bottom:6px;">dv-reference</p>
-            <p style="font-size:0.83rem; color:var(--text-dim); line-height:1.55;">Gives the Planner CASM conventions, PVR-to-CASM mappings, and task/queue config reference so the plan is grounded in DV standards.</p>
-          </div>
-          <div style="background:var(--surface); border-radius:8px; padding:12px 14px;">
-            <p style="font-size:0.85rem; font-weight:700; color:var(--blue); font-family:'JetBrains Mono',monospace; margin-bottom:6px;">directed-test-migration-agent</p>
-            <p style="font-size:0.83rem; color:var(--text-dim); line-height:1.55;">Orchestrates the full loop — spawns Coder, Debug, and Critic sub-agents, runs dvsim, and gates on PASS/FAIL.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </div>
 </div>
 
@@ -1359,6 +1297,391 @@ Never edit applied migration files.<br><br>
   </div>
 </div>
 
+
+<!-- ══════════════════════════════════════════════
+     SLIDE — Agent needs context + validation
+══════════════════════════════════════════════ -->
+<div class="slide" style="justify-content:flex-start; padding-top:44px;">
+  <h3>Agents</h3>
+  <h2 style="margin-bottom:10px;">Agent needs context + validation</h2>
+  <p style="font-size:0.95rem; color:var(--text-dim); margin-bottom:0; max-width:720px;">You need to give enough information for the agent to understand what it is doing. You also need a way for the agent to check its own work.</p>
+
+  <!-- Scene: mascot runs toward simfabric wall -->
+  <div style="flex:1; position:relative; overflow:hidden; min-height:0; margin-top:8px;">
+
+    <!-- Ground line -->
+    <div style="position:absolute; bottom:110px; left:0; right:0; height:2px; background:var(--border);"></div>
+
+    <!-- Wall (simfabric) -->
+    <div style="position:absolute; bottom:110px; left:44%; width:3px; height:280px; background:var(--text);"></div>
+
+    <!-- simfabric label -->
+    <div style="position:absolute; bottom:72px; left:44%; transform:translateX(-50%); text-align:center; font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--text); line-height:1.6;">↑<br>simfabric</div>
+
+    <!-- Goal flag -->
+    <div style="position:absolute; bottom:112px; left:76%; font-size:1.8rem; line-height:1; color:var(--green);">⚑</div>
+    <div style="position:absolute; bottom:72px; left:76%; transform:translateX(-50%); text-align:center; font-family:'JetBrains Mono',monospace; font-size:0.72rem; color:var(--green); line-height:1.6;">↑<br>goal</div>
+
+    <!-- Animated mascot -->
+    <div style="position:absolute; bottom:112px; left:4%; color:var(--accent); font-family:'JetBrains Mono',monospace; font-size:1.1rem; white-space:pre; line-height:1.3; animation:agent-walk 3.8s ease-in-out infinite alternate, walk-bob 1.2s ease-in-out infinite;">  ▐▛███▜▌
+ ▝▜█████▛▘
+  <span style="color:var(--text-dim);"> ▘▘  ▝▝</span></div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 17 — Orchestrating Agents with CLAUDE.md
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="17" style="justify-content:flex-start; padding-top:44px;">
+  <h3>Advanced usage</h3>
+  <h2 style="font-size:1.95rem; margin-bottom:20px;">Orchestrating agents with CLAUDE.md</h2>
+  <div class="cols" style="gap:32px; align-items:stretch;">
+    <div class="col">
+      <p style="font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); margin-bottom:8px;">.claude/CLAUDE.md</p>
+      <div class="terminal" style="font-size:0.82rem; line-height:1.85; flex:1;">
+        <span class="warn">## Agent Roles</span><br>
+        <span class="dim"># Planner — reads PVR, writes test_plan.md</span><br>
+        <span class="dim"># Coder   — generates .casm from plan</span><br>
+        <span class="dim"># Debug   — fixes dvsim failures</span><br>
+        <span class="dim"># Critic  — gates on style + correctness</span><br><br>
+        <span class="warn">## Workflow</span><br>
+        <span style="color:#DA7756; font-weight:700;">1.</span> <span class="dim">Invoke</span> <span style="color:#DA7756;">`/directed-test-migration-agent`</span> <span class="dim">to kick off the pipeline.</span><br>
+        <span style="color:#4A7FB5; font-weight:700;">2.</span> <span class="dim">Planner reads the PVR spec and writes a structured</span> <span style="color:#4A7FB5;">test_plan.md</span><span class="dim">.</span><br>
+        <span style="color:#7B5EA7; font-weight:700;">3.</span> <span class="dim">Coder generates</span> <span style="color:#7B5EA7;">.casm</span> <span class="dim">files per PVR, all running in parallel.</span><br>
+        <span style="color:#C0392B; font-weight:700;">4.</span> <span class="dim">dvsim runs the simulation —</span> <span style="color:#C0392B;">FAIL</span> <span class="dim">triggers Debug to fix and retry.</span><br>
+        <span style="color:#2D8B56; font-weight:700;">5.</span> <span class="dim">Critic checks style and correctness, then commits to</span> <span style="color:#2D8B56;">directed_tests/</span><span class="dim">.</span>
+      </div>
+    </div>
+    <div class="col" style="display:flex; align-items:center; justify-content:center;">
+      <svg viewBox="0 0 300 390" xmlns="http://www.w3.org/2000/svg" style="width:auto; height:100%; max-height:340px; max-width:100%;">
+        <defs>
+          <marker id="oa" markerWidth="8" markerHeight="7" refX="6" refY="3.5" orient="auto">
+            <path d="M0,0 L0,7 L8,3.5 z" fill="#A09080"/>
+          </marker>
+          <marker id="oa-r" markerWidth="8" markerHeight="7" refX="6" refY="3.5" orient="auto">
+            <path d="M0,0 L0,7 L8,3.5 z" fill="#C0392B"/>
+          </marker>
+          <marker id="oa-g" markerWidth="8" markerHeight="7" refX="6" refY="3.5" orient="auto">
+            <path d="M0,0 L0,7 L8,3.5 z" fill="#2D8B56"/>
+          </marker>
+        </defs>
+
+        <!-- Coder -->
+        <rect x="85" y="10" width="130" height="42" rx="8" fill="#F2EDF8" stroke="#7B5EA7" stroke-width="2"/>
+        <text x="150" y="29" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" font-weight="700" fill="#7B5EA7">Coder</text>
+        <text x="150" y="45" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#8A7A6A">per PVR · parallel</text>
+
+        <!-- Arrow → dvsim -->
+        <line x1="150" y1="52" x2="150" y2="78" stroke="#A09080" stroke-width="1.5" marker-end="url(#oa)"/>
+
+        <!-- dvsim — THE GATE (prominent rect) -->
+        <rect x="30" y="78" width="240" height="58" rx="10" fill="rgba(218,119,86,0.1)" stroke="#DA7756" stroke-width="2.5"/>
+        <text x="150" y="103" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="20" font-weight="900" fill="#DA7756">dvsim</text>
+        <text x="150" y="122" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" fill="#A09080">simulation gate</text>
+
+        <!-- Branch stem down from dvsim -->
+        <line x1="150" y1="136" x2="150" y2="158" stroke="#A09080" stroke-width="1.5"/>
+        <!-- Branch horizontal -->
+        <line x1="72" y1="158" x2="228" y2="158" stroke="#A09080" stroke-width="1.5"/>
+
+        <!-- FAIL arrow down-left -->
+        <line x1="72" y1="158" x2="72" y2="210" stroke="#C0392B" stroke-width="1.5" marker-end="url(#oa-r)"/>
+        <text x="52" y="188" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" font-weight="700" fill="#C0392B">FAIL</text>
+
+        <!-- PASS arrow down-right -->
+        <line x1="228" y1="158" x2="228" y2="210" stroke="#2D8B56" stroke-width="1.5" marker-end="url(#oa-g)"/>
+        <text x="248" y="188" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" font-weight="700" fill="#2D8B56">PASS</text>
+
+        <!-- Debug box -->
+        <rect x="18" y="210" width="108" height="40" rx="8" fill="#FDF0EE" stroke="#C0392B" stroke-width="2"/>
+        <text x="72" y="234" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" font-weight="700" fill="#C0392B">Debug</text>
+
+        <!-- Critic box -->
+        <rect x="174" y="210" width="108" height="40" rx="8" fill="#EAF5EE" stroke="#2D8B56" stroke-width="2"/>
+        <text x="228" y="234" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" font-weight="700" fill="#2D8B56">Critic</text>
+
+        <!-- Debug → loops back to Coder (dashed red, left side) -->
+        <path d="M 18 230 L 6 230 L 6 31 L 85 31" stroke="#C0392B" stroke-width="1.5" stroke-dasharray="4,3" fill="none" marker-end="url(#oa-r)"/>
+        <text x="2" y="148" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#C0392B" transform="rotate(-90,2,148)">fix &amp; retry</text>
+
+        <!-- Critic → directed_tests/ -->
+        <line x1="228" y1="250" x2="228" y2="294" stroke="#2D8B56" stroke-width="1.5" marker-end="url(#oa-g)"/>
+        <rect x="148" y="294" width="160" height="36" rx="8" fill="#EAF5EE" stroke="#2D8B56" stroke-width="2"/>
+        <text x="228" y="317" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="12" font-weight="600" fill="#2D8B56">directed_tests/</text>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE — Task Tool
+══════════════════════════════════════════════ -->
+<div class="slide">
+  <h3>Agents</h3>
+  <h2>Task Tool</h2>
+  <p style="font-size:1.05rem; line-height:1.7; color:var(--text-dim); margin-bottom:14px;">Tell Claude to use the task tool. A persistent task tracker stays pinned at the bottom of the terminal — tasks get checked off as Claude works through each step.</p>
+
+  <!-- Terminal wrapper with sticky task panel -->
+  <div style="display:flex; flex-direction:column; height:400px; background:#2B2318; border:1px solid #3D3226; border-radius:12px; margin-top:14px; overflow:hidden; font-family:'JetBrains Mono',monospace;">
+    <div id="term-tasktool" class="terminal" style="flex:1; min-height:0; overflow-y:auto; border:none; border-radius:0; margin:0; background:transparent; font-size:0.82rem;"></div>
+    <div id="task-status-panel" style="display:none; border-top:1px solid #3D3226; padding:10px 20px 12px; background:#1f1c14; flex-shrink:0; font-family:'JetBrains Mono',monospace; font-size:0.78rem; line-height:1.65; color:#e6edf3;">
+      <div style="color:#6e7681; font-size:0.7rem; margin-bottom:5px; text-transform:uppercase; letter-spacing:0.06em;">Tasks (8)</div>
+      <div id="task-item-1">□ #1 &nbsp;Initialize project and install dependencies</div>
+      <div id="task-item-2">□ #2 &nbsp;Configure database connection</div>
+      <div id="task-item-3">□ #3 &nbsp;Create User model and schema</div>
+      <div id="task-item-4">□ #4 &nbsp;Implement password hashing and JWT utilities</div>
+      <div id="task-item-5">□ #5 &nbsp;Build auth routes (register/login/logout)</div>
+      <div id="task-item-6">□ #6 &nbsp;Create authentication middleware</div>
+      <div id="task-item-7">□ #7 &nbsp;Add protected user routes</div>
+      <div id="task-item-8">□ #8 &nbsp;Write tests for authentication flow</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 18 — Directed Testing Agent Workflow
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="18" style="justify-content:flex-start; padding-top:40px; padding-bottom:40px;">
+  <h3>Agents in practice</h3>
+  <h2 style="font-size:1.9rem; margin-bottom:16px;">Directed test migration</h2>
+  <div style="display:grid; grid-template-columns:1fr 260px; gap:28px; flex:1; min-height:0; align-items:stretch;">
+
+    <!-- Agent flow diagram -->
+    <div style="display:flex; align-items:stretch;">
+      <svg viewBox="0 0 680 470" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;">
+        <defs>
+          <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+            <path d="M0,0 L0,7 L9,3.5 z" fill="#6B5D4F"/>
+          </marker>
+          <marker id="arr-red" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+            <path d="M0,0 L0,7 L9,3.5 z" fill="#C0392B"/>
+          </marker>
+        </defs>
+
+        <!-- Claude mascot -->
+        <foreignObject x="180" y="2" width="108" height="68">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="font-family:'JetBrains Mono',monospace; font-size:8px; line-height:1.25; color:#DA7756; white-space:pre; text-align:center;">  ▐▛███▜▌
+ ▝▜█████▛▘
+   ▘▘ ▝▝</div>
+        </foreignObject>
+
+        <!-- Arrow Claude → Planner -->
+        <line x1="234" y1="62" x2="234" y2="98" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
+
+        <!-- Agent 1: Planner -->
+        <rect x="168" y="98" width="132" height="58" rx="10" fill="#EBF2FF" stroke="#4A7FB5" stroke-width="2.5"/>
+        <text x="234" y="120" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#4A7FB5">AGENT 1</text>
+        <text x="234" y="142" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#1A1108">Planner</text>
+
+        <!-- Arrow Planner → parallel zone, with label -->
+        <line x1="234" y1="156" x2="234" y2="192" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
+        <text x="242" y="178" font-family="DM Sans,sans-serif" font-size="11" font-style="italic" fill="#6B5D4F">test_plan.md</text>
+
+        <!-- Diagonal arrow into Coder -->
+        <line x1="234" y1="192" x2="130" y2="232" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
+
+        <!-- Parallel zone border -->
+        <rect x="14" y="200" width="652" height="222" rx="10" fill="none" stroke="#C4B0A0" stroke-width="1.5" stroke-dasharray="6,4"/>
+        <text x="26" y="220" font-family="DM Sans,sans-serif" font-size="11" font-weight="600" fill="#8A7A6A" letter-spacing="1.5">PER PVR // PARALLEL</text>
+
+        <!-- Agent 2: Coder -->
+        <rect x="22" y="232" width="108" height="58" rx="10" fill="#EBF2FF" stroke="#4A7FB5" stroke-width="2.5"/>
+        <text x="76" y="254" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#4A7FB5">AGENT 2</text>
+        <text x="76" y="276" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#1A1108">Coder</text>
+
+        <!-- Coder → dvsim -->
+        <line x1="130" y1="261" x2="188" y2="261" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
+        <ellipse cx="232" cy="261" rx="44" ry="28" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.5"/>
+        <text x="232" y="266" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" fill="#1A1108">dvsim</text>
+
+        <!-- dvsim → PASS → Critic -->
+        <line x1="276" y1="261" x2="338" y2="261" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
+        <rect x="287" y="248" width="40" height="20" rx="10" fill="#E5F2EB" stroke="#2D8B56" stroke-width="1.5"/>
+        <text x="307" y="262" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#2D8B56">PASS</text>
+
+        <!-- Agent 3: Critic -->
+        <rect x="338" y="232" width="108" height="58" rx="10" fill="#EBF2FF" stroke="#4A7FB5" stroke-width="2.5"/>
+        <text x="392" y="254" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#4A7FB5">AGENT 3</text>
+        <text x="392" y="276" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#1A1108">Critic</text>
+
+        <!-- Critic → PASS → directed_tests/ -->
+        <line x1="446" y1="261" x2="504" y2="261" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
+        <rect x="455" y="248" width="40" height="20" rx="10" fill="#E5F2EB" stroke="#2D8B56" stroke-width="1.5"/>
+        <text x="475" y="262" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#2D8B56">PASS</text>
+        <rect x="504" y="244" width="148" height="36" rx="8" fill="#E5F2EB" stroke="#2D8B56" stroke-width="1.5"/>
+        <text x="578" y="267" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="600" fill="#2D8B56">directed_tests/</text>
+
+        <!-- dvsim FAIL → Debug -->
+        <line x1="232" y1="289" x2="232" y2="336" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
+        <rect x="196" y="296" width="40" height="20" rx="10" fill="#FDECEA" stroke="#C0392B" stroke-width="1.5"/>
+        <text x="216" y="310" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#C0392B">FAIL</text>
+
+        <!-- Agent 2.5: Debug -->
+        <rect x="168" y="336" width="128" height="58" rx="10" fill="#FFF8E8" stroke="#DA7756" stroke-width="2.5"/>
+        <text x="232" y="358" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#DA7756">AGENT 2.5</text>
+        <text x="232" y="380" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#1A1108">Debug</text>
+
+        <!-- Debug dashed back to Coder -->
+        <path d="M168 365 L76 365 L76 290" stroke="#C0392B" stroke-width="2" stroke-dasharray="6,4" fill="none" marker-end="url(#arr-red)"/>
+
+        <!-- Critic FAIL dashed back to Coder -->
+        <path d="M392 290 L392 406 L76 406 L76 290" stroke="#C0392B" stroke-width="2" stroke-dasharray="6,4" fill="none" marker-end="url(#arr-red)"/>
+        <rect x="348" y="290" width="40" height="20" rx="10" fill="#FDECEA" stroke="#C0392B" stroke-width="1.5"/>
+        <text x="368" y="304" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#C0392B">FAIL</text>
+
+        <!-- Summary Report -->
+        <line x1="392" y1="416" x2="392" y2="448" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
+        <text x="392" y="464" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" fill="#6B5D4F">Summary Report</text>
+      </svg>
+    </div>
+
+    <!-- Right panel: skills -->
+    <div style="display:flex; flex-direction:column; gap:14px; justify-content:center;">
+      <div style="background:white; border:1px solid var(--border); border-radius:10px; padding:16px 18px;">
+        <p style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--accent); margin-bottom:12px;">cerebras/skills</p>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div style="background:var(--surface); border-radius:8px; padding:12px 14px;">
+            <p style="font-size:0.85rem; font-weight:700; color:var(--blue); font-family:'JetBrains Mono',monospace; margin-bottom:6px;">dv-reference</p>
+            <p style="font-size:0.83rem; color:var(--text-dim); line-height:1.55;">Gives the Planner CASM conventions, PVR-to-CASM mappings, and task/queue config reference so the plan is grounded in DV standards.</p>
+          </div>
+          <div style="background:var(--surface); border-radius:8px; padding:12px 14px;">
+            <p style="font-size:0.85rem; font-weight:700; color:var(--blue); font-family:'JetBrains Mono',monospace; margin-bottom:6px;">directed-test-migration-agent</p>
+            <p style="font-size:0.83rem; color:var(--text-dim); line-height:1.55;">Orchestrates the full loop — spawns Coder, Debug, and Critic sub-agents, runs dvsim, and gates on PASS/FAIL.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 19 — Kernel Trace Analysis
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="19" style="justify-content:flex-start; padding-top:40px; padding-bottom:40px;">
+  <h3>Agents in practice</h3>
+  <h2 style="font-size:1.9rem; margin-bottom:16px;">Kernel trace analysis</h2>
+  <div style="display:grid; grid-template-columns:1fr 260px; gap:28px; flex:1; min-height:0; align-items:stretch;">
+
+    <!-- Agent flow diagram -->
+    <div style="display:flex; align-items:stretch;">
+      <svg viewBox="0 0 680 470" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;">
+        <defs>
+          <marker id="arr-dt" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+            <path d="M0,0 L0,7 L9,3.5 z" fill="#6B5D4F"/>
+          </marker>
+          <marker id="arr-dt-red" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+            <path d="M0,0 L0,7 L9,3.5 z" fill="#C0392B"/>
+          </marker>
+          <marker id="arr-dt-green" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+            <path d="M0,0 L0,7 L9,3.5 z" fill="#2D8B56"/>
+          </marker>
+        </defs>
+
+        <!-- Claude mascot -->
+        <foreignObject x="180" y="2" width="108" height="68">
+          <div xmlns="http://www.w3.org/1999/xhtml" style="font-family:'JetBrains Mono',monospace; font-size:8px; line-height:1.25; color:#DA7756; white-space:pre; text-align:center;">  ▐▛███▜▌
+ ▝▜█████▛▘
+   ▘▘ ▝▝</div>
+        </foreignObject>
+
+        <!-- Arrow Claude → Phase 1 -->
+        <line x1="234" y1="62" x2="234" y2="98" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr-dt)"/>
+
+        <!-- Phase 1: Test Plan Writer -->
+        <rect x="158" y="98" width="152" height="58" rx="10" fill="#EBF2FF" stroke="#4A7FB5" stroke-width="2.5"/>
+        <text x="234" y="120" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#4A7FB5">PHASE 1</text>
+        <text x="234" y="142" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" font-weight="700" fill="#1A1108">Test Plan Writer</text>
+
+        <!-- Arrow Phase 1 → simfabric -->
+        <line x1="310" y1="127" x2="368" y2="127" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr-dt)"/>
+
+        <!-- simfabric -->
+        <ellipse cx="420" cy="127" rx="52" ry="28" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.5"/>
+        <text x="420" y="124" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#1A1108">cbrun +</text>
+        <text x="420" y="138" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="12" fill="#1A1108">simfabric</text>
+
+        <!-- Arrow simfabric output label -->
+        <line x1="420" y1="155" x2="420" y2="192" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr-dt)"/>
+        <text x="466" y="178" font-family="DM Sans,sans-serif" font-size="10" font-style="italic" fill="#6B5D4F">workdir/</text>
+
+        <!-- Phase 2: Trace Analyzer -->
+        <rect x="340" y="192" width="160" height="58" rx="10" fill="#EBF2FF" stroke="#4A7FB5" stroke-width="2.5"/>
+        <text x="420" y="214" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#4A7FB5">PHASE 2</text>
+        <text x="420" y="236" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#1A1108">Trace Analyzer</text>
+
+        <!-- quicktrace tool label -->
+        <text x="530" y="210" font-family="JetBrains Mono,monospace" font-size="9" fill="#8A7A6A">quicktrace.py</text>
+        <text x="530" y="224" font-family="JetBrains Mono,monospace" font-size="9" fill="#8A7A6A">cycle_breakdown</text>
+        <text x="530" y="238" font-family="JetBrains Mono,monospace" font-size="9" fill="#8A7A6A">trace_report.json</text>
+
+        <!-- Arrow Phase 2 → Phase 3 -->
+        <line x1="420" y1="250" x2="420" y2="286" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr-dt)"/>
+        <text x="466" y="274" font-family="DM Sans,sans-serif" font-size="10" font-style="italic" fill="#6B5D4F">annotated trace</text>
+
+        <!-- Phase 3: Gap Attribution -->
+        <rect x="340" y="286" width="160" height="58" rx="10" fill="#FFF8E8" stroke="#DA7756" stroke-width="2.5"/>
+        <text x="420" y="308" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#DA7756">PHASE 3</text>
+        <text x="420" y="330" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#1A1108">Gap Attribution</text>
+
+        <!-- Arrow Phase 3 → Report / Phase 4 -->
+        <line x1="340" y1="315" x2="268" y2="315" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr-dt)"/>
+
+        <!-- Phase 4: Report -->
+        <rect x="120" y="286" width="148" height="58" rx="10" fill="#EBF2FF" stroke="#4A7FB5" stroke-width="2.5"/>
+        <text x="194" y="308" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#4A7FB5">PHASE 4</text>
+        <text x="194" y="330" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#1A1108">Report Writer</text>
+
+        <!-- Report output -->
+        <line x1="194" y1="344" x2="194" y2="378" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr-dt)"/>
+        <rect x="118" y="378" width="152" height="32" rx="8" fill="#E5F2EB" stroke="#2D8B56" stroke-width="1.5"/>
+        <text x="194" y="399" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="11" font-weight="600" fill="#2D8B56">trace-analysis.md</text>
+
+        <!-- Arrow Phase 3 → Phase 5 (greyed) -->
+        <line x1="420" y1="344" x2="420" y2="378" stroke="#C4B0A0" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arr-dt)"/>
+
+        <!-- Phase 5: Fix Proposer (greyed out) -->
+        <rect x="340" y="378" width="160" height="58" rx="10" fill="#F0EDE8" stroke="#C4B0A0" stroke-width="1.5" opacity="0.55"/>
+        <text x="420" y="400" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#B0A090" opacity="0.55">PHASE 5</text>
+        <text x="420" y="422" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#8A7A6A" opacity="0.55">Fix Proposer</text>
+
+        <!-- Fix output → computeCycles() PR (greyed) -->
+        <line x1="500" y1="407" x2="560" y2="407" stroke="#C4B0A0" stroke-width="2" stroke-dasharray="5,3" opacity="0.55"/>
+        <rect x="560" y="390" width="108" height="36" rx="8" fill="#F0F0F0" stroke="#C4B0A0" stroke-width="1.5" opacity="0.55"/>
+        <text x="614" y="406" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600" fill="#B0A090" opacity="0.55">computeCycles()</text>
+        <text x="614" y="420" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="10" font-weight="600" fill="#B0A090" opacity="0.55">PR</text>
+
+        <!-- Validation loop (greyed) -->
+        <path d="M420 436 L420 458 L82 458 L82 127 L158 127" stroke="#C4B0A0" stroke-width="2" stroke-dasharray="6,4" fill="none" opacity="0.4"/>
+        <rect x="38" y="448" width="76" height="20" rx="10" fill="#F0F0F0" stroke="#C4B0A0" stroke-width="1.5" opacity="0.55"/>
+        <text x="76" y="462" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" font-weight="700" fill="#B0A090" opacity="0.55">VALIDATE</text>
+
+        <!-- (removed delta-t error label) -->
+
+      </svg>
+    </div>
+
+    <!-- Right panel: skills -->
+    <div style="display:flex; flex-direction:column; gap:14px; justify-content:center;">
+      <div style="background:white; border:1px solid var(--border); border-radius:10px; padding:16px 18px;">
+        <p style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--accent); margin-bottom:12px;">cerebras/skills</p>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div style="background:var(--surface); border-radius:8px; padding:12px 14px;">
+            <p style="font-size:0.85rem; font-weight:700; color:var(--blue); font-family:'JetBrains Mono',monospace; margin-bottom:6px;">ws-kernel-development</p>
+            <p style="font-size:0.83rem; color:var(--text-dim); line-height:1.55;">Provides the agent with kernel build commands, simfabric trace flags, quicktrace usage, and postbuild validation workflow.</p>
+          </div>
+          <div style="background:var(--surface); border-radius:8px; padding:12px 14px;">
+            <p style="font-size:0.85rem; font-weight:700; color:var(--blue); font-family:'JetBrains Mono',monospace; margin-bottom:6px;">ws-kernel-modules-reference</p>
+            <p style="font-size:0.83rem; color:var(--text-dim); line-height:1.55;">Maps kernel module structure — computeCycles() formulas, stream classes, cycle_breakdown fields — so the agent knows where to read and patch.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
 <!-- ══════════════════════════════════════════════
      SLIDE — Outro / find us on Slack
 ══════════════════════════════════════════════ -->
@@ -1393,7 +1716,17 @@ Never edit applied migration files.<br><br>
     <h3>Growth Team</h3>
     <h2 style="font-size:2.8rem; margin-bottom:16px;">Hit us up on Slack</h2>
     <p style="font-size:1.5rem; font-weight:600; color:var(--accent); font-family:'JetBrains Mono',monospace; margin-bottom:12px;">#growth-team</p>
-    <p style="font-size:1.05rem; color:var(--text-dim);">for help building agents</p>
+    <p style="font-size:1.05rem; color:var(--text-dim); margin-bottom:24px;">for help building agents</p>
+    <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+      <a href="https://cerebras.atlassian.net/wiki/spaces/DEVINFRA/pages/5459509249/Claude+Code+Handbook" target="_blank" style="display:inline-flex; align-items:center; gap:8px; background:var(--surface); border:1.5px solid var(--border); border-radius:8px; padding:10px 20px; font-size:0.95rem; font-weight:600; color:var(--text); text-decoration:none; transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Handbook
+      </a>
+      <a href="https://nnetx-my.sharepoint.com/:p:/r/personal/bala_shanabhag_cerebras_net/_layouts/15/Doc.aspx?sourcedoc=%7BA2FF095A-EC75-4F41-AFD4-A0452F0EBC26%7D&file=Cerebras_AI_Security_Guidelines.pptx&fromShare=true&action=edit&mobileredirect=true" target="_blank" style="display:inline-flex; align-items:center; gap:8px; background:var(--surface); border:1.5px solid var(--border); border-radius:8px; padding:10px 20px; font-size:0.95rem; font-weight:600; color:var(--text); text-decoration:none; transition:border-color 0.2s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Security Guidelines
+      </a>
+    </div>
   </div>
 
 </div>
@@ -1421,14 +1754,13 @@ Never edit applied migration files.<br><br>
   // ── Topics for TOC ────────────────────────────────────────────
   const topics = [
     { name: 'Intro', slides: [0, 1] },
-    { name: 'Mindset', slides: [2, 3] },
-    { name: 'CLAUDE.md', slides: [4, 5] },
-    { name: 'Commands', slides: [6, 7, 8, 9, 10, 11, 12] },
-    { name: 'Context', slides: [13, 14, 15, 16] },
-    { name: 'Skills', slides: [17] },
-    { name: 'Agents', slides: [18, 19, 20, 21] },
-    { name: 'cerebras', slides: [22, 23] },
-    { name: 'Find us', slides: [24] }
+    { name: 'Mindset', slides: [2] },
+    { name: 'Setting Context', slides: [3, 4, 5, 6] },
+    { name: 'Commands', slides: [7, 8, 9, 10, 11, 12, 13, 14] },
+    { name: 'Context', slides: [15, 16, 17, 18, 19] },
+    { name: 'Skills', slides: [20, 21, 22] },
+    { name: 'Agents', slides: [23, 24, 25, 26] },
+    { name: 'Find us', slides: [27] }
   ];
 
   function getTopicForSlide(slideIndex) {
@@ -1511,11 +1843,19 @@ Never edit applied migration files.<br><br>
     termTimers[id] = [];
   }
 
+  const termResets = {
+    'term-grepper': ['tf-package','tf-readme','tf-claude','tf-index','tf-payments','tf-jobs','tf-schema']
+  };
+
   function playTerm(id) {
     const el = document.getElementById(id);
     if (!el || !termAnims[id]) return;
     stopTerm(id);
     el.innerHTML = '';
+    (termResets[id] || []).forEach(rid => {
+      const re = document.getElementById(rid);
+      if (re) re.className = re.className.replace('tree-hl','').trim();
+    });
     const timers = termTimers[id] = [];
     const steps = termAnims[id];
     let si = 0;
@@ -1595,6 +1935,36 @@ Never edit applied migration files.<br><br>
           sched(run, s.afterDelay !== undefined ? s.afterDelay : 300);
         };
         // Do NOT call run() — wait for user to advance
+      } else if (s.t === 'taskUpdate') {
+        const taskLabels = ['','Initialize project and install dependencies','Configure database connection','Create User model and schema','Implement password hashing and JWT utilities','Build auth routes (register/login/logout)','Create authentication middleware','Add protected user routes','Write tests for authentication flow'];
+        const item = document.getElementById('task-item-' + s.taskId);
+        if (item) {
+          if (s.state === 'in_progress') {
+            item.style.color = '#DA7756';
+            item.textContent = '▶ #' + s.taskId + '  ' + taskLabels[s.taskId];
+          } else if (s.state === 'completed') {
+            item.style.color = '#5DB87E';
+            item.textContent = '✓ #' + s.taskId + '  ' + taskLabels[s.taskId];
+          }
+        }
+        sched(run, s.delay !== undefined ? s.delay : 50);
+      } else if (s.t === 'taskReset') {
+        const taskLabels = ['','Initialize project and install dependencies','Configure database connection','Create User model and schema','Implement password hashing and JWT utilities','Build auth routes (register/login/logout)','Create authentication middleware','Add protected user routes','Write tests for authentication flow'];
+        for (let i = 1; i <= 8; i++) {
+          const item = document.getElementById('task-item-' + i);
+          if (item) { item.style.color = '#e6edf3'; item.textContent = '□ #' + i + '  ' + taskLabels[i]; }
+        }
+        const panel = document.getElementById('task-status-panel');
+        if (panel) panel.style.display = 'none';
+        sched(run, 0);
+      } else if (s.t === 'show') {
+        const el = document.getElementById(s.id);
+        if (el) el.style.display = s.display || 'block';
+        sched(run, s.delay !== undefined ? s.delay : 50);
+      } else if (s.t === 'hl') {
+        const hlEl = document.getElementById(s.id);
+        if (hlEl) hlEl.classList.add('tree-hl');
+        sched(run, s.delay !== undefined ? s.delay : 0);
       }
     }
     run();
@@ -1602,6 +1972,46 @@ Never edit applied migration files.<br><br>
 
   // ── Animation sequences ───────────────────────────────────────
   const termAnims = {
+
+    'term-grepper': [
+      {t:'cmd', text:'what the heck does this repo do?', speed:34, afterDelay:500},
+      {t:'br', delay:60},
+      {t:'stream', text:"Let me explore the codebase.", cls:'claude', speed:12, afterDelay:300},
+      {t:'br', delay:80},
+      {t:'hl', id:'tf-package', delay:0},
+      {t:'out', html:'<span class="tool">⚙  Read(package.json)</span>', delay:550},
+      {t:'out', html:'<span class="dim">   "name": "payments-api"</span>', delay:250},
+      {t:'out', html:'<span class="dim">   "description": "B2B payment processing"</span>', delay:200},
+      {t:'hl', id:'tf-readme', delay:280},
+      {t:'out', html:'<span class="tool">⚙  Read(README.md)</span>', delay:550},
+      {t:'out', html:'<span class="dim">   # Payments API</span>', delay:200},
+      {t:'out', html:'<span class="dim">   Merchant refunds and async webhook delivery</span>', delay:180},
+      {t:'hl', id:'tf-claude', delay:280},
+      {t:'out', html:'<span class="tool">⚙  Read(CLAUDE.md)</span>', delay:550},
+      {t:'out', html:'<span class="dim">   Stack: Express · Prisma · BullMQ · Next.js</span>', delay:200},
+      {t:'hl', id:'tf-index', delay:280},
+      {t:'out', html:'<span class="tool">⚙  Grep("listen|entry", "apps/**/*.ts")</span>', delay:650},
+      {t:'out', html:'<span class="dim">   apps/api/src/index.ts:3  app.listen(8080)</span>', delay:200},
+      {t:'hl', id:'tf-payments', delay:280},
+      {t:'out', html:'<span class="tool">⚙  Read(apps/api/src/routes/payments.ts)</span>', delay:650},
+      {t:'out', html:'<span class="dim">   POST /charge · POST /refund · GET /status</span>', delay:180},
+      {t:'hl', id:'tf-schema', delay:280},
+      {t:'out', html:'<span class="tool">⚙  Read(packages/db/schema.prisma)</span>', delay:650},
+      {t:'out', html:'<span class="dim">   model Payment { id amount status merchantId }</span>', delay:200},
+      {t:'hl', id:'tf-jobs', delay:280},
+      {t:'out', html:'<span class="tool">⚙  Read(apps/worker/jobs.ts)</span>', delay:650},
+      {t:'out', html:'<span class="dim">   retryWebhook · processRefund · settlePayment</span>', delay:350},
+      {t:'br', delay:200},
+      {t:'out', html:'<span class="dim">────────────────────────────────────────</span>', delay:100},
+      {t:'br', delay:100},
+      {t:'stream', text:'B2B payments platform for merchants.', cls:'claude', speed:12, afterDelay:110},
+      {t:'br', delay:70},
+      {t:'stream', text:'Express API handles charges + refunds.', cls:'claude', speed:12, afterDelay:110},
+      {t:'br', delay:70},
+      {t:'stream', text:'BullMQ worker retries async webhooks.', cls:'claude', speed:12, afterDelay:110},
+      {t:'br', delay:70},
+      {t:'stream', text:'Next.js frontend is the merchant dashboard.', cls:'claude', speed:12, afterDelay:0},
+    ],
 
     'term-whatisclaude': [
       {t:'out', html:'<span class="claude">  ▐▛███▜▌</span>', delay:0},
@@ -1913,6 +2323,31 @@ Never edit applied migration files.<br><br>
       {t:'out', html:'<span class="added">✓  Migration created. Schema valid.</span>', delay:0},
     ],
 
+    'term-resume': [
+      {t:'out', html:'<span class="claude">  ▐▛███▜▌</span>', delay:0},
+      {t:'out', html:'<span class="claude"> ▝▜█████▛▘</span>', delay:0},
+      {t:'out', html:'<span class="claude">   ▘▘  ▝▝</span>', delay:60},
+      {t:'br', delay:40},
+      {t:'out', html:'<span class="prompt"> ✻ Welcome to Claude Code!</span>', delay:40},
+      {t:'out', html:'<span class="dim">   ~/payments-api</span>', delay:40},
+      {t:'br', delay:80},
+      {t:'out', html:'<span class="dim">   /help for help, /exit to quit</span>', delay:60},
+      {t:'out', html:'<span class="dim">────────────────────────────────────────────────────</span>', delay:80},
+      {t:'cmd', text:'/resume', speed:55, afterDelay:400},
+      {t:'br', delay:60},
+      {t:'stream', text:'Saved sessions:', cls:'claude', speed:16, afterDelay:100},
+      {t:'br', delay:40},
+      {t:'out', html:'<span class="log-cp">  1  jwt-auth-migration      — 2h ago  ·  14 turns</span>', delay:80},
+      {t:'out', html:'<span class="dim">  2  add-stripe-webhooks     — yesterday  ·  8 turns</span>', delay:80},
+      {t:'out', html:'<span class="dim">  3  refactor-product-repo   — 3 days ago  ·  22 turns</span>', delay:80},
+      {t:'br', delay:500},
+      {t:'out', html:'<span class="tool">⟳  Resuming jwt-auth-migration...</span>', delay:400},
+      {t:'out', html:'<span class="tool">⟳  Restoring 14 turns of context...</span>', delay:700},
+      {t:'out', html:'<span class="added">✓  Session restored. Picking up where you left off.</span>', delay:500},
+      {t:'br', delay:300},
+      {t:'stream', text:"You were mid-way through step 3 — adding the JWT secret column to the schema. Want to continue?", cls:'claude', speed:13, afterDelay:400},
+    ],
+
     'term-btw': [
       {t:'cmd', text:'Add caching to the GET /products endpoint', speed:40, afterDelay:400},
       {t:'out', html:'<span class="tool">⚙ Reading routes/products.ts...</span>', delay:700},
@@ -2047,25 +2482,38 @@ Never edit applied migration files.<br><br>
     ],
 
     'term-tasktool': [
+      {t:'taskReset'},
       {t:'cmd', text:'build a JWT auth system for this Express API — use the task tool to track each step', speed:26, afterDelay:500},
       {t:'br', delay:100},
       {t:'stream', text:"I'll break this into 8 tasks and work through them systematically.", cls:'claude', speed:12, afterDelay:200},
       {t:'br', delay:80},
-      {t:'out', html:'<span class="tool">⚙  TaskCreate: Initialize project and install dependencies</span>', delay:420},
-      {t:'out', html:'<span class="tool">⚙  TaskCreate: Configure database connection</span>', delay:220},
-      {t:'out', html:'<span class="tool">⚙  TaskCreate: Create User model and schema</span>', delay:220},
-      {t:'out', html:'<span class="tool">⚙  TaskCreate: Implement password hashing and JWT utilities</span>', delay:220},
-      {t:'out', html:'<span class="tool">⚙  TaskCreate: Build auth routes (register/login/logout)</span>', delay:220},
-      {t:'out', html:'<span class="tool">⚙  TaskCreate: Create authentication middleware</span>', delay:220},
-      {t:'out', html:'<span class="tool">⚙  TaskCreate: Add protected user routes</span>', delay:220},
-      {t:'out', html:'<span class="tool">⚙  TaskCreate: Write tests for authentication flow</span>', delay:220},
+      {t:'out', html:'<span class="tool">⚙  TaskCreate: Initialize project and install dependencies</span>', delay:300},
+      {t:'out', html:'<span class="tool">⚙  TaskCreate: Configure database connection</span>', delay:180},
+      {t:'out', html:'<span class="tool">⚙  TaskCreate: Create User model and schema</span>', delay:180},
+      {t:'out', html:'<span class="tool">⚙  TaskCreate: Implement password hashing and JWT utilities</span>', delay:180},
+      {t:'out', html:'<span class="tool">⚙  TaskCreate: Build auth routes (register/login/logout)</span>', delay:180},
+      {t:'out', html:'<span class="tool">⚙  TaskCreate: Create authentication middleware</span>', delay:180},
+      {t:'out', html:'<span class="tool">⚙  TaskCreate: Add protected user routes</span>', delay:180},
+      {t:'out', html:'<span class="tool">⚙  TaskCreate: Write tests for authentication flow</span>', delay:180},
       {t:'br', delay:200},
-      {t:'stream', text:'8 tasks created. Starting with #1...', cls:'dim', speed:14, afterDelay:300},
-      {t:'out', html:'<span class="tool">⚙  TaskUpdate #1 → in_progress</span>', delay:450},
+      {t:'stream', text:'8 tasks created. Starting with #1...', cls:'dim', speed:14, afterDelay:400},
+      {t:'show', id:'task-status-panel', delay:50},
+      {t:'taskUpdate', taskId:1, state:'in_progress', delay:50},
       {t:'out', html:'<span class="tool">⚙  Running: npm init -y &amp;&amp; npm install express bcryptjs jsonwebtoken prisma...</span>', delay:600},
       {t:'out', html:'<span class="added">✓  Dependencies installed.</span>', delay:700},
-      {t:'out', html:'<span class="tool">⚙  TaskUpdate #1 → completed  ·  TaskUpdate #2 → in_progress</span>', delay:300},
-      {t:'popup', id:'task-panel', afterDelay:300},
+      {t:'taskUpdate', taskId:1, state:'completed', delay:50},
+      {t:'taskUpdate', taskId:2, state:'in_progress', delay:50},
+      {t:'out', html:'<span class="tool">⚙  Writing prisma/schema.prisma...</span>', delay:500},
+      {t:'out', html:'<span class="added">✓  Database schema configured.</span>', delay:600},
+      {t:'taskUpdate', taskId:2, state:'completed', delay:50},
+      {t:'taskUpdate', taskId:3, state:'in_progress', delay:50},
+      {t:'out', html:'<span class="tool">⚙  Writing models/User.js...</span>', delay:400},
+      {t:'out', html:'<span class="added">✓  User model created.</span>', delay:500},
+      {t:'taskUpdate', taskId:3, state:'completed', delay:50},
+      {t:'taskUpdate', taskId:4, state:'in_progress', delay:50},
+      {t:'out', html:'<span class="tool">⚙  Writing utils/auth.js — bcryptjs + JWT sign/verify...</span>', delay:450},
+      {t:'out', html:'<span class="added">✓  Auth utilities ready.</span>', delay:500},
+      {t:'taskUpdate', taskId:4, state:'completed', delay:50},
     ],
 
     'term-skills-sync': [
@@ -2097,18 +2545,20 @@ Never edit applied migration files.<br><br>
     1: ['term-whatisclaude'],
     2: ['term-surgeon', 'term-kevin'],
     3: ['term-plan'],
-    5: ['term-md-logs', 'term-md-findings'],
-    6: ['term-rewind'],
-    7: ['term-rename'],
-    8: ['term-btw'],
-    9: ['term-findbugs'],
-    10: ['term-perm-fatigue'],
-    12: ['term-perms'],
-    14: ['term-clear'],
-    15: ['term-compact'],
-    16: ['term-costctx'],
-    20: ['term-tasktool'],
-    23: ['term-skills-sync'],
+    5: ['term-grepper'],
+    6: ['term-md-logs', 'term-md-findings'],
+    7: ['term-rewind'],
+    8: ['term-resume'],
+    9: ['term-rename'],
+    10: ['term-btw'],
+    11: ['term-findbugs'],
+    12: ['term-perm-fatigue'],
+    14: ['term-perms'],
+    16: ['term-clear'],
+    18: ['term-costctx'],
+    19: ['term-compact'],
+    22: ['term-skills-sync'],
+    25: ['term-tasktool'],
   };
 
   // ── Navigation ────────────────────────────────────────────────
