@@ -693,6 +693,16 @@ Never edit applied migration files.<br><br>
 </div>
 
 <!-- ══════════════════════════════════════════════
+     SLIDE — /rename
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="13">
+  <h3>Commands</h3>
+  <h2>/rename</h2>
+  <p style="font-size:1.05rem; line-height:1.7; color:var(--text-dim); margin-bottom:14px;">Use /rename before clearing so you can find the session later, then /resume to return to it.</p>
+  <div id="term-rename" class="terminal" style="font-size:0.82rem; height:400px; width:100%;"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
      SLIDE 6 — M6: /btw
 ══════════════════════════════════════════════ -->
 <div class="slide" data-index="6">
@@ -818,16 +828,6 @@ Never edit applied migration files.<br><br>
   <h2>/clear</h2>
   <p style="font-size:1.05rem; line-height:1.7; color:var(--text-dim); margin-bottom:14px;">Start fresh when switching to unrelated work — stale context wastes tokens on every subsequent message.</p>
   <div id="term-clear" class="terminal" style="font-size:0.82rem; height:400px; width:100%;"></div>
-</div>
-
-<!-- ══════════════════════════════════════════════
-     SLIDE 13 — /rename
-══════════════════════════════════════════════ -->
-<div class="slide" data-index="13">
-  <h3>Context</h3>
-  <h2>/rename</h2>
-  <p style="font-size:1.05rem; line-height:1.7; color:var(--text-dim); margin-bottom:14px;">Use /rename before clearing so you can find the session later, then /resume to return to it.</p>
-  <div id="term-rename" class="terminal" style="font-size:0.82rem; height:400px; width:100%;"></div>
 </div>
 
 <!-- ══════════════════════════════════════════════
@@ -966,6 +966,40 @@ Never edit applied migration files.<br><br>
 </div>
 
 <!-- ══════════════════════════════════════════════
+     SLIDE — Task Tool
+══════════════════════════════════════════════ -->
+<div class="slide" style="justify-content:center; align-items:center; text-align:center;">
+  <h3>Commands</h3>
+  <h1 style="font-size:5rem; font-weight:700; letter-spacing:-0.04em; margin-bottom:20px;">Task Tool</h1>
+  <p style="font-size:1.2rem; color:var(--text-dim); max-width:560px; margin:0 auto; line-height:1.7;">Tell Claude to use the task tool. It breaks the work into trackable steps and checks them off as it goes.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE — Task Tool demo
+══════════════════════════════════════════════ -->
+<div class="slide" style="justify-content:flex-start; padding-top:40px; position:relative;">
+  <h3>Commands</h3>
+  <h2 style="margin-bottom:14px;">Task Tool</h2>
+  <div id="term-tasktool" class="terminal" style="font-size:0.82rem; flex:1; min-height:0; width:100%;"></div>
+
+  <!-- Task panel popup -->
+  <div id="task-panel" style="display:none; position:absolute; bottom:52px; left:50%; transform:translateX(-50%); width:min(760px,86%); background:#0d1117; border:1px solid #30363d; border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:0.84rem; padding:18px 22px; box-shadow:0 8px 40px rgba(0,0,0,0.7); z-index:100; line-height:1.8;">
+    <div><span style="color:#DA7756;">✻ Whirlpooling...</span> <span style="color:#6e7681; font-size:0.74rem;">(esc to interrupt · ctrl+t to hide tasks · thought for 2s)</span></div>
+    <div style="color:#6e7681; padding-left:2px;">  └</div>
+    <div style="padding-left:8px; display:flex; flex-direction:column; gap:2px;">
+      <div style="color:#e6edf3;">□ #1 &nbsp;Initialize project and install dependencies</div>
+      <div style="color:#e6edf3;">□ #2 &nbsp;Configure database connection</div>
+      <div style="color:#e6edf3;">□ #3 &nbsp;Create User model and schema</div>
+      <div style="color:#e6edf3;">□ #4 &nbsp;Implement password hashing and JWT utilities</div>
+      <div style="color:#e6edf3;">□ #5 &nbsp;Build auth routes (register/login/logout)</div>
+      <div style="color:#e6edf3;">□ #6 &nbsp;Create authentication middleware</div>
+      <div style="color:#e6edf3;">□ #7 &nbsp;Add protected user routes</div>
+      <div style="color:#e6edf3;">□ #8 &nbsp;Write tests for authentication flow</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
      SLIDE 18 — Directed Testing Agent Workflow
 ══════════════════════════════════════════════ -->
 <div class="slide" data-index="18" style="justify-content:flex-start; padding-top:40px; padding-bottom:40px;">
@@ -1087,6 +1121,245 @@ Never edit applied migration files.<br><br>
 </div>
 
 <!-- ══════════════════════════════════════════════
+     SLIDE — cerebras/skills
+══════════════════════════════════════════════ -->
+<div class="slide" style="justify-content:flex-start; padding-top:36px; padding-bottom:12px;">
+  <h3>Skills</h3>
+  <h2 style="display:flex; align-items:center; gap:10px; font-size:1.85rem; margin-bottom:0;">
+    <svg width="24" height="24" viewBox="0 0 98 96" fill="currentColor" aria-hidden="true" style="flex-shrink:0;"><path fill-rule="evenodd" clip-rule="evenodd" d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z"/></svg>
+    cerebras/skills
+  </h2>
+  <div style="flex:1; min-height:0; width:100%;">
+    <svg viewBox="0 0 1100 480" style="width:100%; height:100%;" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <filter id="skdoc-sh" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.1"/>
+        </filter>
+        <filter id="skterm-sh" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="0" dy="6" stdDeviation="10" flood-opacity="0.28"/>
+        </filter>
+      </defs>
+
+      <!-- connecting lines (drawn behind cards) -->
+      <line x1="155" y1="75"  x2="555" y2="240" stroke="#D4C9B8" stroke-width="1.2" stroke-dasharray="5,4" opacity="0.6"/>
+      <line x1="555" y1="40"  x2="555" y2="158" stroke="#D4C9B8" stroke-width="1.2" stroke-dasharray="5,4" opacity="0.6"/>
+      <line x1="920" y1="95"  x2="555" y2="240" stroke="#D4C9B8" stroke-width="1.2" stroke-dasharray="5,4" opacity="0.6"/>
+      <line x1="980" y1="280" x2="668" y2="240" stroke="#D4C9B8" stroke-width="1.2" stroke-dasharray="5,4" opacity="0.6"/>
+      <line x1="840" y1="430" x2="555" y2="322" stroke="#D4C9B8" stroke-width="1.2" stroke-dasharray="5,4" opacity="0.6"/>
+      <line x1="340" y1="440" x2="555" y2="322" stroke="#D4C9B8" stroke-width="1.2" stroke-dasharray="5,4" opacity="0.6"/>
+      <line x1="160" y1="310" x2="442" y2="240" stroke="#D4C9B8" stroke-width="1.2" stroke-dasharray="5,4" opacity="0.6"/>
+      <line x1="145" y1="185" x2="442" y2="220" stroke="#D4C9B8" stroke-width="1.2" stroke-dasharray="5,4" opacity="0.6"/>
+
+      <!-- SKILL CARDS -->
+
+      <!-- 1. skill-writer (155, 75) -->
+      <g transform="translate(155,75)"><g>
+        <animateTransform attributeName="transform" type="translate" values="0,0;0,-8;0,0" dur="3.4s" begin="0s" repeatCount="indefinite"/>
+        <path d="M-20,-26 L10,-26 L20,-14 L20,24 L-20,24 Z" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.5" filter="url(#skdoc-sh)"/>
+        <path d="M10,-26 L20,-14 L10,-14 Z" fill="#D4C9B8"/>
+        <line x1="-12" y1="-3" x2="12" y2="-3" stroke="#C4B0A0" stroke-width="1.5"/>
+        <line x1="-12" y1="5" x2="12" y2="5" stroke="#C4B0A0" stroke-width="1.5"/>
+        <line x1="-12" y1="13" x2="7" y2="13" stroke="#C4B0A0" stroke-width="1.5"/>
+        <rect x="-41" y="29" width="82" height="16" rx="8" fill="white" stroke="#D4C9B8" stroke-width="1.2"/>
+        <text x="0" y="41" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" font-weight="600" fill="#1A1108">skill-writer</text>
+      </g></g>
+
+      <!-- 2. find-bugs (555, 40) -->
+      <g transform="translate(555,40)"><g>
+        <animateTransform attributeName="transform" type="translate" values="0,0;0,-7;0,0" dur="2.8s" begin="0.4s" repeatCount="indefinite"/>
+        <path d="M-20,-26 L10,-26 L20,-14 L20,24 L-20,24 Z" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.5" filter="url(#skdoc-sh)"/>
+        <path d="M10,-26 L20,-14 L10,-14 Z" fill="#D4C9B8"/>
+        <line x1="-12" y1="-3" x2="12" y2="-3" stroke="#C4B0A0" stroke-width="1.5"/>
+        <line x1="-12" y1="5" x2="12" y2="5" stroke="#C4B0A0" stroke-width="1.5"/>
+        <line x1="-12" y1="13" x2="7" y2="13" stroke="#C4B0A0" stroke-width="1.5"/>
+        <rect x="-34" y="29" width="68" height="16" rx="8" fill="white" stroke="#D4C9B8" stroke-width="1.2"/>
+        <text x="0" y="41" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" font-weight="600" fill="#1A1108">find-bugs</text>
+      </g></g>
+
+      <!-- 3. permissions-sync (920, 95) -->
+      <g transform="translate(920,95)"><g>
+        <animateTransform attributeName="transform" type="translate" values="0,0;0,-9;0,0" dur="3.6s" begin="0.8s" repeatCount="indefinite"/>
+        <path d="M-20,-26 L10,-26 L20,-14 L20,24 L-20,24 Z" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.5" filter="url(#skdoc-sh)"/>
+        <path d="M10,-26 L20,-14 L10,-14 Z" fill="#D4C9B8"/>
+        <line x1="-12" y1="-3" x2="12" y2="-3" stroke="#C4B0A0" stroke-width="1.5"/>
+        <line x1="-12" y1="5" x2="12" y2="5" stroke="#C4B0A0" stroke-width="1.5"/>
+        <line x1="-12" y1="13" x2="7" y2="13" stroke="#C4B0A0" stroke-width="1.5"/>
+        <rect x="-51" y="29" width="102" height="16" rx="8" fill="white" stroke="#D4C9B8" stroke-width="1.2"/>
+        <text x="0" y="41" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" font-weight="600" fill="#1A1108">permissions-sync</text>
+      </g></g>
+
+      <!-- 4. nightly-regression-agent (980, 280) — 2-line label -->
+      <g transform="translate(980,280)"><g>
+        <animateTransform attributeName="transform" type="translate" values="0,0;0,-8;0,0" dur="3.0s" begin="1.2s" repeatCount="indefinite"/>
+        <path d="M-20,-26 L10,-26 L20,-14 L20,24 L-20,24 Z" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.5" filter="url(#skdoc-sh)"/>
+        <path d="M10,-26 L20,-14 L10,-14 Z" fill="#D4C9B8"/>
+        <line x1="-12" y1="-3" x2="12" y2="-3" stroke="#C4B0A0" stroke-width="1.5"/>
+        <line x1="-12" y1="5" x2="12" y2="5" stroke="#C4B0A0" stroke-width="1.5"/>
+        <line x1="-12" y1="13" x2="7" y2="13" stroke="#C4B0A0" stroke-width="1.5"/>
+        <rect x="-55" y="29" width="110" height="26" rx="8" fill="white" stroke="#D4C9B8" stroke-width="1.2"/>
+        <text x="0" y="41" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" font-weight="600" fill="#1A1108">nightly-regression</text>
+        <text x="0" y="52" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" font-weight="600" fill="#1A1108">-agent</text>
+      </g></g>
+
+      <!-- 5. ws-kernel-bugfix-agent (840, 430) -->
+      <g transform="translate(840,430)"><g>
+        <animateTransform attributeName="transform" type="translate" values="0,0;0,-7;0,0" dur="3.8s" begin="0.3s" repeatCount="indefinite"/>
+        <path d="M-20,-26 L10,-26 L20,-14 L20,24 L-20,24 Z" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.5" filter="url(#skdoc-sh)"/>
+        <path d="M10,-26 L20,-14 L10,-14 Z" fill="#D4C9B8"/>
+        <line x1="-12" y1="-3" x2="12" y2="-3" stroke="#C4B0A0" stroke-width="1.5"/>
+        <line x1="-12" y1="5" x2="12" y2="5" stroke="#C4B0A0" stroke-width="1.5"/>
+        <line x1="-12" y1="13" x2="7" y2="13" stroke="#C4B0A0" stroke-width="1.5"/>
+        <rect x="-63" y="29" width="126" height="16" rx="8" fill="white" stroke="#D4C9B8" stroke-width="1.2"/>
+        <text x="0" y="41" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" font-weight="600" fill="#1A1108">ws-kernel-bugfix-agent</text>
+      </g></g>
+
+      <!-- 6. directed-test-migration-agent (340, 440) — 2-line label -->
+      <g transform="translate(340,440)"><g>
+        <animateTransform attributeName="transform" type="translate" values="0,0;0,-9;0,0" dur="2.9s" begin="0.5s" repeatCount="indefinite"/>
+        <path d="M-20,-26 L10,-26 L20,-14 L20,24 L-20,24 Z" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.5" filter="url(#skdoc-sh)"/>
+        <path d="M10,-26 L20,-14 L10,-14 Z" fill="#D4C9B8"/>
+        <line x1="-12" y1="-3" x2="12" y2="-3" stroke="#C4B0A0" stroke-width="1.5"/>
+        <line x1="-12" y1="5" x2="12" y2="5" stroke="#C4B0A0" stroke-width="1.5"/>
+        <line x1="-12" y1="13" x2="7" y2="13" stroke="#C4B0A0" stroke-width="1.5"/>
+        <rect x="-49" y="29" width="98" height="26" rx="8" fill="white" stroke="#D4C9B8" stroke-width="1.2"/>
+        <text x="0" y="41" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" font-weight="600" fill="#1A1108">directed-test-</text>
+        <text x="0" y="52" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8" font-weight="600" fill="#1A1108">migration-agent</text>
+      </g></g>
+
+      <!-- 7. dv-reference (160, 310) -->
+      <g transform="translate(160,310)"><g>
+        <animateTransform attributeName="transform" type="translate" values="0,0;0,-6;0,0" dur="3.1s" begin="1.1s" repeatCount="indefinite"/>
+        <path d="M-20,-26 L10,-26 L20,-14 L20,24 L-20,24 Z" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.5" filter="url(#skdoc-sh)"/>
+        <path d="M10,-26 L20,-14 L10,-14 Z" fill="#D4C9B8"/>
+        <line x1="-12" y1="-3" x2="12" y2="-3" stroke="#C4B0A0" stroke-width="1.5"/>
+        <line x1="-12" y1="5" x2="12" y2="5" stroke="#C4B0A0" stroke-width="1.5"/>
+        <line x1="-12" y1="13" x2="7" y2="13" stroke="#C4B0A0" stroke-width="1.5"/>
+        <rect x="-41" y="29" width="82" height="16" rx="8" fill="white" stroke="#D4C9B8" stroke-width="1.2"/>
+        <text x="0" y="41" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" font-weight="600" fill="#1A1108">dv-reference</text>
+      </g></g>
+
+      <!-- 8. code-review (145, 185) -->
+      <g transform="translate(145,185)"><g>
+        <animateTransform attributeName="transform" type="translate" values="0,0;0,-7;0,0" dur="3.5s" begin="0.9s" repeatCount="indefinite"/>
+        <path d="M-20,-26 L10,-26 L20,-14 L20,24 L-20,24 Z" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.5" filter="url(#skdoc-sh)"/>
+        <path d="M10,-26 L20,-14 L10,-14 Z" fill="#D4C9B8"/>
+        <line x1="-12" y1="-3" x2="12" y2="-3" stroke="#C4B0A0" stroke-width="1.5"/>
+        <line x1="-12" y1="5" x2="12" y2="5" stroke="#C4B0A0" stroke-width="1.5"/>
+        <line x1="-12" y1="13" x2="7" y2="13" stroke="#C4B0A0" stroke-width="1.5"/>
+        <rect x="-38" y="29" width="76" height="16" rx="8" fill="white" stroke="#D4C9B8" stroke-width="1.2"/>
+        <text x="0" y="41" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="8.5" font-weight="600" fill="#1A1108">code-review</text>
+      </g></g>
+
+      <!-- CENTRAL TERMINAL -->
+      <rect x="440" y="156" width="230" height="168" rx="10" fill="#1A1108" stroke="#3A3028" stroke-width="1.5" filter="url(#skterm-sh)"/>
+      <rect x="440" y="156" width="230" height="28" rx="10" fill="#2A2018"/>
+      <rect x="440" y="170" width="230" height="14" fill="#2A2018"/>
+      <circle cx="457" cy="170" r="5" fill="#C0392B" opacity="0.8"/>
+      <circle cx="473" cy="170" r="5" fill="#DA7756" opacity="0.8"/>
+      <circle cx="489" cy="170" r="5" fill="#2D8B56" opacity="0.8"/>
+      <text x="555" y="174" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="9" fill="#6B5D4F">claude</text>
+      <text x="454" y="202" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#DA7756">❯</text>
+      <text x="466" y="202" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#E8DDD0">/directed-test-migration-agent</text>
+      <text x="454" y="219" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#4A8A6A">✻</text>
+      <text x="466" y="219" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#6B5D4F">Analyzing CASM output...</text>
+      <text x="454" y="235" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#2D8B56">⚙</text>
+      <text x="466" y="235" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#6B5D4F">Running dvsim...</text>
+      <text x="454" y="251" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#2D8B56">✓</text>
+      <text x="466" y="251" font-family="JetBrains Mono,monospace" font-size="8.5" fill="#4AA870">3 tests migrated. All pass.</text>
+      <text x="454" y="267" font-family="JetBrains Mono,monospace" font-size="9.5" fill="#DA7756">❯</text>
+      <rect x="466" y="256" width="7" height="12" fill="#DA7756" opacity="0.8">
+        <animate attributeName="opacity" values="0.8;0;0.8" dur="1.2s" repeatCount="indefinite"/>
+      </rect>
+      <rect x="488" y="332" width="134" height="20" rx="10" fill="white" stroke="#D4C9B8" stroke-width="1.2"/>
+      <text x="555" y="346" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="10" font-weight="700" fill="#6B5D4F" letter-spacing="0.5">CLAUDE CODE</text>
+    </svg>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE — latest skills automatically sync
+══════════════════════════════════════════════ -->
+<div class="slide" style="justify-content:flex-start; padding-top:44px; padding-bottom:20px;">
+  <h3>Skills</h3>
+  <h2 style="font-size:2rem; margin-bottom:16px;">The latest skills automatically sync</h2>
+  <div style="flex:1; min-height:0; width:100%; display:flex; flex-direction:column; gap:0;">
+    <!-- skill docs with pulsing lines -->
+    <div style="position:relative; height:140px; width:100%; flex-shrink:0;">
+      <svg viewBox="0 0 1000 140" style="width:100%; height:100%;" preserveAspectRatio="xMidYMid meet">
+        <!-- pulsing lines from each skill doc down to terminal -->
+        <line x1="100" y1="55"  x2="100" y2="138"  stroke="#DA7756" stroke-width="1.5" stroke-dasharray="5,4" opacity="0.5"><animate attributeName="stroke-dashoffset" from="0" to="-18" dur="0.9s" repeatCount="indefinite"/></line>
+        <line x1="280" y1="55"  x2="280" y2="138"  stroke="#DA7756" stroke-width="1.5" stroke-dasharray="5,4" opacity="0.5"><animate attributeName="stroke-dashoffset" from="0" to="-18" dur="0.9s" begin="0.15s" repeatCount="indefinite"/></line>
+        <line x1="500" y1="55"  x2="500" y2="138"  stroke="#DA7756" stroke-width="1.5" stroke-dasharray="5,4" opacity="0.5"><animate attributeName="stroke-dashoffset" from="0" to="-18" dur="0.9s" begin="0.3s" repeatCount="indefinite"/></line>
+        <line x1="720" y1="55"  x2="720" y2="138"  stroke="#DA7756" stroke-width="1.5" stroke-dasharray="5,4" opacity="0.5"><animate attributeName="stroke-dashoffset" from="0" to="-18" dur="0.9s" begin="0.45s" repeatCount="indefinite"/></line>
+        <line x1="900" y1="55"  x2="900" y2="138"  stroke="#DA7756" stroke-width="1.5" stroke-dasharray="5,4" opacity="0.5"><animate attributeName="stroke-dashoffset" from="0" to="-18" dur="0.9s" begin="0.6s" repeatCount="indefinite"/></line>
+
+        <!-- skill-writer doc (100, 28) -->
+        <g transform="translate(100,28)"><g>
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-6;0,0" dur="3.0s" begin="0s" repeatCount="indefinite"/>
+          <path d="M-20,-22 L8,-22 L18,-10 L18,22 L-20,22 Z" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.4"/>
+          <path d="M8,-22 L18,-10 L8,-10 Z" fill="#D4C9B8"/>
+          <line x1="-12" y1="-1" x2="10" y2="-1" stroke="#C4B0A0" stroke-width="1.3"/>
+          <line x1="-12" y1="6"  x2="10" y2="6"  stroke="#C4B0A0" stroke-width="1.3"/>
+          <line x1="-12" y1="13" x2="5"  y2="13" stroke="#C4B0A0" stroke-width="1.3"/>
+          <rect x="-41" y="26" width="82" height="14" rx="7" fill="white" stroke="#D4C9B8" stroke-width="1.1"/>
+          <text x="0" y="37" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7.5" font-weight="600" fill="#1A1108">skill-writer</text>
+        </g></g>
+
+        <!-- find-bugs doc (280, 28) -->
+        <g transform="translate(280,28)"><g>
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-6;0,0" dur="2.6s" begin="0.4s" repeatCount="indefinite"/>
+          <path d="M-20,-22 L8,-22 L18,-10 L18,22 L-20,22 Z" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.4"/>
+          <path d="M8,-22 L18,-10 L8,-10 Z" fill="#D4C9B8"/>
+          <line x1="-12" y1="-1" x2="10" y2="-1" stroke="#C4B0A0" stroke-width="1.3"/>
+          <line x1="-12" y1="6"  x2="10" y2="6"  stroke="#C4B0A0" stroke-width="1.3"/>
+          <line x1="-12" y1="13" x2="5"  y2="13" stroke="#C4B0A0" stroke-width="1.3"/>
+          <rect x="-34" y="26" width="68" height="14" rx="7" fill="white" stroke="#D4C9B8" stroke-width="1.1"/>
+          <text x="0" y="37" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7.5" font-weight="600" fill="#1A1108">find-bugs</text>
+        </g></g>
+
+        <!-- permissions-sync doc (500, 28) -->
+        <g transform="translate(500,28)"><g>
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-6;0,0" dur="3.2s" begin="0.8s" repeatCount="indefinite"/>
+          <path d="M-20,-22 L8,-22 L18,-10 L18,22 L-20,22 Z" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.4"/>
+          <path d="M8,-22 L18,-10 L8,-10 Z" fill="#D4C9B8"/>
+          <line x1="-12" y1="-1" x2="10" y2="-1" stroke="#C4B0A0" stroke-width="1.3"/>
+          <line x1="-12" y1="6"  x2="10" y2="6"  stroke="#C4B0A0" stroke-width="1.3"/>
+          <line x1="-12" y1="13" x2="5"  y2="13" stroke="#C4B0A0" stroke-width="1.3"/>
+          <rect x="-51" y="26" width="102" height="14" rx="7" fill="white" stroke="#D4C9B8" stroke-width="1.1"/>
+          <text x="0" y="37" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7.5" font-weight="600" fill="#1A1108">permissions-sync</text>
+        </g></g>
+
+        <!-- dv-reference doc (720, 28) -->
+        <g transform="translate(720,28)"><g>
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-6;0,0" dur="2.8s" begin="1.1s" repeatCount="indefinite"/>
+          <path d="M-20,-22 L8,-22 L18,-10 L18,22 L-20,22 Z" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.4"/>
+          <path d="M8,-22 L18,-10 L8,-10 Z" fill="#D4C9B8"/>
+          <line x1="-12" y1="-1" x2="10" y2="-1" stroke="#C4B0A0" stroke-width="1.3"/>
+          <line x1="-12" y1="6"  x2="10" y2="6"  stroke="#C4B0A0" stroke-width="1.3"/>
+          <line x1="-12" y1="13" x2="5"  y2="13" stroke="#C4B0A0" stroke-width="1.3"/>
+          <rect x="-41" y="26" width="82" height="14" rx="7" fill="white" stroke="#D4C9B8" stroke-width="1.1"/>
+          <text x="0" y="37" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7.5" font-weight="600" fill="#1A1108">dv-reference</text>
+        </g></g>
+
+        <!-- code-review doc (900, 28) -->
+        <g transform="translate(900,28)"><g>
+          <animateTransform attributeName="transform" type="translate" values="0,0;0,-6;0,0" dur="3.4s" begin="0.6s" repeatCount="indefinite"/>
+          <path d="M-20,-22 L8,-22 L18,-10 L18,22 L-20,22 Z" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.4"/>
+          <path d="M8,-22 L18,-10 L8,-10 Z" fill="#D4C9B8"/>
+          <line x1="-12" y1="-1" x2="10" y2="-1" stroke="#C4B0A0" stroke-width="1.3"/>
+          <line x1="-12" y1="6"  x2="10" y2="6"  stroke="#C4B0A0" stroke-width="1.3"/>
+          <line x1="-12" y1="13" x2="5"  y2="13" stroke="#C4B0A0" stroke-width="1.3"/>
+          <rect x="-38" y="26" width="76" height="14" rx="7" fill="white" stroke="#D4C9B8" stroke-width="1.1"/>
+          <text x="0" y="37" text-anchor="middle" font-family="JetBrains Mono,monospace" font-size="7.5" font-weight="600" fill="#1A1108">code-review</text>
+        </g></g>
+      </svg>
+    </div>
+    <!-- boot terminal -->
+    <div id="term-skills-sync" class="terminal" style="flex:1; font-size:0.78rem;"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
      SLIDE — Outro / find us on Slack
 ══════════════════════════════════════════════ -->
 <div class="slide" style="overflow:hidden; justify-content:center; align-items:center; text-align:center;">
@@ -1150,11 +1423,12 @@ Never edit applied migration files.<br><br>
     { name: 'Intro', slides: [0, 1] },
     { name: 'Mindset', slides: [2, 3] },
     { name: 'CLAUDE.md', slides: [4, 5] },
-    { name: 'Commands', slides: [6, 7, 8, 9, 10, 11] },
-    { name: 'Context', slides: [12, 13, 14, 15, 16] },
+    { name: 'Commands', slides: [6, 7, 8, 9, 10, 11, 12] },
+    { name: 'Context', slides: [13, 14, 15, 16] },
     { name: 'Skills', slides: [17] },
-    { name: 'Agents', slides: [18, 19] },
-    { name: 'Find us', slides: [20] }
+    { name: 'Agents', slides: [18, 19, 20, 21] },
+    { name: 'cerebras', slides: [22, 23] },
+    { name: 'Find us', slides: [24] }
   ];
 
   function getTopicForSlide(slideIndex) {
@@ -1771,6 +2045,51 @@ Never edit applied migration files.<br><br>
       {t:'out', html:'<span class="removed">🔴 Hard-coded API key in source</span>', delay:220},
       {t:'out', html:'    config.ts:3', delay:80},
     ],
+
+    'term-tasktool': [
+      {t:'cmd', text:'build a JWT auth system for this Express API — use the task tool to track each step', speed:26, afterDelay:500},
+      {t:'br', delay:100},
+      {t:'stream', text:"I'll break this into 8 tasks and work through them systematically.", cls:'claude', speed:12, afterDelay:200},
+      {t:'br', delay:80},
+      {t:'out', html:'<span class="tool">⚙  TaskCreate: Initialize project and install dependencies</span>', delay:420},
+      {t:'out', html:'<span class="tool">⚙  TaskCreate: Configure database connection</span>', delay:220},
+      {t:'out', html:'<span class="tool">⚙  TaskCreate: Create User model and schema</span>', delay:220},
+      {t:'out', html:'<span class="tool">⚙  TaskCreate: Implement password hashing and JWT utilities</span>', delay:220},
+      {t:'out', html:'<span class="tool">⚙  TaskCreate: Build auth routes (register/login/logout)</span>', delay:220},
+      {t:'out', html:'<span class="tool">⚙  TaskCreate: Create authentication middleware</span>', delay:220},
+      {t:'out', html:'<span class="tool">⚙  TaskCreate: Add protected user routes</span>', delay:220},
+      {t:'out', html:'<span class="tool">⚙  TaskCreate: Write tests for authentication flow</span>', delay:220},
+      {t:'br', delay:200},
+      {t:'stream', text:'8 tasks created. Starting with #1...', cls:'dim', speed:14, afterDelay:300},
+      {t:'out', html:'<span class="tool">⚙  TaskUpdate #1 → in_progress</span>', delay:450},
+      {t:'out', html:'<span class="tool">⚙  Running: npm init -y &amp;&amp; npm install express bcryptjs jsonwebtoken prisma...</span>', delay:600},
+      {t:'out', html:'<span class="added">✓  Dependencies installed.</span>', delay:700},
+      {t:'out', html:'<span class="tool">⚙  TaskUpdate #1 → completed  ·  TaskUpdate #2 → in_progress</span>', delay:300},
+      {t:'popup', id:'task-panel', afterDelay:300},
+    ],
+
+    'term-skills-sync': [
+      {t:'out', html:'<span class="claude">  ▐▛███▜▌</span>', delay:0},
+      {t:'out', html:'<span class="claude"> ▝▜█████▛▘</span>', delay:0},
+      {t:'out', html:'<span class="claude">   ▘▘  ▝▝</span>', delay:60},
+      {t:'br', delay:40},
+      {t:'out', html:'<span class="prompt"> ✻ Welcome to Claude Code!</span>', delay:40},
+      {t:'out', html:'<span class="dim">   v2.1.74  ·  claude-sonnet-4-6</span>', delay:40},
+      {t:'out', html:'<span class="dim">   ~/your-project</span>', delay:40},
+      {t:'br', delay:80},
+      {t:'out', html:'<span class="tool">⚙  Syncing skills from cerebras/skills...</span>', delay:700},
+      {t:'out', html:'<span class="added">✓  skill-writer</span>', delay:280},
+      {t:'out', html:'<span class="added">✓  find-bugs</span>', delay:180},
+      {t:'out', html:'<span class="added">✓  permissions-sync</span>', delay:180},
+      {t:'out', html:'<span class="added">✓  dv-reference</span>', delay:180},
+      {t:'out', html:'<span class="added">✓  code-review</span>', delay:180},
+      {t:'out', html:'<span class="dim">   ─────────────────────────────────────</span>', delay:280},
+      {t:'out', html:'<span class="added">✓  5 skills loaded  ·  2 updated</span>', delay:200},
+      {t:'br', delay:300},
+      {t:'out', html:'<span class="dim">   /help for help, /exit to quit</span>', delay:60},
+      {t:'out', html:'<span class="dim">────────────────────────────────────────────────────</span>', delay:100},
+      {t:'cmd', text:'', speed:0, afterDelay:0},
+    ],
   };
 
   // ── Map slide index → terminal IDs to play ────────────────────
@@ -1780,14 +2099,16 @@ Never edit applied migration files.<br><br>
     3: ['term-plan'],
     5: ['term-md-logs', 'term-md-findings'],
     6: ['term-rewind'],
-    7: ['term-btw'],
-    8: ['term-findbugs'],
-    9: ['term-perm-fatigue'],
-    11: ['term-perms'],
-    13: ['term-clear'],
-    14: ['term-rename'],
+    7: ['term-rename'],
+    8: ['term-btw'],
+    9: ['term-findbugs'],
+    10: ['term-perm-fatigue'],
+    12: ['term-perms'],
+    14: ['term-clear'],
     15: ['term-compact'],
     16: ['term-costctx'],
+    20: ['term-tasktool'],
+    23: ['term-skills-sync'],
   };
 
   // ── Navigation ────────────────────────────────────────────────
