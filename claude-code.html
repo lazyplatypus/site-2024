@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;0,6..72,800;1,6..72,400&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #FAF6F0;
+    --surface: #F0EAE0;
+    --surface2: #E8E0D4;
+    --border: #D4C9B8;
+    --text: #1A1108;
+    --text-dim: #6B5D4F;
+    --accent: #DA7756;
+    --accent-light: #C4613E;
+    --green: #2D8B56;
+    --green-dim: #E5F2EB;
+    --red: #C0392B;
+    --red-dim: #FDECEA;
+    --orange: #DA7756;
+    --blue: #4A7FB5;
+  }
+
+  body {
+    font-family: 'DM Sans', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  .deck { width: 100vw; height: 100vh; position: relative; }
+
+  .slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 52px 100px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+
+  .slide.active { opacity: 1; pointer-events: auto; }
+
+  h1 {
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 3.2rem;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  h2 {
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+
+  h3 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  p, li { font-size: 1.15rem; line-height: 1.7; color: var(--text-dim); font-weight: 400; }
+  ul { list-style: none; margin-top: 10px; }
+  ul li { padding: 6px 0; padding-left: 24px; position: relative; }
+  ul li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 16px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .highlight { color: var(--accent); font-weight: 600; }
+  .green { color: var(--green); }
+  .red { color: var(--red); }
+  .blue { color: var(--blue); }
+
+  .subtitle {
+    font-size: 1.35rem;
+    color: var(--text-dim);
+    font-weight: 300;
+    margin-top: 8px;
+    line-height: 1.6;
+    max-width: 700px;
+  }
+
+  .tag {
+    display: inline-block;
+    background: rgba(218,119,86,0.1);
+    border: 1px solid rgba(218,119,86,0.25);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--accent);
+    margin-right: 8px;
+    margin-bottom: 8px;
+  }
+
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 20px; }
+  .col { display: flex; flex-direction: column; }
+
+  .terminal {
+    background: #2B2318;
+    border: 1px solid #3D3226;
+    border-radius: 12px;
+    padding: 20px 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+    line-height: 1.85;
+    margin-top: 14px;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    color: #FFFFFF;
+  }
+
+  .terminal .prompt { color: #F0A87E; }
+  .terminal .dim { color: #8A7A6A; }
+  .terminal .added { color: #5DB87E; }
+  .terminal .removed { color: #E87461; }
+  .terminal .warn { color: #F0C87E; }
+  .terminal .claude { color: #C4B0F8; }
+  .terminal .tool { color: #7EC4F0; }
+
+  .arch-box {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    box-shadow: 0 1px 8px rgba(26,17,8,0.05);
+  }
+  .arch-box h4 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+  .arch-box p { font-size: 0.92rem; line-height: 1.5; }
+
+  .arch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+
+  .progress { position: fixed; bottom: 0; left: 0; height: 3px; background: var(--accent); transition: width 0.4s ease; z-index: 100; }
+  .counter { position: fixed; bottom: 20px; right: 32px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-dim); z-index: 100; }
+  .nav-hint { position: fixed; bottom: 20px; left: 32px; font-size: 0.8rem; color: #B8A898; z-index: 100; }
+  .step-hint { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); font-size: 0.78rem; color: #C4B0A0; font-family: 'JetBrains Mono', monospace; z-index: 100; display: none; }
+  .step-hint.visible { display: block; }
+
+  .toc-bar {
+    position: fixed;
+    bottom: 60px;
+    left: 32px;
+    right: 32px;
+    height: auto;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 99;
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid var(--border);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    flex-shrink: 0;
+    backdrop-filter: blur(8px);
+  }
+
+  .toc-item:hover {
+    background: white;
+    color: var(--text);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .toc-item.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(218, 119, 86, 0.25);
+  }
+
+  .toc-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--surface2);
+    flex-shrink: 0;
+  }
+
+  .slide.title-slide { justify-content: center; align-items: flex-start; }
+  .slide.title-slide h1 { font-family: 'Newsreader', Georgia, serif; font-size: 4rem; color: #000000; -webkit-text-fill-color: #000000; }
+
+  .claude-mascot {
+    position: relative;
+    margin-bottom: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    line-height: 1.3;
+    color: var(--accent);
+    white-space: pre;
+    animation: mascot-float 3s ease-in-out infinite;
+  }
+  @keyframes mascot-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  @keyframes mascot-circle {
+    0%    { transform: rotate(180deg) translate(0px, -28px); }
+    12.5% { transform: rotate(180deg) translate(20px, -20px); }
+    25%   { transform: rotate(180deg) translate(28px, 0px); }
+    37.5% { transform: rotate(180deg) translate(20px, 20px); }
+    50%   { transform: rotate(180deg) translate(0px, 28px); }
+    62.5% { transform: rotate(180deg) translate(-20px, 20px); }
+    75%   { transform: rotate(180deg) translate(-28px, 0px); }
+    87.5% { transform: rotate(180deg) translate(-20px, -20px); }
+    100%  { transform: rotate(180deg) translate(0px, -28px); }
+  }
+  @keyframes mascot-blink { 0%, 42%, 46%, 100% { opacity: 1; } 44% { opacity: 0.1; } }
+  .claude-mascot .eyes { animation: mascot-blink 4s ease-in-out infinite; }
+
+  .example-badge {
+    display: inline-block;
+    background: rgba(45,139,86,0.12);
+    border: 1px solid rgba(45,139,86,0.3);
+    color: var(--green);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+
+  .pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.76rem;
+    font-weight: 600;
+  }
+  .pill-green { background: var(--green-dim); color: var(--green); }
+  .pill-red { background: var(--red-dim); color: var(--red); }
+  .pill-orange { background: rgba(218,119,86,0.12); color: var(--accent); }
+  .pill-blue { background: rgba(74,127,181,0.12); color: var(--blue); }
+
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
+  .compare-box { border-radius: 12px; padding: 20px 22px; }
+  .compare-box h4 { font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 12px; }
+
+  .step-el {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    pointer-events: none;
+  }
+  .step-el.step-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .md-section {
+    display: block;
+    padding: 6px 10px;
+    border-left: 3px solid transparent;
+    border-radius: 0 4px 4px 0;
+    margin: 2px 0;
+    transition: background 0.3s ease, border-color 0.3s ease;
+  }
+  .md-section.section-active {
+    background: rgba(240,168,126,0.18);
+    border-left-color: #F0A87E;
+  }
+  .md-section .md-h { color: #F0A87E; font-weight: 500; }
+
+  .callout-card {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    pointer-events: none;
+  }
+  .callout-card.callout-active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .restore-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 20px; }
+  .restore-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 18px;
+    box-shadow: 0 1px 8px rgba(26,17,8,0.05);
+  }
+  .restore-card .mode-label { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--accent); margin-bottom: 6px; }
+  .restore-card h4 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+
+  .pipeline { display: flex; align-items: stretch; margin-top: 20px; }
+  .pipeline-step {
+    flex: 1;
+    background: white;
+    border: 1px solid var(--border);
+    padding: 16px 14px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+  }
+  .pipeline-step:first-child { border-radius: 12px 0 0 12px; }
+  .pipeline-step:last-child { border-radius: 0 12px 12px 0; }
+  .pipeline-step .step-num { font-family: 'Newsreader', serif; font-size: 0.7rem; font-weight: 600; color: var(--accent); letter-spacing: 0.05em; margin-bottom: 4px; }
+  .pipeline-step .step-label { font-size: 0.88rem; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .pipeline-step .step-body { font-size: 0.78rem; color: var(--text-dim); line-height: 1.45; }
+  .pipeline-arrow { display: flex; align-items: center; padding: 0 2px; color: var(--accent); font-size: 1.3rem; }
+
+  .ctx-bar-wrap { background: var(--surface); border-radius: 10px; height: 52px; overflow: hidden; margin-bottom: 10px; position: relative; width: 100%; }
+  .ctx-bar-label { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 0.75rem; font-weight: 600; color: var(--text-dim); z-index: 1; }
+  .ctx-segment { height: 100%; float: left; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 600; color: white; overflow: hidden; white-space: nowrap; padding: 0 8px; }
+
+  /* Terminal cursor blink */
+  @keyframes term-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+  .term-cursor { display: inline-block; width: 7px; height: 1em; background: #F0A87E; margin-left: 1px; vertical-align: text-bottom; animation: term-blink 1s step-end infinite; }
+
+  /* Permission mode table */
+  .perm-table { width: 100%; border-collapse: collapse; margin-top: 16px; font-size: 0.88rem; }
+  .perm-table th { text-align: left; padding: 8px 14px; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); border-bottom: 1px solid var(--border); }
+  .perm-table td { padding: 10px 14px; border-bottom: 1px solid var(--surface2); color: var(--text-dim); vertical-align: top; }
+  .perm-table td:first-child { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: var(--text); font-weight: 500; }
+  .perm-table tr:last-child td { border-bottom: none; }
+
+  /* Scenario box */
+  .scenario-box {
+    background: rgba(218,119,86,0.06);
+    border: 1px solid rgba(218,119,86,0.2);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+  }
+  .scenario-box h4 { font-size: 0.88rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+  .scenario-box p { font-size: 0.9rem; line-height: 1.5; }
+
+  /* Session log */
+  .session-log {
+    background: #1E1A14;
+    border: 1px solid #3D3226;
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 2;
+    color: #FFFFFF;
+  }
+  .log-done { color: #5DB87E; }
+  .log-active { color: #F0C87E; background: rgba(240,200,126,0.12); padding: 1px 6px; border-radius: 3px; }
+  .log-bad { color: #E87461; background: rgba(232,116,97,0.12); padding: 1px 6px; border-radius: 3px; }
+  .log-dim { color: #6A5A4A; }
+  .log-cp { color: #C4B0F8; }
+
+  /* Skills file display */
+  .skill-file {
+    background: #2B2318;
+    border: 1px solid #3D3226;
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.76rem;
+    line-height: 1.8;
+    color: #FFFFFF;
+    flex: 1;
+    overflow: hidden;
+  }
+  .skill-file .sh { color: #F0A87E; }
+  .skill-file .comment { color: #6A5A4A; }
+  .skill-file .keyword { color: #C4B0F8; }
+  .skill-file .val { color: #5DB87E; }
+  .skill-file .hl { color: #7EC4F0; }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 0 — Title
+══════════════════════════════════════════════ -->
+<div class="slide title-slide active" data-index="0">
+  <div class="claude-mascot">  ▐▛███▜▌
+ ▝▜█████▛▘
+  <span class="eyes"> ▘▘ ▝▝</span></div>
+  <h3>Training</h3>
+  <h1>Claude Code</h1>
+  <p class="subtitle">How to get the most out of it — whatever your role.</p>
+  <div style="margin-top: 28px;">
+    <span class="tag">Permissions</span>
+    <span class="tag">Plan Mode</span>
+    <span class="tag">CLAUDE.md</span>
+    <span class="tag">Skills</span>
+    <span class="tag">Checkpoints</span>
+    <span class="tag">Context</span>
+    <span class="tag">Confidence</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 1 — What is Claude Code
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="1">
+  <h3>Introduction</h3>
+  <h2>What is Claude Code?</h2>
+  <div class="cols" style="gap:32px; margin-top:12px; align-items:flex-start;">
+    <div class="col">
+      <p style="font-size:1.05rem; line-height:1.7; color:var(--text-dim); margin-bottom:16px;">An AI agent that lives in your terminal and works like a capable engineer — not a line-by-line autocomplete.</p>
+      <ul>
+        <li>Reads and writes files across your entire project</li>
+        <li>Runs shell commands — tests, builds, git, linters</li>
+        <li>Works autonomously on multi-step tasks end-to-end</li>
+        <li>Loads project context from CLAUDE.md every session</li>
+      </ul>
+      <div class="arch-box" style="margin-top:18px; background:rgba(218,119,86,0.06); border-color:rgba(218,119,86,0.2);">
+        <h4 style="color:var(--accent);">Not a plugin</h4>
+        <p style="font-size:0.88rem; margin-top:4px;">Claude Code is a complete autonomous agent — it plans, acts, and verifies. It can touch 50 files in one instruction.</p>
+      </div>
+    </div>
+    <div class="col" style="display:flex; flex-direction:column;">
+      <div id="term-whatisclaude" class="terminal" style="font-size:0.78rem; height:370px; margin-top:0;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 2 — M1: Multiple Modes to Work with AI
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="2">
+  <h3>Mindset</h3>
+  <h2>Multiple Modes to Work with AI</h2>
+  <p style="font-size:0.9rem; color:var(--text-dim); margin-bottom:16px; line-height:1.6;">Choose how much control you hand off — <span class="highlight">both styles are valid depending on the task</span>.</p>
+  <div class="compare" style="margin-bottom:16px;">
+    <div class="compare-box" style="background:var(--red-dim); border:1px solid rgba(192,57,43,0.2);">
+      <h4 style="color:var(--red);">Surgeon Mode</h4>
+      <div id="term-surgeon" class="terminal" style="margin-top:6px; font-size:0.75rem; padding:10px 12px; background:#2A1A1A; border-color:#4A2A2A; height:320px;"></div>
+    </div>
+    <div class="compare-box" style="background:var(--green-dim); border:1px solid rgba(45,139,86,0.2);">
+      <h4 style="color:var(--green);">Kevin Mode</h4>
+      <div id="term-kevin" class="terminal" style="margin-top:6px; font-size:0.75rem; padding:10px 12px; background:#161E16; border-color:#2A4A2A; height:320px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 3 — M2 Concept: Plan Mode
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="3" style="position:relative;">
+  <h3>Mindset</h3>
+  <h2>Plan Mode</h2>
+  <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-bottom:14px;">
+    <div class="arch-box">
+      <h4>Complex or Risky Changes</h4>
+    </div>
+    <div class="arch-box">
+      <h4>Multi-Step Implementation</h4>
+    </div>
+    <div class="arch-box">
+      <h4>Unfamiliar Code</h4>
+    </div>
+  </div>
+  <div id="term-plan" class="terminal" style="font-size:0.82rem; height:310px; width:100%;"></div>
+
+  <!-- Claude Code ask-question popup -->
+  <div id="plan-popup" style="display:none; position:absolute; bottom:40px; left:50%; transform:translateX(-50%); width:min(680px,90%); background:#0d1117; border:1px solid #30363d; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:0.78rem; box-shadow:0 8px 32px rgba(0,0,0,0.6); z-index:100;">
+    <!-- command context bar -->
+    <div style="padding:8px 14px; border-bottom:1px solid #21262d; color:#8b949e; font-size:0.72rem;">
+      <span style="color:#e6edf3;">&gt; /plan how to migrate the cloud-platform repo to rust cause rust is the best?</span>
+    </div>
+    <!-- tab bar -->
+    <div style="display:flex; gap:0; border-bottom:1px solid #21262d; padding:0 10px;">
+      <span style="padding:7px 12px; color:#e6edf3; border-bottom:2px solid #58a6ff; font-size:0.72rem;">&#9635; Migration Strategy</span>
+      <span style="padding:7px 12px; color:#8b949e; font-size:0.72rem;">&#9633; Scope</span>
+      <span style="padding:7px 12px; color:#8b949e; font-size:0.72rem;">&#9633; Timeline</span>
+      <span style="padding:7px 12px; color:#8b949e; font-size:0.72rem; margin-left:auto;">&#10003; Continue &#8594;</span>
+    </div>
+    <!-- question -->
+    <div style="padding:14px 16px 6px; color:#58a6ff; font-weight:700; font-size:0.82rem;">Before I plan the migration — what approach do you want to take?</div>
+    <!-- options -->
+    <div style="padding:4px 16px 10px; line-height:1;">
+      <div style="padding:5px 0; color:#e6edf3;"><span style="color:#58a6ff;">&gt;</span> 1. <strong>Full rewrite</strong></div>
+      <div style="padding:1px 0 6px 20px; color:#8b949e;">Port all services to Rust at once — clean break, high coordination cost</div>
+      <div style="padding:5px 0; color:#e6edf3;">&#160;&#160;2. <strong>Strangler fig</strong></div>
+      <div style="padding:1px 0 6px 20px; color:#8b949e;">Migrate service-by-service, old and new running in parallel</div>
+      <div style="padding:5px 0; color:#e6edf3;">&#160;&#160;3. <strong>Hot path only</strong></div>
+      <div style="padding:1px 0 6px 20px; color:#8b949e;">Rewrite the performance-critical services, keep the rest as-is</div>
+      <div style="padding:5px 0; color:#e6edf3;">&#160;&#160;4. <strong>Greenfield alongside</strong></div>
+      <div style="padding:1px 0 6px 20px; color:#8b949e;">New Rust repo, gradually redirect traffic from old services over time</div>
+      <div style="padding:5px 0; color:#e6edf3;">&#160;&#160;5. <strong>Just vibes, Rust is the best</strong></div>
+      <div style="padding:1px 0 6px 20px; color:#8b949e;">No specific reason — full send, trust the borrow checker</div>
+    </div>
+    <!-- footer -->
+    <div style="padding:8px 16px; border-top:1px solid #21262d; color:#6e7681; font-size:0.70rem;">
+      Enter to select &nbsp;&#183;&nbsp; Tab/Arrow keys to navigate &nbsp;&#183;&nbsp; Esc to cancel
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 7 — M3: CLAUDE.md
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="4" id="slide-claudemd">
+  <h3>Memory</h3>
+  <h2>CLAUDE.md — persistent project memory</h2>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:32px; margin-top:12px; height:calc(100vh - 200px); min-height:0;">
+
+    <div style="overflow:hidden; display:flex; flex-direction:column; min-height:0;">
+      <p style="font-size:0.78rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); margin-bottom:8px;">payments-api / CLAUDE.md</p>
+      <div class="terminal" style="flex:1; overflow:hidden; font-size:0.76rem; padding:16px 18px; line-height:1.7;">
+        <span class="md-h">## WHAT — Stack &amp; Structure</span><br>
+Monorepo: apps/api, apps/web, apps/worker<br>
+Shared packages: packages/db (Prisma),<br>
+packages/auth (JWT), packages/ui (React).<br>
+API: Express + TypeScript. Web: Next.js.<br>
+Worker: long-running BullMQ consumers.<br>
+DB: Postgres. Cache: Redis. Queue: RabbitMQ.<br><br>
+        <span class="md-h">## WHY — Purpose &amp; Domain</span><br>
+B2B payments platform. Merchants create<br>
+accounts, connect Stripe, and process<br>
+refunds/payouts via the API. The worker<br>
+handles async webhook delivery and retry<br>
+logic. The web app is the merchant dashboard.<br>
+Payment states: pending → processing<br>
+→ settled | failed | refunded.<br>
+"amount" is always cents (integer).<br><br>
+        <span class="md-h">## HOW — Working on this Project</span><br>
+Use bun, not node/npm.<br>
+bun test           # run all tests<br>
+bun run typecheck  # tsc --noEmit<br>
+bun run lint       # eslint + prettier<br>
+Always typecheck before marking done.<br>
+Never call Stripe API in tests — use<br>
+fixtures in tests/fixtures/stripe/.<br>
+Never edit applied migration files.<br><br>
+        <span class="md-h">## Current task</span><br>
+- [ ] Add refund API endpoint<br>
+- [x] Read Stripe refund docs<br>
+- [ ] Add refund schema to Prisma<br>
+- [ ] Implement POST /refund logic<br>
+- [ ] Add tests for edge cases
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:16px; justify-content:center;">
+      <div class="arch-box">
+        <h4>WHAT — Stack &amp; Structure</h4>
+        <ul style="font-size:0.85rem; margin-top:8px; padding-left:16px; line-height:1.8;">
+          <li>Your tech stack and all the tools you use</li>
+          <li>Project structure — apps, services, packages</li>
+          <li>Critical in monorepos: what each part is for</li>
+        </ul>
+      </div>
+      <div class="arch-box">
+        <h4>WHY — Purpose &amp; Domain</h4>
+        <ul style="font-size:0.85rem; margin-top:8px; padding-left:16px; line-height:1.8;">
+          <li>What the project does and who it's for</li>
+          <li>What each app or service is responsible for</li>
+          <li>Domain rules Claude needs to reason correctly</li>
+        </ul>
+      </div>
+      <div class="arch-box">
+        <h4>HOW — Working on this Project</h4>
+        <ul style="font-size:0.85rem; margin-top:8px; padding-left:16px; line-height:1.8;">
+          <li>How to run tests, typechecks, and builds</li>
+          <li>Tools to use (e.g. bun not npm, pnpm not yarn)</li>
+          <li>Rules for verifying changes before finishing</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 5 — M6: /rewind
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="5">
+  <h3>Commands</h3>
+  <h2>/rewind</h2>
+  <p style="font-size:1.0rem; line-height:1.7; color:var(--text-dim); margin-bottom:14px;">Claude checkpoints as it works. If it goes sideways, <code style="font-family:'JetBrains Mono',monospace; font-size:0.88rem; background:var(--surface); padding:2px 8px; border-radius:4px;">/rewind</code> rolls back to any prior state — you don't lose the whole session, just the part that went wrong.</p>
+  <div id="term-rewind" class="terminal" style="font-size:0.82rem; height:400px; width:100%;"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 6 — M6: /btw
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="6">
+  <h3>Commands</h3>
+  <h2>/btw</h2>
+  <p style="font-size:1.0rem; line-height:1.7; color:var(--text-dim); margin-bottom:14px;">Ask quick questions without adding them to your conversation history. Claude answers from context, the exchange disappears, and your main thread stays clean — even while Claude is mid-response.</p>
+  <div id="term-btw" class="terminal" style="font-size:0.82rem; height:400px; width:100%;"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 7 — M6: /find-bugs
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="7">
+  <h3>Commands</h3>
+  <h2>/find-bugs</h2>
+  <p style="font-size:1.0rem; line-height:1.7; color:var(--text-dim); margin-bottom:14px;">Scan the current branch for bugs, security vulnerabilities, and code quality issues. Claude reviews only the changes you've made, not the entire codebase.</p>
+  <div id="term-findbugs" class="terminal" style="font-size:0.82rem; height:400px; width:100%;"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 8 — Permission fatigue
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="8">
+  <div class="claude-mascot" style="animation:mascot-circle 4s linear infinite; margin-bottom:10px;">  ▐▛███▜▌
+ ▝▜█████▛▘
+  <span class="eyes"> ▘▘ ▝▝</span></div>
+  <h2>Claude asking for permission for the 50th time?</h2>
+  <div id="term-perm-fatigue" class="terminal" style="font-size:0.82rem; height:400px; width:100%;"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 9 — Permission modes
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="9">
+  <h3>Commands</h3>
+  <h2>Permission modes</h2>
+  <p style="font-size:1.0rem; line-height:1.7; color:var(--text-dim); margin-bottom:14px;">Tune exactly how much Claude asks before acting. Press <code style="font-family:'JetBrains Mono',monospace; font-size:0.88rem; background:var(--surface); padding:2px 6px; border-radius:4px;">Shift+Tab</code> to cycle modes mid-session.</p>
+  <div style="font-family:'JetBrains Mono',monospace; font-size:0.75rem; background:var(--surface2); border:1px solid var(--border); border-bottom:none; border-radius:6px 6px 0 0; padding:5px 14px; display:inline-block; color:var(--text-dim);">.claude/settings.json</div>
+  <div class="terminal" style="font-size:0.82rem; height:380px; width:100%; margin-top:0; border-radius:0 6px 6px 6px;">
+    <span class="dim">{</span><br>
+    &ensp;<span class="dim">"permissions": {</span><br>
+    &ensp;&ensp;<span class="added">"allow": [</span><br>
+    &ensp;&ensp;&ensp;<span class="added">"Bash(npm run test)",</span><br>
+    &ensp;&ensp;&ensp;<span class="added">"Bash(npm run lint)",</span><br>
+    &ensp;&ensp;&ensp;<span class="added">"Bash(git status)",</span><br>
+    &ensp;&ensp;&ensp;<span class="added">"Bash(git diff *)",</span><br>
+    &ensp;&ensp;&ensp;<span class="added">"Bash(git commit *)"</span><br>
+    &ensp;&ensp;<span class="added">],</span><br>
+    &ensp;&ensp;<span class="removed">"deny": [</span><br>
+    &ensp;&ensp;&ensp;<span class="removed">"Bash(git push *)",</span><br>
+    &ensp;&ensp;&ensp;<span class="removed">"Bash(npm install *)",</span><br>
+    &ensp;&ensp;&ensp;<span class="removed">"Bash(rm -rf *)",</span><br>
+    &ensp;&ensp;&ensp;<span class="removed">"Edit(.env*)"</span><br>
+    &ensp;&ensp;<span class="removed">]</span><br>
+    &ensp;<span class="dim">}</span><br>
+    <span class="dim">}</span><br><br>
+    <span class="dim">Modes — Shift+Tab to cycle</span><br>
+    <span class="warn">default</span>           <span class="dim">asks before every edit and command</span><br>
+    <span class="added">auto-accept edits</span>  <span class="dim">file edits silent, commands still prompt</span><br>
+    <span class="tool">plan mode</span>         <span class="dim">read-only, review plan before anything runs</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 10 — /permissions
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="10">
+  <h3>Commands</h3>
+  <h2>/permissions</h2>
+  <p style="font-size:1.0rem; line-height:1.7; color:var(--text-dim); margin-bottom:14px;">View and manage the allow/deny rules that control what Claude can do. See the active rules at any time and which config file they came from.</p>
+  <div id="term-perms" class="terminal" style="font-size:0.82rem; height:400px; width:100%;"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 11 — M7: Context management
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="11">
+  <h3>Context</h3>
+  <h2>Getting more out of every session</h2>
+  <p style="font-size:0.9rem; color:var(--text-dim); margin-bottom:24px;">Everything Claude reads, every tool runs, every message — all consumes context. Smart habits leave room to iterate.</p>
+  <div style="display:flex; flex-direction:column; gap:28px;">
+    <div>
+      <p style="font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--red); margin-bottom:10px;">Careless — wastes context</p>
+      <div class="ctx-bar-wrap">
+        <div class="ctx-segment" style="width:10%; background:#7B5EA7;">CLAUDE.md</div>
+        <div class="ctx-segment" style="width:35%; background:#C0392B;">Unfiltered logs (50k lines)</div>
+        <div class="ctx-segment" style="width:25%; background:#E87461;">Many files</div>
+        <div class="ctx-segment" style="width:20%; background:#DA7756;">Chat</div>
+        <div class="ctx-segment" style="width:10%; background:#E8D0C0; color:var(--text-dim);">Left</div>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:4px;">
+        <span style="font-size:0.78rem; padding:3px 10px; border-radius:12px; background:#C0392B; color:white;">Dump 35%</span>
+        <span style="font-size:0.78rem; padding:3px 10px; border-radius:12px; background:#E87461; color:white;">Files 25%</span>
+        <span style="font-size:0.78rem; padding:3px 10px; border-radius:12px; background:#DA7756; color:white;">Chat 20%</span>
+      </div>
+    </div>
+    <div>
+      <p style="font-size:0.82rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--green); margin-bottom:10px;">Smart — room to work</p>
+      <div class="ctx-bar-wrap">
+        <div class="ctx-segment" style="width:10%; background:#7B5EA7;">CLAUDE.md</div>
+        <div class="ctx-segment" style="width:8%; background:#2D8B56;">Log snippet</div>
+        <div class="ctx-segment" style="width:12%; background:#4A7FB5;">2 files</div>
+        <div class="ctx-segment" style="width:16%; background:#DA7756;">Chat</div>
+        <div class="ctx-segment" style="width:54%; background:#E5F2EB; color:#2D8B56; font-weight:700;">Room left — 54%</div>
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:6px; margin-top:4px;">
+        <span style="font-size:0.78rem; padding:3px 10px; border-radius:12px; background:#2D8B56; color:white;">Snippet 8%</span>
+        <span style="font-size:0.78rem; padding:3px 10px; border-radius:12px; background:#4A7FB5; color:white;">2 files 12%</span>
+        <span style="font-size:0.78rem; padding:3px 10px; border-radius:12px; background:#2D8B56; color:white;">Remaining 54%</span>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:16px; font-size:0.9rem; color:var(--text-dim); line-height:1.6;">
+    <strong>Grep</strong> logs for errors only. <strong>Keep CLAUDE.md</strong> under 200 lines. <strong>Let Claude request</strong> files. <strong>New session</strong> = fresh context.
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 12 — /clear
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="12">
+  <h3>Context</h3>
+  <h2>/clear</h2>
+  <p style="font-size:1.05rem; line-height:1.7; color:var(--text-dim); margin-bottom:14px;">Start fresh when switching to unrelated work — stale context wastes tokens on every subsequent message.</p>
+  <div id="term-clear" class="terminal" style="font-size:0.82rem; height:400px; width:100%;"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 13 — /rename
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="13">
+  <h3>Context</h3>
+  <h2>/rename</h2>
+  <p style="font-size:1.05rem; line-height:1.7; color:var(--text-dim); margin-bottom:14px;">Use /rename before clearing so you can find the session later, then /resume to return to it.</p>
+  <div id="term-rename" class="terminal" style="font-size:0.82rem; height:400px; width:100%;"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 14 — /compact
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="14">
+  <h3>Context</h3>
+  <h2>/compact</h2>
+  <p style="font-size:1.05rem; line-height:1.7; color:var(--text-dim); margin-bottom:14px;">Add custom compaction instructions to tell Claude what to preserve during summarization.</p>
+  <div id="term-compact" class="terminal" style="font-size:0.82rem; height:400px; width:100%;"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 15 — /cost + /context
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="15">
+  <h3>Context</h3>
+  <h2>/cost &amp; /context</h2>
+  <p style="font-size:1.05rem; line-height:1.7; color:var(--text-dim); margin-bottom:14px;">Use /cost regularly to anticipate compaction and maintain control over your token budget. The status bar warns you at 80% that automatic compaction is approaching.</p>
+  <div id="term-costctx" class="terminal" style="font-size:0.82rem; height:400px; width:100%;"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 16 — Skills: Writing CASM
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="16">
+  <h3>Skills in action</h3>
+  <h2>Using a skill to write CASM code</h2>
+  <div class="cols" style="gap:28px;">
+    <div class="col">
+      <p style="font-size:0.82rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); margin-bottom:8px;">.claude/skills/casm-write/SKILL.md</p>
+      <div class="skill-file" style="font-size:0.72rem; line-height:1.5;">
+        <span class="comment">---</span><br>
+        <span class="keyword">name:</span> <span class="val">casm-write</span><br>
+        <span class="keyword">description:</span> <span class="val">Directed test writer</span><br>
+        <span class="comment">---</span><br><br>
+        <span class="hl">Canonical CASM Structure</span><br>
+        1. Header comment + includes<br>
+        2. TASK_NUM_LIST comment<br>
+        3. Const definitions<br>
+        4. Memory layout (.dsm)<br>
+        5. DMA descriptors<br>
+        6. Task code patterns<br>
+        7. ADD_FAB validation<br><br>
+        <span class="hl">Key Requirements</span><br>
+        • Include macros.casm and<br>
+        &ensp;ce_addr_map_const.casm<br>
+        • Consistent indentation<br>
+        • Explicit section comments<br>
+        • Self-checking code<br>
+        • fab_in/out expected output<br><br>
+        <span class="hl">Use When</span><br>
+        • Writing directed tests<br>
+        • Validating instruction paths<br>
+        • Testing fabric I/O patterns<br>
+        • Verifying pipelines
+      </div>
+    </div>
+    <div class="col" style="overflow:hidden; display:flex; flex-direction:column;">
+      <p style="font-size:0.82rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); margin-bottom:8px;">CASM Directed Test Reference</p>
+      <div class="skill-file" style="flex:1; overflow:hidden; font-size:0.68rem; line-height:1.4;">
+        <span class="hl">Workflow</span><br>
+        Extract resource requirements<br>
+        → Derive CASM constants<br>
+        → Assign colors/queues<br>
+        → Layout SRAM → Write<br>
+        DMA descriptors → Task code<br>
+        → ADD_FAB stimulus<br><br>
+        <span class="hl">Sections</span><br>
+        • PVR-to-CASM mapping<br>
+        • Include files & macros<br>
+        • Task configuration<br>
+        • Queue configuration<br>
+        • Memory layout (SRAM)<br>
+        • DSR/DSD setup<br>
+        • DMA descriptor patterns<br>
+        • Task code patterns<br>
+        • Pipeline test patterns<br>
+        • FIFO/circular buffers<br>
+        • Self-checking validation<br>
+        • SBG/HBG handling<br>
+        • Test registration<br>
+        • Pre-submit checklist
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 17 — Orchestrating Agents with CLAUDE.md
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="17" style="justify-content:flex-start; padding-top:44px;">
+  <h3>Advanced usage</h3>
+  <h2 style="font-size:1.95rem; margin-bottom:20px;">Orchestrating agents with CLAUDE.md</h2>
+  <div class="cols" style="gap:32px; align-items:stretch;">
+    <div class="col">
+      <p style="font-size:0.8rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); margin-bottom:8px;">.claude/CLAUDE.md</p>
+      <div class="terminal" style="font-size:0.82rem; line-height:1.85; flex:1;">
+        <span class="warn">## Agent Roles</span><br>
+        <span class="dim"># Planner — reads PVR, writes test_plan.md</span><br>
+        <span class="dim"># Coder   — generates .casm from plan</span><br>
+        <span class="dim"># Debug   — fixes dvsim failures</span><br>
+        <span class="dim"># Critic  — gates on style + correctness</span><br><br>
+        <span class="warn">## Workflow</span><br>
+        <span style="color:#DA7756; font-weight:700;">1.</span> Invoke <span style="color:#DA7756;">`/directed-test-migration-agent`</span><br>
+        <span style="color:#4A7FB5; font-weight:700;">2.</span> Planner reads PVR → <span style="color:#4A7FB5;">test_plan.md</span><br>
+        <span style="color:#7B5EA7; font-weight:700;">3.</span> Coder runs <span style="color:#7B5EA7;">per-PVR in parallel</span><br>
+        <span style="color:#C0392B; font-weight:700;">4.</span> dvsim gate → <span style="color:#C0392B;">Debug on FAIL</span><br>
+        <span style="color:#2D8B56; font-weight:700;">5.</span> Critic approves → <span style="color:#2D8B56;">directed_tests/</span>
+      </div>
+    </div>
+    <div class="col" style="display:flex; flex-direction:column; gap:8px; justify-content:center;">
+      <div style="background:rgba(218,119,86,0.1); border:1.5px solid rgba(218,119,86,0.35); border-radius:8px; padding:11px 14px; display:flex; align-items:center; gap:10px;">
+        <span style="font-size:1.1rem; font-weight:800; color:#DA7756; min-width:20px;">1</span>
+        <p style="font-size:0.88rem; color:var(--text-dim); line-height:1.5;">Skill invocation kicks off the orchestrator — no manual wiring needed</p>
+      </div>
+      <div style="background:rgba(74,127,181,0.1); border:1.5px solid rgba(74,127,181,0.3); border-radius:8px; padding:11px 14px; display:flex; align-items:center; gap:10px;">
+        <span style="font-size:1.1rem; font-weight:800; color:#4A7FB5; min-width:20px;">2</span>
+        <p style="font-size:0.88rem; color:var(--text-dim); line-height:1.5;">Planner uses <span style="font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:#4A7FB5;">dv-reference</span> skill to produce a grounded test plan</p>
+      </div>
+      <div style="background:rgba(123,94,167,0.1); border:1.5px solid rgba(123,94,167,0.3); border-radius:8px; padding:11px 14px; display:flex; align-items:center; gap:10px;">
+        <span style="font-size:1.1rem; font-weight:800; color:#7B5EA7; min-width:20px;">3</span>
+        <p style="font-size:0.88rem; color:var(--text-dim); line-height:1.5;">One Coder agent spawned per PVR — all run simultaneously</p>
+      </div>
+      <div style="background:rgba(192,57,43,0.08); border:1.5px solid rgba(192,57,43,0.25); border-radius:8px; padding:11px 14px; display:flex; align-items:center; gap:10px;">
+        <span style="font-size:1.1rem; font-weight:800; color:#C0392B; min-width:20px;">4</span>
+        <p style="font-size:0.88rem; color:var(--text-dim); line-height:1.5;">dvsim output gates the loop — Debug agent retries automatically on FAIL</p>
+      </div>
+      <div style="background:rgba(45,139,86,0.1); border:1.5px solid rgba(45,139,86,0.3); border-radius:8px; padding:11px 14px; display:flex; align-items:center; gap:10px;">
+        <span style="font-size:1.1rem; font-weight:800; color:#2D8B56; min-width:20px;">5</span>
+        <p style="font-size:0.88rem; color:var(--text-dim); line-height:1.5;">Critic reviews style + correctness before writing to <span style="font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:#2D8B56;">directed_tests/</span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 18 — Directed Testing Agent Workflow
+══════════════════════════════════════════════ -->
+<div class="slide" data-index="18" style="justify-content:flex-start; padding-top:40px; padding-bottom:40px;">
+  <h3>Skills in action</h3>
+  <h2 style="font-size:1.9rem; margin-bottom:16px;">Directed test migration — agent workflow</h2>
+  <div style="display:grid; grid-template-columns:1fr 260px; gap:28px; flex:1; min-height:0; align-items:stretch;">
+
+    <!-- Agent flow diagram -->
+    <div style="display:flex; align-items:stretch;">
+      <svg viewBox="0 0 680 470" xmlns="http://www.w3.org/2000/svg" style="width:100%; height:100%;">
+        <defs>
+          <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+            <path d="M0,0 L0,7 L9,3.5 z" fill="#6B5D4F"/>
+          </marker>
+          <marker id="arr-red" markerWidth="9" markerHeight="9" refX="7" refY="3.5" orient="auto">
+            <path d="M0,0 L0,7 L9,3.5 z" fill="#C0392B"/>
+          </marker>
+        </defs>
+
+        <!-- User -->
+        <rect x="28" y="22" width="90" height="40" rx="8" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.5"/>
+        <text x="73" y="47" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" fill="#1A1108">User</text>
+
+        <!-- Arrow User → Orchestrator -->
+        <line x1="118" y1="42" x2="164" y2="42" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
+
+        <!-- Orchestrator -->
+        <rect x="164" y="22" width="140" height="40" rx="8" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.5"/>
+        <text x="234" y="47" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" fill="#1A1108">Orchestrator</text>
+
+        <!-- Arrow Orchestrator → Planner -->
+        <line x1="234" y1="62" x2="234" y2="98" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
+
+        <!-- Agent 1: Planner -->
+        <rect x="168" y="98" width="132" height="58" rx="10" fill="#EBF2FF" stroke="#4A7FB5" stroke-width="2.5"/>
+        <text x="234" y="120" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#4A7FB5">AGENT 1</text>
+        <text x="234" y="142" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#1A1108">Planner</text>
+
+        <!-- Arrow Planner → parallel zone, with label -->
+        <line x1="234" y1="156" x2="234" y2="192" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
+        <text x="242" y="178" font-family="DM Sans,sans-serif" font-size="11" font-style="italic" fill="#6B5D4F">test_plan.md</text>
+
+        <!-- Diagonal arrow into Coder -->
+        <line x1="234" y1="192" x2="130" y2="232" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
+
+        <!-- Parallel zone border -->
+        <rect x="14" y="200" width="652" height="222" rx="10" fill="none" stroke="#C4B0A0" stroke-width="1.5" stroke-dasharray="6,4"/>
+        <text x="26" y="220" font-family="DM Sans,sans-serif" font-size="11" font-weight="600" fill="#8A7A6A" letter-spacing="1.5">PER PVR // PARALLEL</text>
+
+        <!-- Agent 2: Coder -->
+        <rect x="22" y="232" width="108" height="58" rx="10" fill="#EBF2FF" stroke="#4A7FB5" stroke-width="2.5"/>
+        <text x="76" y="254" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#4A7FB5">AGENT 2</text>
+        <text x="76" y="276" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#1A1108">Coder</text>
+
+        <!-- Coder → dvsim -->
+        <line x1="130" y1="261" x2="188" y2="261" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
+        <ellipse cx="232" cy="261" rx="44" ry="28" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.5"/>
+        <text x="232" y="266" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="14" fill="#1A1108">dvsim</text>
+
+        <!-- dvsim → PASS → Critic -->
+        <line x1="276" y1="261" x2="338" y2="261" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
+        <rect x="287" y="248" width="40" height="20" rx="10" fill="#E5F2EB" stroke="#2D8B56" stroke-width="1.5"/>
+        <text x="307" y="262" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#2D8B56">PASS</text>
+
+        <!-- Agent 3: Critic -->
+        <rect x="338" y="232" width="108" height="58" rx="10" fill="#EBF2FF" stroke="#4A7FB5" stroke-width="2.5"/>
+        <text x="392" y="254" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#4A7FB5">AGENT 3</text>
+        <text x="392" y="276" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#1A1108">Critic</text>
+
+        <!-- Critic → PASS → directed_tests/ -->
+        <line x1="446" y1="261" x2="504" y2="261" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
+        <rect x="455" y="248" width="40" height="20" rx="10" fill="#E5F2EB" stroke="#2D8B56" stroke-width="1.5"/>
+        <text x="475" y="262" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#2D8B56">PASS</text>
+        <rect x="504" y="244" width="148" height="36" rx="8" fill="#E5F2EB" stroke="#2D8B56" stroke-width="1.5"/>
+        <text x="578" y="267" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" font-weight="600" fill="#2D8B56">directed_tests/</text>
+
+        <!-- dvsim FAIL → Debug -->
+        <line x1="232" y1="289" x2="232" y2="336" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
+        <rect x="196" y="296" width="40" height="20" rx="10" fill="#FDECEA" stroke="#C0392B" stroke-width="1.5"/>
+        <text x="216" y="310" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#C0392B">FAIL</text>
+
+        <!-- Agent 2.5: Debug -->
+        <rect x="168" y="336" width="128" height="58" rx="10" fill="#FFF8E8" stroke="#DA7756" stroke-width="2.5"/>
+        <text x="232" y="358" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#DA7756">AGENT 2.5</text>
+        <text x="232" y="380" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="15" font-weight="700" fill="#1A1108">Debug</text>
+
+        <!-- Debug dashed back to Coder -->
+        <path d="M168 365 L76 365 L76 290" stroke="#C0392B" stroke-width="2" stroke-dasharray="6,4" fill="none" marker-end="url(#arr-red)"/>
+
+        <!-- Critic FAIL dashed back to Coder -->
+        <path d="M392 290 L392 406 L76 406 L76 290" stroke="#C0392B" stroke-width="2" stroke-dasharray="6,4" fill="none" marker-end="url(#arr-red)"/>
+        <rect x="348" y="290" width="40" height="20" rx="10" fill="#FDECEA" stroke="#C0392B" stroke-width="1.5"/>
+        <text x="368" y="304" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="11" font-weight="700" fill="#C0392B">FAIL</text>
+
+        <!-- Summary Report -->
+        <line x1="392" y1="416" x2="392" y2="448" stroke="#6B5D4F" stroke-width="2" marker-end="url(#arr)"/>
+        <text x="392" y="464" text-anchor="middle" font-family="DM Sans,sans-serif" font-size="13" fill="#6B5D4F">Summary Report</text>
+      </svg>
+    </div>
+
+    <!-- Right panel: skills -->
+    <div style="display:flex; flex-direction:column; gap:14px; justify-content:center;">
+      <div style="background:white; border:1px solid var(--border); border-radius:10px; padding:16px 18px;">
+        <p style="font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:var(--accent); margin-bottom:12px;">cerebras/skills</p>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <div style="background:var(--surface); border-radius:8px; padding:12px 14px;">
+            <p style="font-size:0.85rem; font-weight:700; color:var(--blue); font-family:'JetBrains Mono',monospace; margin-bottom:6px;">dv-reference</p>
+            <p style="font-size:0.83rem; color:var(--text-dim); line-height:1.55;">Gives the Planner CASM conventions, PVR-to-CASM mappings, and task/queue config reference so the plan is grounded in DV standards.</p>
+          </div>
+          <div style="background:var(--surface); border-radius:8px; padding:12px 14px;">
+            <p style="font-size:0.85rem; font-weight:700; color:var(--blue); font-family:'JetBrains Mono',monospace; margin-bottom:6px;">directed-test-migration-agent</p>
+            <p style="font-size:0.83rem; color:var(--text-dim); line-height:1.55;">Orchestrates the full loop — spawns Coder, Debug, and Critic sub-agents, runs dvsim, and gates on PASS/FAIL.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- end .deck -->
+
+<div class="progress" id="progress"></div>
+<div class="counter" id="counter"></div>
+<div class="nav-hint">← → or click to navigate</div>
+<div class="step-hint" id="step-hint">click to continue ↓</div>
+
+<div class="toc-bar" id="toc-bar">
+  <!-- TOC items populated by JavaScript -->
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  // slideIndex -> max inner steps
+  const slideMaxSteps = {};
+  const slideStep = {};
+
+  // ── Topics for TOC ────────────────────────────────────────────
+  const topics = [
+    { name: 'Intro', slides: [0, 1] },
+    { name: 'Mindset', slides: [2, 3] },
+    { name: 'CLAUDE.md', slides: [4] },
+    { name: 'Commands', slides: [5, 6, 7, 8, 9, 10] },
+    { name: 'Context', slides: [11, 12, 13, 14, 15] },
+    { name: 'Skills', slides: [16] },
+    { name: 'Agents', slides: [17, 18] }
+  ];
+
+  function getTopicForSlide(slideIndex) {
+    for (let i = 0; i < topics.length; i++) {
+      if (topics[i].slides.includes(slideIndex)) return i;
+    }
+    return -1;
+  }
+
+  // ── TOC Management ─────────────────────────────────────────────
+  function buildTOC() {
+    const tocBar = document.getElementById('toc-bar');
+    topics.forEach((topic, index) => {
+      if (index > 0) {
+        const divider = document.createElement('div');
+        divider.className = 'toc-divider';
+        tocBar.appendChild(divider);
+      }
+      const item = document.createElement('div');
+      item.className = 'toc-item';
+      item.textContent = topic.name;
+      item.dataset.topic = index;
+      item.addEventListener('click', () => show(topic.slides[0]));
+      tocBar.appendChild(item);
+    });
+  }
+
+  function updateTOC() {
+    const currentTopic = getTopicForSlide(current);
+    document.querySelectorAll('.toc-item').forEach((item) => {
+      const topicIndex = parseInt(item.dataset.topic);
+      item.classList.toggle('active', topicIndex === currentTopic);
+    });
+  }
+
+  // ── CLAUDE.md slide (index 6) ──────────────────────────────────
+  function renderClaudeMd(step) {
+    const slide = document.getElementById('slide-claudemd');
+    slide.querySelectorAll('.md-section').forEach(el => {
+      const s = parseInt(el.dataset.sectionStep);
+      el.classList.toggle('section-active', s === step);
+    });
+    for (let i = 0; i <= 5; i++) {
+      const el = document.getElementById('callout-' + i);
+      if (el) el.classList.toggle('callout-active', i === step);
+    }
+  }
+
+  // ── Hooks slide (index 8) ─────────────────────────────────────
+  function renderHooks(step) {
+    [1, 2, 3].forEach(i => {
+      const sec = document.getElementById('hook-section-' + i);
+      if (sec) sec.classList.toggle('section-active', i === step);
+    });
+    for (let i = 0; i <= 3; i++) {
+      const el = document.getElementById('hcallout-' + i);
+      if (el) el.classList.toggle('callout-active', i === step);
+    }
+  }
+
+  // ── Master render ────────────────────────────────────────────
+  function renderStep(index, step) {
+    if (index === 4) renderClaudeMd(step);
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // Terminal Animation Engine
+  // ══════════════════════════════════════════════════════════════
+  // Step types:
+  //   {t:'cmd',  text, speed, afterDelay}  — types "❯ text" char by char
+  //   {t:'out',  html, delay}              — inserts html line after delay ms
+  //   {t:'stream', text, cls, speed, afterDelay} — streams text char by char
+  //   {t:'br',   delay}                   — blank line
+  //   {t:'pause', ms}                     — wait with no output
+
+  const termTimers = {};
+
+  function stopTerm(id) {
+    (termTimers[id] || []).forEach(clearTimeout);
+    termTimers[id] = [];
+  }
+
+  function playTerm(id) {
+    const el = document.getElementById(id);
+    if (!el || !termAnims[id]) return;
+    stopTerm(id);
+    el.innerHTML = '';
+    const timers = termTimers[id] = [];
+    const steps = termAnims[id];
+    let si = 0;
+
+    function sched(fn, delay) { timers.push(setTimeout(fn, delay)); }
+    function scroll() { el.scrollTop = el.scrollHeight; }
+
+    function run() {
+      if (si >= steps.length) {
+        // Done — just show blinking cursor
+        const cur = document.createElement('span');
+        cur.className = 'term-cursor';
+        el.appendChild(cur);
+        scroll();
+        return;
+      }
+      const s = steps[si++];
+      if (s.t === 'cmd') {
+        const prompt = document.createElement('span');
+        prompt.className = 'prompt';
+        prompt.textContent = '❯ ';
+        el.appendChild(prompt);
+        const span = document.createElement('span');
+        el.appendChild(span);
+        let ci = 0;
+        function typeChar() {
+          if (ci < s.text.length) {
+            span.textContent += s.text[ci++];
+            scroll();
+            timers.push(setTimeout(typeChar, (s.speed || 38) + Math.random() * 22));
+          } else {
+            el.appendChild(document.createElement('br'));
+            scroll();
+            sched(run, s.afterDelay !== undefined ? s.afterDelay : 380);
+          }
+        }
+        typeChar();
+      } else if (s.t === 'stream') {
+        const span = document.createElement('span');
+        if (s.cls) span.className = s.cls;
+        el.appendChild(span);
+        let ci = 0;
+        function streamChar() {
+          if (ci < s.text.length) {
+            span.textContent += s.text[ci++];
+            scroll();
+            timers.push(setTimeout(streamChar, s.speed || 16));
+          } else {
+            el.appendChild(document.createElement('br'));
+            scroll();
+            sched(run, s.afterDelay !== undefined ? s.afterDelay : 80);
+          }
+        }
+        streamChar();
+      } else if (s.t === 'out') {
+        el.insertAdjacentHTML('beforeend', s.html + '<br>');
+        scroll();
+        sched(run, s.delay !== undefined ? s.delay : 80);
+      } else if (s.t === 'br') {
+        el.appendChild(document.createElement('br'));
+        scroll();
+        sched(run, s.delay !== undefined ? s.delay : 40);
+      } else if (s.t === 'pause') {
+        sched(run, s.ms || 500);
+      } else if (s.t === 'popup') {
+        // Show popup and suspend animation — resumed by advance()
+        const popup = document.getElementById(s.id);
+        if (popup) popup.style.display = 'block';
+        window._popupResume = function() {
+          if (popup) {
+            popup.style.animation = 'none';
+            popup.style.opacity = '0';
+            popup.style.transition = 'opacity 0.2s';
+            setTimeout(() => { popup.style.display = 'none'; popup.style.opacity = ''; popup.style.transition = ''; }, 200);
+          }
+          window._popupResume = null;
+          sched(run, s.afterDelay !== undefined ? s.afterDelay : 300);
+        };
+        // Do NOT call run() — wait for user to advance
+      }
+    }
+    run();
+  }
+
+  // ── Animation sequences ───────────────────────────────────────
+  const termAnims = {
+
+    'term-whatisclaude': [
+      {t:'out', html:'<span class="claude">  ▐▛███▜▌</span>', delay:0},
+      {t:'out', html:'<span class="claude"> ▝▜█████▛▘</span>', delay:0},
+      {t:'out', html:'<span class="claude">   ▘▘  ▝▝</span>', delay:60},
+      {t:'br', delay:40},
+      {t:'out', html:'<span class="prompt"> ✻ Welcome to Claude Code!</span>', delay:40},
+      {t:'br', delay:20},
+      {t:'out', html:'<span class="dim">   v2.1.74  ·  claude-sonnet-4-6</span>', delay:40},
+      {t:'out', html:'<span class="dim">   ~/Desktop/claude_training</span>', delay:40},
+      {t:'br', delay:40},
+      {t:'out', html:'<span class="dim">   /help for help, /exit to quit</span>', delay:60},
+      {t:'out', html:'<span class="dim">────────────────────────────────────────</span>', delay:100},
+      {t:'cmd', text:'please help me with all of my bugs', speed:32, afterDelay:600},
+      {t:'out', html:'<span class="dim">────────────────────────────────────────</span>', delay:100},
+      {t:'br', delay:100},
+      {t:'stream', text:"I'll help you fix everything. Let me explore your project first.", cls:'claude', speed:11, afterDelay:300},
+      {t:'br', delay:100},
+      {t:'out', html:'<span class="tool">⚙  Reading project structure...</span>', delay:700},
+      {t:'out', html:'<span class="tool">⚙  Scanning for errors and test failures...</span>', delay:900},
+      {t:'out', html:'<span class="tool">⚙  Checking git diff for recent changes...</span>', delay:800},
+      {t:'br', delay:200},
+      {t:'stream', text:'Found 4 issues:', cls:'warn', speed:18, afterDelay:160},
+      {t:'br', delay:80},
+      {t:'out', html:'  <span class="warn">⚠</span>  Null pointer — auth/session.ts:34', delay:120},
+      {t:'out', html:'  <span class="warn">⚠</span>  Unhandled rejection — api/users.ts:89', delay:120},
+      {t:'out', html:'  <span class="removed">🔴</span> Type error — utils/date.ts:12', delay:120},
+      {t:'out', html:'  <span class="warn">⚠</span>  Missing await — db/repos/payment.ts:67', delay:120},
+      {t:'br', delay:200},
+      {t:'stream', text:'Fixing all 4...', cls:'dim', speed:18, afterDelay:200},
+      {t:'out', html:'<span class="tool">⚙  Patching auth/session.ts, api/users.ts...</span>', delay:900},
+      {t:'out', html:'<span class="tool">⚙  Patching utils/date.ts, db/repos/payment.ts...</span>', delay:800},
+      {t:'br', delay:200},
+      {t:'out', html:'<span class="added">✓  All 47 tests pass. 4 bugs fixed.</span>', delay:0},
+    ],
+
+    'term-perm-fatigue': [
+      {t:'cmd', text:'deploy the staging environment', speed:36, afterDelay:500},
+      {t:'br', delay:80},
+      {t:'stream', text:'I need to run a few commands. May I run:', cls:'claude', speed:12, afterDelay:120},
+      {t:'out', html:'<span class="dim">  curl https://api.internal/deploy -X POST</span>', delay:80},
+      {t:'out', html:'<span class="prompt">Allow? [y/n/always]</span>', delay:240},
+      {t:'out', html:'<span class="prompt">❯ </span>y', delay:400},
+      {t:'br', delay:80},
+      {t:'stream', text:'Checking deploy status. May I run:', cls:'claude', speed:12, afterDelay:120},
+      {t:'out', html:'<span class="dim">  curl https://api.internal/status</span>', delay:80},
+      {t:'out', html:'<span class="prompt">Allow? [y/n/always]</span>', delay:240},
+      {t:'out', html:'<span class="prompt">❯ </span>y', delay:400},
+      {t:'br', delay:80},
+      {t:'stream', text:'Tailing logs. May I run:', cls:'claude', speed:12, afterDelay:120},
+      {t:'out', html:'<span class="dim">  kubectl logs deploy/staging --tail=50</span>', delay:80},
+      {t:'out', html:'<span class="prompt">Allow? [y/n/always]</span>', delay:240},
+      {t:'out', html:'<span class="prompt">❯ </span>...', delay:320},
+      {t:'stream', text:'(50th time today)', cls:'removed', speed:22, afterDelay:0},
+    ],
+
+    'term-surgeon': [
+      // Task 1 — fix a null ref type error (~10s)
+      {t:'cmd', text:'fix the type error in src/auth/session.ts:34', speed:40, afterDelay:600},
+      {t:'out', html:'<span class="tool">⚙ Reading src/auth/session.ts...</span>', delay:900},
+      {t:'out', html:'<span class="dim">  line 34: req.user.id — req.user possibly undefined</span>', delay:500},
+      {t:'out', html:'<span class="tool">⚙ Editing src/auth/session.ts...</span>', delay:700},
+      {t:'stream', text:'✓  Added null guard — req.user?.id ?? null', cls:'added', speed:14, afterDelay:1200},
+      {t:'br', delay:300},
+
+      // Task 2 — rename function across codebase (~13s)
+      {t:'cmd', text:'rename processPayment → chargeCustomer everywhere', speed:40, afterDelay:600},
+      {t:'out', html:'<span class="tool">⚙ Searching for processPayment...</span>', delay:800},
+      {t:'out', html:'<span class="dim">  7 references across 4 files</span>', delay:450},
+      {t:'out', html:'<span class="tool">⚙ Editing src/payments/processor.ts (3 refs)...</span>', delay:700},
+      {t:'out', html:'<span class="tool">⚙ Editing src/api/routes/checkout.ts (2 refs)...</span>', delay:650},
+      {t:'out', html:'<span class="tool">⚙ Editing src/workers/retry.ts (1 ref)...</span>', delay:600},
+      {t:'out', html:'<span class="tool">⚙ Editing tests/unit/payments.test.ts (1 ref)...</span>', delay:600},
+      {t:'stream', text:'✓  4 files updated, 7 references renamed', cls:'added', speed:14, afterDelay:1200},
+      {t:'br', delay:300},
+
+      // Task 3 — add zod validation (~10s)
+      {t:'cmd', text:'add zod email validation to POST /api/users', speed:40, afterDelay:600},
+      {t:'out', html:'<span class="tool">⚙ Reading src/api/routes/users.ts...</span>', delay:900},
+      {t:'out', html:'<span class="tool">⚙ Reading src/schemas/user.ts...</span>', delay:700},
+      {t:'out', html:'<span class="tool">⚙ Editing src/schemas/user.ts — z.string().email()...</span>', delay:800},
+      {t:'out', html:'<span class="tool">⚙ Editing src/api/routes/users.ts — wiring schema...</span>', delay:700},
+      {t:'stream', text:'✓  400 returned on invalid email input', cls:'added', speed:14, afterDelay:1200},
+      {t:'br', delay:300},
+
+      // Task 4 — fix N+1 query (~14s)
+      {t:'cmd', text:'the GET /orders endpoint is doing an n+1 — fix it', speed:40, afterDelay:600},
+      {t:'out', html:'<span class="tool">⚙ Reading src/api/routes/orders.ts...</span>', delay:900},
+      {t:'out', html:'<span class="tool">⚙ Reading src/db/repos/order.ts...</span>', delay:800},
+      {t:'out', html:'<span class="dim">  Found: getProductById called per item in loop</span>', delay:500},
+      {t:'out', html:'<span class="tool">⚙ Rewriting to single query with JOIN on line items...</span>', delay:900},
+      {t:'out', html:'<span class="tool">⚙ Running tests...</span>', delay:1100},
+      {t:'stream', text:'✓  420ms → 12ms. All tests pass.', cls:'added', speed:14, afterDelay:1200},
+      {t:'br', delay:300},
+
+      // Task 5 — db indexes (~11s)
+      {t:'cmd', text:'add indexes on users.email and orders.user_id', speed:40, afterDelay:600},
+      {t:'out', html:'<span class="tool">⚙ Reading prisma/schema.prisma...</span>', delay:900},
+      {t:'out', html:'<span class="tool">⚙ Adding @@index([email]) to User model...</span>', delay:700},
+      {t:'out', html:'<span class="tool">⚙ Adding @@index([userId]) to Order model...</span>', delay:650},
+      {t:'out', html:'<span class="tool">⚙ Running prisma migrate dev...</span>', delay:1000},
+      {t:'stream', text:'✓  Migration created and applied', cls:'added', speed:14, afterDelay:0},
+    ],
+
+    'term-kevin': [
+      // Kick off the big task (~5s for typing + initial read)
+      {t:'cmd', text:'implement a complete password reset flow — request endpoint, signed token via email, reset endpoint with expiry, and full test coverage', speed:30, afterDelay:800},
+      {t:'br', delay:100},
+
+      // File exploration phase (~12s)
+      {t:'out', html:'<span class="tool">⚙ Reading src/auth/session.ts...</span>', delay:900},
+      {t:'out', html:'<span class="tool">⚙ Reading src/api/routes/auth.ts...</span>', delay:800},
+      {t:'out', html:'<span class="tool">⚙ Reading src/services/email.ts...</span>', delay:800},
+      {t:'out', html:'<span class="tool">⚙ Reading prisma/schema.prisma...</span>', delay:800},
+      {t:'out', html:'<span class="tool">⚙ Reading tests/auth/login.test.ts...</span>', delay:700},
+      {t:'br', delay:200},
+
+      // Planning stream (~10s)
+      {t:'stream', text:"Got it. Here's the full plan:", cls:'claude', speed:12, afterDelay:300},
+      {t:'br', delay:100},
+      {t:'out', html:'<span class="dim">  1. PasswordResetToken model — token, userId, expiresAt, usedAt</span>', delay:200},
+      {t:'out', html:'<span class="dim">  2. POST /auth/request-reset — generate token, send email</span>', delay:200},
+      {t:'out', html:'<span class="dim">  3. POST /auth/reset-password — validate, hash, update password</span>', delay:200},
+      {t:'out', html:'<span class="dim">  4. Token TTL: 1 hour, single-use enforced</span>', delay:200},
+      {t:'out', html:'<span class="dim">  5. Tests: happy path, expired, already-used, invalid token</span>', delay:200},
+      {t:'br', delay:400},
+
+      // Build phase — migration (~8s)
+      {t:'out', html:'<span class="tool">⚙ Editing prisma/schema.prisma — PasswordResetToken model...</span>', delay:1000},
+      {t:'out', html:'<span class="tool">⚙ Running prisma migrate dev...</span>', delay:1200},
+      {t:'out', html:'<span class="dim">  Migration: 20260312_add_password_reset_tokens ✓</span>', delay:500},
+
+      // Build phase — core logic (~10s)
+      {t:'out', html:'<span class="tool">⚙ Creating src/auth/resetToken.ts...</span>', delay:900},
+      {t:'out', html:'<span class="dim">  generateResetToken(), validateResetToken(), markTokenUsed()</span>', delay:350},
+      {t:'out', html:'<span class="tool">⚙ Creating src/templates/email/reset-password.hbs...</span>', delay:900},
+      {t:'out', html:'<span class="tool">⚙ Editing src/services/email.ts — sendPasswordResetEmail()...</span>', delay:900},
+      {t:'out', html:'<span class="tool">⚙ Editing src/api/routes/auth.ts — POST /auth/request-reset...</span>', delay:900},
+      {t:'out', html:'<span class="tool">⚙ Editing src/api/routes/auth.ts — POST /auth/reset-password...</span>', delay:900},
+      {t:'out', html:'<span class="tool">⚙ Creating tests/auth/passwordReset.test.ts...</span>', delay:900},
+      {t:'br', delay:200},
+
+      // Test run — failure (~6s)
+      {t:'out', html:'<span class="tool">⚙ Running tests...</span>', delay:1100},
+      {t:'br', delay:200},
+      {t:'out', html:'<span class="removed">FAIL tests/auth/passwordReset.test.ts</span>', delay:300},
+      {t:'out', html:'<span class="dim">  ✕ should reject expired tokens</span>', delay:250},
+      {t:'out', html:'<span class="dim">    Expected: 400  Received: 200</span>', delay:250},
+      {t:'br', delay:400},
+
+      // Self-correction (~7s)
+      {t:'out', html:'<span class="tool">⚙ Reading src/auth/resetToken.ts...</span>', delay:900},
+      {t:'out', html:'<span class="dim">  Found: expiresAt check using &lt; instead of &lt;= — boundary off by 1ms</span>', delay:500},
+      {t:'out', html:'<span class="tool">⚙ Editing src/auth/resetToken.ts...</span>', delay:700},
+      {t:'out', html:'<span class="tool">⚙ Running tests...</span>', delay:1100},
+      {t:'br', delay:200},
+      {t:'stream', text:'✓  23 tests pass — password reset flow complete', cls:'added', speed:14, afterDelay:0},
+    ],
+
+    'term-plan': [
+      {t:'cmd', text:'/plan how to migrate the cloud-platform repo to rust cause rust is the best?', speed:38, afterDelay:700},
+      {t:'br', delay:100},
+      {t:'out', html:'<span class="tool">⚙ Reading codebase structure...</span>', delay:900},
+      {t:'out', html:'<span class="tool">⚙ Analyzing services/, infra/, Dockerfile, CI pipelines...</span>', delay:800},
+      {t:'out', html:'<span class="tool">⚙ Scanning 47 service entry points, 312 source files...</span>', delay:700},
+      {t:'br', delay:300},
+      {t:'popup', id:'plan-popup', afterDelay:400},
+      {t:'stream', text:'Plan: Migrate cloud-platform → Rust (full rewrite)', cls:'warn', speed:18, afterDelay:140},
+      {t:'br', delay:80},
+      {t:'out', html:'<span class="dim">Estimated scope: ~28,000 lines across 12 services  |  Risk: HIGH</span>', delay:120},
+      {t:'br', delay:80},
+      {t:'out', html:'<span class="warn">Phase 1 — Dependency audit &amp; Rust workspace setup</span>', delay:120},
+      {t:'out', html:'<span class="claude"> 1.1</span>  Audit all 47 npm/pip deps → find Rust crate equivalents (crates.io)', delay:110},
+      {t:'out', html:'<span class="claude"> 1.2</span>  Init Cargo workspace at repo root — workspace members per service', delay:110},
+      {t:'out', html:'<span class="claude"> 1.3</span>  Pin toolchain in rust-toolchain.toml (stable, 1.77+)', delay:110},
+      {t:'out', html:'<span class="claude"> 1.4</span>  Add cargo-deny, cargo-audit, cargo-tarpaulin to CI', delay:110},
+      {t:'out', html:'<span class="claude"> 1.5</span>  Set up cross-compilation targets (linux/amd64, linux/arm64)', delay:110},
+      {t:'br', delay:70},
+      {t:'out', html:'<span class="warn">Phase 2 — Shared library crates (services/common → crates/)</span>', delay:120},
+      {t:'out', html:'<span class="claude"> 2.1</span>  crates/config — port config loading (dotenv → envy + figment)', delay:110},
+      {t:'out', html:'<span class="claude"> 2.2</span>  crates/db — port DB layer (pg driver → sqlx async + compile-time checks)', delay:110},
+      {t:'out', html:'<span class="claude"> 2.3</span>  crates/auth — port JWT middleware (jsonwebtoken crate, argon2 for hashing)', delay:110},
+      {t:'out', html:'<span class="claude"> 2.4</span>  crates/telemetry — OpenTelemetry traces + metrics (tracing + opentelemetry-otlp)', delay:110},
+      {t:'out', html:'<span class="claude"> 2.5</span>  crates/errors — typed error enum, impl IntoResponse for axum handlers', delay:110},
+      {t:'out', html:'<span class="claude"> 2.6</span>  crates/proto — regenerate protobuf via prost-build (replace grpc stubs)', delay:110},
+      {t:'br', delay:70},
+      {t:'out', html:'<span class="warn">Phase 3 — Service-by-service rewrite (strangler-fig pattern)</span>', delay:120},
+      {t:'out', html:'<span class="claude"> 3.1</span>  services/gateway → axum HTTP server, tower middleware stack', delay:110},
+      {t:'out', html:'<span class="claude"> 3.2</span>  services/auth-service → axum + sqlx, replace Passport.js flows', delay:110},
+      {t:'out', html:'<span class="claude"> 3.3</span>  services/user-service → CRUD via sqlx, serde JSON request/response', delay:110},
+      {t:'out', html:'<span class="claude"> 3.4</span>  services/billing → async Stripe client, idempotency keys in Redis (fred)', delay:110},
+      {t:'out', html:'<span class="claude"> 3.5</span>  services/notifications → tokio tasks, lettre (SMTP), reqwest (webhooks)', delay:110},
+      {t:'out', html:'<span class="claude"> 3.6</span>  services/worker → tokio runtime, RabbitMQ via lapin, graceful shutdown', delay:110},
+      {t:'out', html:'<span class="claude"> 3.7</span>  services/scheduler → cron via tokio-cron-scheduler, distributed locking', delay:110},
+      {t:'out', html:'<span class="claude"> 3.8</span>  services/search → tantivy full-text index (replace Elasticsearch client)', delay:110},
+      {t:'out', html:'<span class="claude"> 3.9</span>  services/storage → AWS SDK (aws-sdk-s3), multipart streaming uploads', delay:110},
+      {t:'out', html:'<span class="claude">3.10</span>  services/analytics → ClickHouse async client, batch insert pipeline', delay:110},
+      {t:'out', html:'<span class="claude">3.11</span>  services/admin → axum + askama templates (replace handlebars SSR)', delay:110},
+      {t:'out', html:'<span class="claude">3.12</span>  services/cli-tool → clap v4 arg parsing, replace existing Node CLI', delay:110},
+      {t:'br', delay:70},
+      {t:'out', html:'<span class="warn">Phase 4 — Data &amp; migration safety</span>', delay:120},
+      {t:'out', html:'<span class="claude"> 4.1</span>  Add sqlx offline mode — compile-time query checks against schema snapshots', delay:110},
+      {t:'out', html:'<span class="claude"> 4.2</span>  Write migration scripts for any schema changes introduced by new models', delay:110},
+      {t:'out', html:'<span class="claude"> 4.3</span>  Run old + new services in parallel behind feature flag (shadow traffic)', delay:110},
+      {t:'out', html:'<span class="claude"> 4.4</span>  Validate response parity: diff old vs new on 100% of shadow requests', delay:110},
+      {t:'br', delay:70},
+      {t:'out', html:'<span class="warn">Phase 5 — Testing strategy</span>', delay:120},
+      {t:'out', html:'<span class="claude"> 5.1</span>  Unit tests per crate — cargo test, mock traits via mockall', delay:110},
+      {t:'out', html:'<span class="claude"> 5.2</span>  Integration tests — testcontainers-rs (real Postgres, Redis, Rabbit)', delay:110},
+      {t:'out', html:'<span class="claude"> 5.3</span>  Property tests — proptest for serialization round-trips + edge cases', delay:110},
+      {t:'out', html:'<span class="claude"> 5.4</span>  Load tests — wrk2 / k6 benchmarks, compare p99 latency vs old services', delay:110},
+      {t:'out', html:'<span class="claude"> 5.5</span>  Fuzz critical parsers — cargo-fuzz on HTTP request + protobuf deserialization', delay:110},
+      {t:'br', delay:70},
+      {t:'out', html:'<span class="warn">Phase 6 — CI/CD &amp; container updates</span>', delay:120},
+      {t:'out', html:'<span class="claude"> 6.1</span>  Replace node:alpine Dockerfiles → cargo-chef + distroless final images', delay:110},
+      {t:'out', html:'<span class="claude"> 6.2</span>  Update GH Actions: cargo build --release, cross for ARM, sccache for speed', delay:110},
+      {t:'out', html:'<span class="claude"> 6.3</span>  Gate merges on: cargo clippy --deny warnings, cargo fmt --check', delay:110},
+      {t:'out', html:'<span class="claude"> 6.4</span>  Update Helm charts — new binary paths, env var names, healthcheck endpoints', delay:110},
+      {t:'out', html:'<span class="claude"> 6.5</span>  Update k8s resource requests — Rust binaries use ~60% less memory', delay:110},
+      {t:'br', delay:70},
+      {t:'out', html:'<span class="warn">Phase 7 — Cutover &amp; cleanup</span>', delay:120},
+      {t:'out', html:'<span class="claude"> 7.1</span>  Canary rollout per service — 5% → 25% → 100% traffic over 72h windows', delay:110},
+      {t:'out', html:'<span class="claude"> 7.2</span>  Monitor error rates, latency, and memory in Grafana during each window', delay:110},
+      {t:'out', html:'<span class="claude"> 7.3</span>  Deprecate old service directories after 2-week stability window', delay:110},
+      {t:'out', html:'<span class="claude"> 7.4</span>  Remove Node/Python runtimes from base images, update SBOM', delay:110},
+      {t:'out', html:'<span class="claude"> 7.5</span>  Update CLAUDE.md, ADRs, and onboarding docs to reflect Rust stack', delay:110},
+      {t:'br', delay:100},
+      {t:'out', html:'<span class="dim">Files touched: ~340  |  New crates: 18  |  Est. LOC delta: -6,200  |  Risk: HIGH</span>', delay:120},
+      {t:'br', delay:100},
+      {t:'stream', text:'Proceed? (y to execute phase 1, or give feedback)', cls:'claude', speed:16, afterDelay:0},
+    ],
+
+    'term-rewind': [
+      {t:'out', html:'<span class="dim">migrating auth to JWT — step 3 running...</span>', delay:100},
+      {t:'out', html:'<span class="tool">⚙  Editing db/schema.prisma — adding jwt_secret column...</span>', delay:600},
+      {t:'out', html:'<span class="warn">⚠  Error: cannot add non-null column without a default value</span>', delay:700},
+      {t:'br', delay:300},
+      {t:'cmd', text:'/rewind', speed:50, afterDelay:500},
+      {t:'br', delay:60},
+      {t:'stream', text:'Choose a checkpoint to restore:', cls:'claude', speed:16, afterDelay:120},
+      {t:'br', delay:40},
+      {t:'out', html:'<span class="dim">  1  start</span>', delay:60},
+      {t:'out', html:'<span class="dim">  2  after-step-1  — installed jsonwebtoken</span>', delay:60},
+      {t:'out', html:'<span class="log-cp">  3  after-step-2  — created src/auth/jwt.ts  ← recommended</span>', delay:60},
+      {t:'out', html:'<span class="dim">  4  now           — broken schema edit</span>', delay:60},
+      {t:'br', delay:500},
+      {t:'out', html:'<span class="tool">⟳  Restoring to after-step-2...</span>', delay:400},
+      {t:'out', html:'<span class="tool">⟳  Reverting db/schema.prisma (4 edits)...</span>', delay:700},
+      {t:'out', html:'<span class="added">✓  Restored. src/auth/jwt.ts and routes/users.ts preserved.</span>', delay:500},
+      {t:'br', delay:300},
+      {t:'cmd', text:'redo step 3 — use a prisma migration instead of editing schema directly', speed:26, afterDelay:500},
+      {t:'br', delay:60},
+      {t:'out', html:'<span class="tool">⚙  Creating prisma/migrations/add_jwt_secret...</span>', delay:700},
+      {t:'out', html:'<span class="added">✓  Migration created. Schema valid.</span>', delay:0},
+    ],
+
+    'term-btw': [
+      {t:'cmd', text:'Add caching to the GET /products endpoint', speed:40, afterDelay:400},
+      {t:'out', html:'<span class="tool">⚙ Reading routes/products.ts...</span>', delay:700},
+      {t:'out', html:'<span class="tool">⚙ Reading src/db/repos/product.ts...</span>', delay:600},
+      {t:'br', delay:300},
+      {t:'cmd', text:'/btw is Redis already set up in this project?', speed:42, afterDelay:480},
+      {t:'br', delay:60},
+      {t:'stream', text:'Yes — redis@4.6 in package.json, client in src/lib/redis.ts', cls:'claude', speed:14, afterDelay:160},
+      {t:'out', html:'<span class="dim">(side question — not added to conversation)</span>', delay:180},
+      {t:'br', delay:320},
+      {t:'out', html:'<span class="tool">⚙ Editing routes/products.ts...</span>', delay:300},
+      {t:'out', html:'<span class="tool">⚙ Adding cache.get / cache.set with 60s TTL</span>', delay:700},
+      {t:'out', html:'<span class="added">✓  Done. Cache layer added, tests updated.</span>', delay:500},
+    ],
+
+    'term-perms': [
+      {t:'cmd', text:'/permissions', speed:45, afterDelay:460},
+      {t:'br', delay:80},
+      {t:'stream', text:'Active permission rules:', cls:'dim', speed:14, afterDelay:100},
+      {t:'br', delay:80},
+      {t:'out', html:'<span class="added">ALLOW</span>', delay:100},
+      {t:'out', html:'  Bash(npm run test)', delay:55},
+      {t:'out', html:'  Bash(npm run lint)', delay:55},
+      {t:'out', html:'  Bash(git status)', delay:55},
+      {t:'out', html:'  Bash(git commit *)', delay:55},
+      {t:'out', html:'  Edit(**/*.ts)', delay:55},
+      {t:'out', html:'<span class="dim">  → from .claude/settings.json</span>', delay:100},
+      {t:'br', delay:100},
+      {t:'out', html:'<span class="removed">DENY</span>', delay:100},
+      {t:'out', html:'  Bash(git push *)', delay:55},
+      {t:'out', html:'  Bash(npm install *)', delay:55},
+      {t:'out', html:'  Edit(.env*)', delay:55},
+      {t:'out', html:'<span class="dim">  → from .claude/settings.json</span>', delay:100},
+    ],
+
+    'term-costctx': [
+      {t:'cmd', text:'/cost', speed:50, afterDelay:420},
+      {t:'br', delay:80},
+      {t:'out', html:'<span class="claude">● Session cost so far</span>', delay:200},
+      {t:'out', html:'<span class="dim">  Input:   42,300 tokens   ($0.13)</span>', delay:80},
+      {t:'out', html:'<span class="dim">  Output:  8,100 tokens   ($0.12)</span>', delay:80},
+      {t:'out', html:'<span class="warn">  Total:   50,400 / 200,000 tokens  (25%)</span>', delay:80},
+      {t:'br', delay:500},
+      {t:'cmd', text:'/context', speed:50, afterDelay:420},
+      {t:'br', delay:80},
+      {t:'out', html:'<span class="claude">● Context window</span>', delay:200},
+      {t:'out', html:'<span class="dim">  ████████████░░░░░░░░░░░░░░░░░░  39%</span>', delay:80},
+      {t:'out', html:'<span class="dim">  CLAUDE.md: 1,200   Files: 8,400   Chat: 10,600</span>', delay:80},
+      {t:'br', delay:500},
+      {t:'out', html:'<span class="dim">  — later, at 82% —</span>', delay:200},
+      {t:'br', delay:300},
+      {t:'out', html:'<span class="warn">⚠  Context at 82% — auto-compaction approaching.</span>', delay:200},
+      {t:'out', html:'<span class="dim">  Use /compact or /clear before hitting the limit.</span>', delay:80},
+    ],
+
+    'term-clear': [
+      {t:'out', html:'<span class="tool">⚙  Running final typecheck...</span>', delay:700},
+      {t:'out', html:'<span class="added">✓  All checks pass. PR #247 ready for review.</span>', delay:300},
+      {t:'br', delay:400},
+      {t:'cmd', text:'/clear', speed:50, afterDelay:500},
+      {t:'br', delay:80},
+      {t:'out', html:'<span class="claude">● Context cleared.</span>', delay:200},
+      {t:'out', html:'<span class="dim">  Previous: 78 messages (auth JWT migration)</span>', delay:80},
+      {t:'out', html:'<span class="dim">  Now: fresh session — 0 tokens used</span>', delay:80},
+      {t:'br', delay:400},
+      {t:'cmd', text:'walk me through the terraform networking setup', speed:32, afterDelay:600},
+      {t:'br', delay:80},
+      {t:'out', html:'<span class="tool">⚙  Reading terraform/networking.tf...</span>', delay:700},
+      {t:'out', html:'<span class="tool">⚙  Reading terraform/variables.tf...</span>', delay:600},
+      {t:'br', delay:200},
+      {t:'stream', text:'Your networking stack uses a VPC with 3 subnets...', cls:'claude', speed:12, afterDelay:200},
+      {t:'br', delay:100},
+      {t:'out', html:'<span class="dim">  ← no JWT noise, no Prisma context — just terraform</span>', delay:0},
+    ],
+
+    'term-rename': [
+      {t:'cmd', text:'/rename auth-jwt-migration', speed:40, afterDelay:420},
+      {t:'out', html:'<span class="claude">● Session renamed: "auth-jwt-migration"</span>', delay:200},
+      {t:'br', delay:300},
+      {t:'cmd', text:'/clear', speed:50, afterDelay:420},
+      {t:'out', html:'<span class="claude">● Context cleared. Session saved as "auth-jwt-migration".</span>', delay:200},
+      {t:'br', delay:800},
+      {t:'out', html:'<span class="dim">  — 2 hours later —</span>', delay:200},
+      {t:'br', delay:400},
+      {t:'cmd', text:'/resume auth-jwt-migration', speed:36, afterDelay:500},
+      {t:'br', delay:80},
+      {t:'out', html:'<span class="claude">● Resuming "auth-jwt-migration"</span>', delay:200},
+      {t:'out', html:'<span class="dim">  78 messages · last active 2h ago</span>', delay:80},
+      {t:'out', html:'<span class="dim">  Context: JWT migration, payments-api, stopped at step 4</span>', delay:80},
+      {t:'br', delay:400},
+      {t:'cmd', text:'continue — we were on step 4, service layer', speed:34, afterDelay:500},
+      {t:'br', delay:80},
+      {t:'stream', text:'Right — src/services/auth.ts. Picking up from the verifyToken helper...', cls:'claude', speed:12, afterDelay:0},
+    ],
+
+    'term-compact': [
+      {t:'cmd', text:'/compact Focus on code samples and API usage', speed:34, afterDelay:500},
+      {t:'br', delay:80},
+      {t:'out', html:'<span class="claude">● Compacting session context...</span>', delay:400},
+      {t:'out', html:'<span class="dim">  Original: 94,200 tokens</span>', delay:300},
+      {t:'out', html:'<span class="dim">  Preserving: code samples, API usage patterns</span>', delay:200},
+      {t:'out', html:'<span class="dim">  Summarizing: planning discussion, debugging steps</span>', delay:200},
+      {t:'br', delay:300},
+      {t:'out', html:'<span class="added">● Done — 11,400 tokens (88% reduction)</span>', delay:400},
+      {t:'out', html:'<span class="dim">  14 code blocks preserved · 8 API patterns retained</span>', delay:100},
+      {t:'br', delay:500},
+      {t:'cmd', text:'add rate limiting to the payment endpoint', speed:36, afterDelay:500},
+      {t:'br', delay:80},
+      {t:'out', html:'<span class="tool">⚙  Reading routes/payment.ts...</span>', delay:700},
+      {t:'stream', text:'Based on the express-rate-limit pattern you used in users.ts...', cls:'claude', speed:12, afterDelay:200},
+      {t:'br', delay:100},
+      {t:'out', html:'<span class="dim">  ← still knows your code patterns, none of the chat fluff</span>', delay:0},
+    ],
+
+    'term-findbugs': [
+      {t:'cmd', text:'/find-bugs', speed:45, afterDelay:520},
+      {t:'br', delay:80},
+      {t:'out', html:'<span class="tool">⚙  Analyzing 3 changed files...</span>', delay:940},
+      {t:'out', html:'<span class="tool">⚙  Reading payment processing logic...</span>', delay:1050},
+      {t:'out', html:'<span class="tool">⚙  Checking error handling + query params...</span>', delay:980},
+      {t:'br', delay:280},
+      {t:'stream', text:'3 issues found', cls:'removed', speed:22, afterDelay:300},
+      {t:'br', delay:80},
+      {t:'out', html:'<span class="warn">⚠  Missing error catch in refund handler</span>', delay:220},
+      {t:'out', html:'    stripe-service.ts:47', delay:80},
+      {t:'br', delay:120},
+      {t:'out', html:'<span class="warn">⚠  SQL injection risk — unsanitized param</span>', delay:220},
+      {t:'out', html:'    db/queries.ts:12', delay:80},
+      {t:'br', delay:120},
+      {t:'out', html:'<span class="removed">🔴 Hard-coded API key in source</span>', delay:220},
+      {t:'out', html:'    config.ts:3', delay:80},
+    ],
+  };
+
+  // ── Map slide index → terminal IDs to play ────────────────────
+  const slideTerminals = {
+    1: ['term-whatisclaude'],
+    2: ['term-surgeon', 'term-kevin'],
+    3: ['term-plan'],
+    5: ['term-rewind'],
+    6: ['term-btw'],
+    7: ['term-findbugs'],
+    8: ['term-perm-fatigue'],
+    10: ['term-perms'],
+    12: ['term-clear'],
+    13: ['term-rename'],
+    14: ['term-compact'],
+    15: ['term-costctx'],
+  };
+
+  // ── Navigation ────────────────────────────────────────────────
+  function show(index) {
+    if (index < 0 || index >= total) return;
+    // Stop terminals on outgoing slide
+    (slideTerminals[current] || []).forEach(stopTerm);
+    slides[current].classList.remove('active');
+    current = index;
+    slides[current].classList.add('active');
+    const step = slideStep[current] || 0;
+    renderStep(current, step);
+    // Play terminals on incoming slide
+    (slideTerminals[current] || []).forEach(id => setTimeout(() => playTerm(id), 120));
+    updateUI();
+  }
+
+  function advance() {
+    // If a popup is waiting for user input, dismiss it and resume the animation
+    if (window._popupResume) { window._popupResume(); return; }
+    const max = slideMaxSteps[current] || 0;
+    const cur = slideStep[current] || 0;
+    if (cur < max) {
+      slideStep[current] = cur + 1;
+      renderStep(current, slideStep[current]);
+      updateUI();
+    } else {
+      show(current + 1);
+    }
+  }
+
+  function goBack() {
+    const cur = slideStep[current] || 0;
+    if (cur > 0) {
+      slideStep[current] = cur - 1;
+      renderStep(current, slideStep[current]);
+      updateUI();
+    } else {
+      show(current - 1);
+    }
+  }
+
+  function updateUI() {
+    const max = slideMaxSteps[current] || 0;
+    const cur = slideStep[current] || 0;
+    document.getElementById('progress').style.width =
+      ((current + (max > 0 ? cur / max : 1)) / total * 100) + '%';
+    document.getElementById('counter').textContent =
+      (current + 1) + ' / ' + total + (max > 0 ? ' · ' + cur + '/' + max : '');
+    const hint = document.getElementById('step-hint');
+    hint.classList.toggle('visible', max > 0 && cur < max);
+    updateTOC();
+  }
+
+  // ── Events ───────────────────────────────────────────────────
+  document.addEventListener('keydown', e => {
+    if (['ArrowRight', 'ArrowDown', ' '].includes(e.key)) { e.preventDefault(); advance(); }
+    if (['ArrowLeft', 'ArrowUp'].includes(e.key)) { e.preventDefault(); goBack(); }
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(total - 1);
+  });
+
+  document.addEventListener('click', e => {
+    if (e.target.closest('.toc-item')) return; // Don't advance/goBack on TOC clicks
+    if (e.clientX > window.innerWidth / 2) advance();
+    else goBack();
+  });
+
+  // ── Init ─────────────────────────────────────────────────────
+  buildTOC();
+  renderClaudeMd(0);
+  renderHooks(0);
+  show(0);
+</script>
+</body>
+</html>
