@@ -3,8 +3,13 @@ import createMDX from '@next/mdx';
 
 const nextConfig: NextConfig = {
   pageExtensions: ['mdx', 'ts', 'tsx'],
-  async redirects() {
-    return [];
+  async rewrites() {
+    return [
+      {
+        source: '/claude-code',
+        destination: '/claude-code.html',
+      },
+    ];
   },
   experimental: {
     mdxRs: true,
