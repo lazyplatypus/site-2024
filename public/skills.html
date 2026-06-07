@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claude Code Skills</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;0,6..72,800;1,6..72,400&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #FAF6F0;
+    --surface: #F0EAE0;
+    --surface2: #E8E0D4;
+    --border: #D4C9B8;
+    --text: #1A1108;
+    --text-dim: #6B5D4F;
+    --accent: #DA7756;
+    --accent-light: #C4613E;
+    --green: #2D8B56;
+    --green-dim: #E5F2EB;
+    --red: #C0392B;
+    --red-dim: #FDECEA;
+    --orange: #DA7756;
+    --blue: #4A7FB5;
+  }
+
+  body {
+    font-family: 'DM Sans', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+
+  .deck { width: 100vw; height: 100vh; position: relative; }
+
+  .slide {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 52px 100px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+
+  .slide.active { opacity: 1; pointer-events: auto; }
+
+  h1 {
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 3.2rem;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 24px;
+    letter-spacing: -0.02em;
+    color: var(--text);
+  }
+
+  h2 {
+    font-family: 'Newsreader', Georgia, serif;
+    font-size: 2.2rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    letter-spacing: -0.01em;
+    color: var(--text);
+  }
+
+  h3 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  p, li { font-size: 1.15rem; line-height: 1.7; color: var(--text-dim); font-weight: 400; }
+  ul { list-style: none; margin-top: 10px; }
+  ul li { padding: 6px 0; padding-left: 24px; position: relative; }
+  ul li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 16px;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .highlight { color: var(--accent); font-weight: 600; }
+  .green { color: var(--green); }
+  .red { color: var(--red); }
+  .blue { color: var(--blue); }
+
+  .subtitle {
+    font-size: 1.35rem;
+    color: var(--text-dim);
+    font-weight: 300;
+    margin-top: 8px;
+    line-height: 1.6;
+    max-width: 700px;
+  }
+
+  .tag {
+    display: inline-block;
+    background: rgba(218,119,86,0.1);
+    border: 1px solid rgba(218,119,86,0.25);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--accent);
+    margin-right: 8px;
+    margin-bottom: 8px;
+  }
+
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 20px; }
+  .col { display: flex; flex-direction: column; }
+
+  .terminal {
+    background: #2B2318;
+    border: 1px solid #3D3226;
+    border-radius: 12px;
+    padding: 20px 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+    line-height: 1.85;
+    margin-top: 14px;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    color: #FFFFFF;
+  }
+
+  .terminal .prompt { color: #F0A87E; }
+  .terminal .dim { color: #8A7A6A; }
+  .terminal .added { color: #5DB87E; }
+  .terminal .removed { color: #E87461; }
+  .terminal .warn { color: #F0C87E; }
+  .terminal .claude { color: #C4B0F8; }
+  .terminal .tool { color: #7EC4F0; }
+
+  .arch-box {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 22px;
+    box-shadow: 0 1px 8px rgba(26,17,8,0.05);
+  }
+  .arch-box h4 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+  .arch-box p { font-size: 0.92rem; line-height: 1.5; }
+
+  .arch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 20px; }
+
+  .progress { position: fixed; bottom: 0; left: 0; height: 3px; background: var(--accent); transition: width 0.4s ease; z-index: 100; }
+  .counter { position: fixed; bottom: 20px; right: 32px; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--text-dim); z-index: 100; }
+  .nav-hint { position: fixed; bottom: 20px; left: 32px; font-size: 0.8rem; color: #B8A898; z-index: 100; }
+
+  .toc-bar {
+    position: fixed;
+    bottom: 60px;
+    left: 32px;
+    right: 32px;
+    height: auto;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    z-index: 99;
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid var(--border);
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+    flex-shrink: 0;
+    backdrop-filter: blur(8px);
+  }
+
+  .toc-item:hover {
+    background: white;
+    color: var(--text);
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .toc-item.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(218, 119, 86, 0.25);
+  }
+
+  .toc-divider {
+    width: 1px;
+    height: 16px;
+    background: var(--surface2);
+    flex-shrink: 0;
+  }
+
+  .slide.title-slide { justify-content: center; align-items: flex-start; }
+  .slide.title-slide h1 { font-family: 'Newsreader', Georgia, serif; font-size: 4rem; color: #000000; -webkit-text-fill-color: #000000; }
+
+  .claude-mascot {
+    position: relative;
+    margin-bottom: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    line-height: 1.3;
+    color: var(--accent);
+    white-space: pre;
+    animation: mascot-float 3s ease-in-out infinite;
+  }
+  @keyframes mascot-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+  @keyframes mascot-blink { 0%, 42%, 46%, 100% { opacity: 1; } 44% { opacity: 0.1; } }
+  .claude-mascot .eyes { animation: mascot-blink 4s ease-in-out infinite; }
+
+  /* Terminal cursor blink */
+  @keyframes term-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+  .term-cursor { display: inline-block; width: 7px; height: 1em; background: #F0A87E; margin-left: 1px; vertical-align: text-bottom; animation: term-blink 1s step-end infinite; }
+
+  /* Skills file display */
+  .skill-file {
+    background: #2B2318;
+    border: 1px solid #3D3226;
+    border-radius: 12px;
+    padding: 16px 20px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.76rem;
+    line-height: 1.8;
+    color: #FFFFFF;
+    flex: 1;
+    overflow: hidden;
+  }
+  .skill-file .sh { color: #F0A87E; }
+  .skill-file .comment { color: #6A5A4A; }
+  .skill-file .keyword { color: #C4B0F8; }
+  .skill-file .val { color: #5DB87E; }
+  .skill-file .hl { color: #7EC4F0; }
+
+  /* Step reveal */
+  .step-el {
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    pointer-events: none;
+  }
+  .step-el.step-visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  .pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.76rem;
+    font-weight: 600;
+  }
+  .pill-green { background: var(--green-dim); color: var(--green); }
+  .pill-orange { background: rgba(218,119,86,0.12); color: var(--accent); }
+  .pill-blue { background: rgba(74,127,181,0.12); color: var(--blue); }
+
+  /* Doc card style for the problem slide */
+  .doc-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 22px;
+    box-shadow: 0 1px 6px rgba(26,17,8,0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .doc-card-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .doc-card-cmd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-dim);
+    background: var(--surface);
+    border-radius: 6px;
+    padding: 8px 12px;
+    line-height: 1.5;
+  }
+  .doc-card-label {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    font-style: italic;
+  }
+
+  /* Workflow arrow */
+  .workflow-step {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 0;
+  }
+  .workflow-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    flex-shrink: 0;
+  }
+  .workflow-num.active-step {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: white;
+  }
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 0 — Title
+══════════════════════════════════════════════ -->
+<div class="slide title-slide active">
+  <div class="claude-mascot">  ▐▛███▜▌
+ ▝▜█████▛▘
+  <span class="eyes"> ▘▘ ▝▝</span></div>
+  <h3>Training</h3>
+  <h1>Claude Code Skills</h1>
+  <p class="subtitle">Your team already documents its expertise.<br>What if AI could actually <em>run</em> it?</p>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 1 — The Static Playbook
+══════════════════════════════════════════════ -->
+<div class="slide">
+  <h3>The problem</h3>
+  <h2>Your team already has the playbook</h2>
+  <p style="font-size:1.05rem; color:var(--text-dim); margin-bottom:18px; max-width:720px;">
+    Reference docs, wiki pages, runbooks — commands you copy-paste every day. The knowledge is there. It just sits in static files.
+  </p>
+  <p style="font-size:0.82rem; color:var(--text-dim); margin-bottom:6px; font-family:'JetBrains Mono',monospace;">dv/hbg/doc/</p>
+  <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:18px; margin-top:4px;">
+    <div class="doc-card">
+      <div class="doc-card-title">FSDB_TOOL_QUICK_REF.md</div>
+      <div class="doc-card-cmd">⚠️ CRITICAL: TWO MODES<br>Mode 1: --file &lt;fsdb_path&gt;<br>Mode 2: --dbdir &lt;database_dir&gt;<br>❌ NEVER mix them!<br><br>dv/tools/fsdb_analyzer.py \<br>&ensp;--trace-drivers \<br>&ensp;--signal &lt;signal_path&gt; \<br>&ensp;--dbdir &lt;db_dir&gt;</div>
+      <div class="doc-card-label">Copy. Paste. Fill in signal. Fill in dbdir. Hope you picked the right mode.</div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-title">dma_agent_guide.md</div>
+      <div class="doc-card-cmd">| DMA | Thread | Register |<br>| RXDMA0 | 32 | rxdmad0 |<br>| TXDMA0 | 40 | txdmad0 |<br><br>.ce_rx_dma_desc address=??<br>&ensp;length=one_d(dim_1=??)<br>&ensp;qid=?? actvt=?? block=??</div>
+      <div class="doc-card-label">Look up thread IDs. Copy descriptor template. Fill in 15 fields. Miss one, debug for an hour.</div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-card-title">auto_debug.md</div>
+      <div class="doc-card-cmd">Rules to debug:<br>1) Sequential → check 1ps before<br>2) Combinatorial → check same time<br>3) Clock edge → check 1ps before<br>4) Trace till fabric module<br>5) Search register config from<br>&ensp;&ensp;&ensp;end of log</div>
+      <div class="doc-card-label">This file is already step-by-step AI instructions. It's basically a skill already.</div>
+    </div>
+  </div>
+  <div style="margin-top:24px; display:flex; align-items:center; gap:12px;">
+    <div style="width:36px; height:2px; background:var(--accent);"></div>
+    <p style="font-size:1.1rem; color:var(--accent); font-weight:600;">What if these docs could do the work for you?</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 2 — What if AI could run it?
+══════════════════════════════════════════════ -->
+<div class="slide" style="justify-content:flex-start; padding-top:40px; padding-bottom:20px;">
+  <h3>The solution</h3>
+  <h2 style="font-size:1.9rem; margin-bottom:12px;">Same docs. Now AI runs them.</h2>
+  <div class="cols" style="gap:24px; flex:1; min-height:0; align-items:stretch;">
+    <!-- Left: the reference doc -->
+    <div class="col" style="flex:1; display:flex; flex-direction:column; position:relative;">
+      <p style="font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--text-dim); margin-bottom:6px;">dv/hbg/doc/FSDB_TOOL_QUICK_REF.md</p>
+      <div style="background:white; border:1px solid var(--border); border-radius:12px; padding:16px 18px; font-family:'JetBrains Mono',monospace; font-size:0.58rem; line-height:1.55; color:#3a3228; overflow:hidden; flex:1;">
+        <span style="color:#8a7a6a;"># fsdb_analyzer.py - Quick Reference Guide</span><br><br>
+        <span style="color:#c0392b; font-weight:700;">## ⚠️ CRITICAL: Tool Has TWO MODES - Never Mix Them! ⚠️</span><br><br>
+        <span style="color:#8a7a6a;">## MODE 1: FSDB Mode (--file)</span><br>
+        <span style="color:#6b5d4f;">**Parameter:** `--file &lt;fsdb_path&gt;`</span><br>
+        <span style="color:#6b5d4f;">**Use for:** Reading signal values, searching hierarchy</span><br><br>
+        | Operation | Purpose |<br>
+        |-----------|---------|<br>
+        | `--get-value` | Get signal value at specific time |<br>
+        | `--search-signal-value` | Find when signal had value |<br>
+        | `--search-signals` | Search for signals in scope |<br>
+        | `--search-scopes` | Search for modules/hierarchy |<br>
+        | `--get-signal-info` | Get signal metadata |<br><br>
+        <span style="color:#8a7a6a;">## MODE 2: Database Mode (--dbdir)</span><br>
+        <span style="color:#6b5d4f;">**Parameter:** `--dbdir &lt;database_dir&gt;`</span><br>
+        <span style="color:#6b5d4f;">**Use for:** ONLY tracing signal drivers</span><br><br>
+        | Operation | Purpose |<br>
+        | `--trace-drivers` | Find what drives a signal |<br><br>
+        <span style="color:#c0392b;">## ❌ COMMON MISTAKES - DO NOT DO THESE!</span><br><br>
+        <span style="color:#c0392b;">1. ❌ Mixing modes:</span><br>
+        <span style="color:#6b5d4f;">&ensp;&ensp;# WRONG!</span><br>
+        <span style="color:#6b5d4f;">&ensp;&ensp;fsdb_analyzer.py --file sim.fsdb --dbdir simv.daidir</span><br><br>
+        <span style="color:#c0392b;">2. ❌ Using `python` command:</span><br>
+        <span style="color:#6b5d4f;">&ensp;&ensp;# WRONG!</span><br>
+        <span style="color:#6b5d4f;">&ensp;&ensp;python dv/tools/fsdb_analyzer.py ...</span><br>
+        <span style="color:#2d8b56;">&ensp;&ensp;Correct: dv/tools/fsdb_analyzer.py ...</span><br><br>
+        <span style="color:#c0392b;">3. ❌ Using `--fsdb` instead of `--file`</span><br>
+        <span style="color:#c0392b;">4. ❌ Using `--dbdir` for value checking</span>
+      </div>
+    </div>
+    <!-- Right: mascot + speech bubble + terminal result -->
+    <div class="col" style="flex:1; display:flex; flex-direction:column; gap:14px; justify-content:center;">
+      <!-- Mascot with speech bubble -->
+      <div style="display:flex; align-items:flex-start; gap:16px; justify-content:center;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:1.3rem; white-space:pre; line-height:1.3; color:var(--accent); animation: mascot-float 3s ease-in-out infinite;">  ▐▛███▜▌
+ ▝▜█████▛▘
+  <span class="eyes"> ▘▘ ▝▝</span></div>
+        <div style="background:rgba(218,119,86,0.08); border:1.5px solid rgba(218,119,86,0.25); border-radius:12px 12px 12px 2px; padding:12px 16px; max-width:260px; margin-top:4px;">
+          <p style="font-size:0.88rem; font-weight:600; color:var(--accent); line-height:1.4;">"Turn this into a skill"</p>
+        </div>
+      </div>
+
+      <!-- Arrow -->
+      <div style="text-align:center; font-size:1.8rem; color:var(--accent); line-height:1;">&#8595;</div>
+
+      <!-- Result: FSDB Analyzer skill card -->
+      <div style="background:white; border:1.5px solid var(--green); border-radius:12px; padding:16px 20px; box-shadow:0 2px 12px rgba(45,139,86,0.1);">
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+          <span style="color:var(--green); font-size:1.1rem;">&#10003;</span>
+          <p style="font-size:0.82rem; font-weight:700; color:var(--green); text-transform:uppercase; letter-spacing:0.06em;">Skill created</p>
+        </div>
+        <div class="skill-file" style="font-size:0.65rem; line-height:1.5; padding:12px 14px; border-radius:8px;">
+          <span class="comment">---</span><br>
+          <span class="keyword">name:</span> <span class="val">analyze-fsdb</span><br>
+          <span class="keyword">description:</span> <span class="val">FSDB waveform analysis</span><br>
+          <span class="val">&ensp;and signal driver tracing</span><br>
+          <span class="comment">---</span>
+        </div>
+      </div>
+
+      <!-- Terminal showing usage -->
+      <div class="terminal" style="font-size:0.78rem; padding:14px 18px; margin-top:0; line-height:1.7;">
+        <span class="prompt">&#10095;</span> <span style="color:#E8DDD0;">/analyze-fsdb trace what drives west_out_data</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 3 — See it in action
+══════════════════════════════════════════════ -->
+<div class="slide">
+  <h3>The solution</h3>
+  <h2>See the difference</h2>
+  <div class="cols" style="gap:28px; margin-top:8px; align-items:stretch;">
+    <div class="col" style="gap:12px;">
+      <p style="font-size:0.78rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--red); margin-bottom:0;">Before: read the doc, copy commands, fill in blanks</p>
+      <div style="background:white; border:1.5px solid rgba(192,57,43,0.3); border-radius:12px; padding:14px 16px; font-family:'JetBrains Mono',monospace; font-size:0.62rem; line-height:1.5; color:#3a3228; flex:1; overflow:hidden;">
+        <span style="color:#8a7a6a;"># from FSDB_TOOL_QUICK_REF.md — trace drivers example:</span><br>
+        <span style="color:#6b5d4f;">dv/tools/fsdb_analyzer.py --trace-drivers \</span><br>
+        <span style="color:#6b5d4f;">&ensp;&ensp;--signal &lt;signal_path&gt; --dbdir &lt;database_dir&gt;</span><br><br>
+        <span style="color:#8a7a6a;"># ok so I need to fill in signal_path and database_dir</span><br>
+        <span style="color:#8a7a6a;"># what's the full signal path? open fabric.md...</span><br>
+        <span style="color:#8a7a6a;"># "outputs: *_out_vld, *_out_data, *_out_hw_cnt..."</span><br>
+        <span style="color:#8a7a6a;"># prefix is tb_fabric.u_fabric_only_env.u_fabric_top_env</span><br>
+        <span style="color:#8a7a6a;"># wait no, for trace-drivers it's the shorter path</span><br><br>
+        <span style="color:#8a7a6a;"># where's the daidir again?</span><br>
+        <span style="color:#da7756;">❯</span> ls simv.*.daidir<br>
+        <span style="color:#6b5d4f;">&ensp;simv.tb_fabric.daidir</span><br><br>
+        <span style="color:#da7756;">❯</span> dv/tools/fsdb_analyzer.py --trace-drivers \<br>
+        &ensp;&ensp;--signal tb_fabric.u_fabric.west_out_data \<br>
+        &ensp;&ensp;--dbdir simv.tb_fabric.daidir<br><br>
+        <span style="color:#8a7a6a;"># ok got the drivers. now I need the value at a time</span><br>
+        <span style="color:#8a7a6a;"># that's --file mode. back to the doc...</span><br>
+        <span style="color:#c0392b;"># ⚠️ "NEVER mix --file and --dbdir"</span><br>
+        <span style="color:#8a7a6a;"># do I use --file or --fsdb? (doc says --file)</span><br><br>
+        <span style="color:#da7756;">❯</span> dv/tools/fsdb_analyzer.py --file sim.fsdb \<br>
+        &ensp;&ensp;--get-value \<br>
+        &ensp;&ensp;--signal tb_fabric.u_fabric.west_out_data \<br>
+        &ensp;&ensp;--time 1248 --format hex<br><br>
+        <span style="color:#8a7a6a;"># now read the output and figure out what it means...</span>
+      </div>
+    </div>
+    <div class="col" style="gap:12px;">
+      <p style="font-size:0.78rem; font-weight:600; text-transform:uppercase; letter-spacing:0.08em; color:var(--green); margin-bottom:0;">After: tell Claude what you need</p>
+      <div id="term-dv-demo" class="terminal" style="font-size:0.72rem; line-height:1.65; margin-top:0; flex:1; border:1.5px solid rgba(45,139,86,0.3); overflow-y:hidden;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 4 — What are Skills?
+══════════════════════════════════════════════ -->
+<div class="slide">
+  <h3>How it works</h3>
+  <h2>Skills = your docs, made executable</h2>
+  <div class="cols" style="gap:32px; margin-top:12px; align-items:flex-start;">
+    <div class="col">
+      <p style="font-size:1.05rem; line-height:1.7; color:var(--text-dim); margin-bottom:16px;">A skill is a <span class="highlight">SKILL.md file</span> — plain markdown that gives Claude domain knowledge and step-by-step procedures for a specific task.</p>
+      <ul>
+        <li>Your reference docs, structured so Claude can <em>act</em> on them — not just display them</li>
+        <li>Activate with a slash command: <span style="font-family:'JetBrains Mono',monospace; color:var(--accent);">/dv-reference</span>, <span style="font-family:'JetBrains Mono',monospace; color:var(--accent);">/dma-agent</span></li>
+        <li>Shared across the team via git — everyone gets the same expertise</li>
+        <li><span class="highlight">auto_debug.md</span> is already 90% of a skill — rules, tools, procedures. Skills just make it executable.</li>
+      </ul>
+    </div>
+    <div class="col">
+      <div class="skill-file" style="font-size:0.7rem; line-height:1.6;">
+        <span class="comment"># .claude/skills/dv-reference/SKILL.md</span><br>
+        <span class="comment">---</span><br>
+        <span class="keyword">name:</span> <span class="val">dv-reference</span><br>
+        <span class="keyword">description:</span> <span class="val">CASM directed test writing</span><br>
+        <span class="val">&ensp;and DMA debugging reference</span><br>
+        <span class="comment">---</span><br><br>
+        <span class="hl">## Rules</span><br>
+        1. Sequential logic → check 1ps before<br>
+        2. Combinatorial → check at same time<br>
+        3. Clock edge → value 1ps before edge<br>
+        4. Trace signals to fabric, not testbench<br>
+        5. Search register config from end of log<br><br>
+        <span class="hl">## Tools</span><br>
+        <span class="val">dv/tools/fsdb_analyzer.py</span><br>
+        &ensp;--dbdir mode for driver tracing<br>
+        &ensp;--file mode for everything else<br>
+        <span class="removed">&ensp;NEVER mix modes</span><br><br>
+        <span class="hl">## Design Docs</span><br>
+        <span class="val">fabric.md</span> — RTL routing &amp; signals<br>
+        <span class="val">fab_adder.md</span> — Color 10/11 adder<br>
+        <span class="val">dma_agent_guide.md</span> — DMA descriptors
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 5 — Share knowledge across the team
+══════════════════════════════════════════════ -->
+<div class="slide" style="justify-content:flex-start; padding-top:44px; padding-bottom:20px;">
+  <h3>Team knowledge</h3>
+  <h2 style="font-size:2rem; margin-bottom:16px;">One engineer learns it, the whole team gets it</h2>
+  <p style="font-size:1.0rem; color:var(--text-dim); margin-bottom:12px; max-width:720px;">Skills sync from a shared git repo every time you open Claude Code. Improve a skill — everyone gets it.</p>
+  <div id="term-skills-sync" class="terminal" style="flex:1; font-size:0.78rem; overflow-y:hidden;"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 6 — Live Demo
+══════════════════════════════════════════════ -->
+<div class="slide" style="justify-content:center; align-items:center; text-align:center;">
+  <div class="claude-mascot" style="font-size:1.4rem;">  ▐▛███▜▌
+ ▝▜█████▛▘
+  <span class="eyes"> ▘▘ ▝▝</span></div>
+  <h3 style="margin-bottom:12px;">Live demo</h3>
+  <h2 style="font-size:2.6rem; margin-bottom:20px;">Using <span style="color:var(--accent);">/directed-test-gen-agent</span></h2>
+  <p style="font-size:1.15rem; color:var(--text-dim); max-width:640px; margin:0 auto;">
+    Multi-agent skill that converts a prompt into a verified CASM directed test for tile simulation.
+  </p>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 6 — Getting Started
+══════════════════════════════════════════════ -->
+<div class="slide" style="justify-content:flex-start; padding-top:44px;">
+  <h3>Getting started</h3>
+  <h2>One command to install</h2>
+  <div class="terminal" style="font-size:0.82rem; padding:16px 20px; margin-top:8px; line-height:1.7;">
+    <span class="prompt">&#10095;</span> git clone git@github.com:Cerebras/skills.git ~/.claude/cerebras-skills-repo &amp;&amp; ~/.claude/cerebras-skills-repo/setup.sh
+  </div>
+  <div id="term-team-select" class="terminal" style="font-size:0.68rem; flex:1; margin-top:16px; overflow-y:hidden; line-height:1.65;"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 7 — Turn any doc into a skill
+══════════════════════════════════════════════ -->
+<div class="slide">
+  <h3>Creating skills</h3>
+  <h2>Turn any doc into a skill with <span style="color:var(--accent);">/skill-writer</span></h2>
+  <div class="cols" style="gap:28px; align-items:flex-start;">
+    <div class="col">
+      <p style="font-size:1.05rem; line-height:1.7; color:var(--text-dim); margin-bottom:16px;">Have a reference doc, runbook, or wiki page your team uses? Point <span class="highlight">/skill-writer</span> at it.</p>
+      <div style="background:white; border:1px solid var(--border); border-radius:10px; padding:16px 20px; margin-bottom:12px;">
+        <p style="font-size:0.78rem; font-weight:700; color:var(--accent); margin-bottom:6px; text-transform:uppercase; letter-spacing:0.06em;">Good candidates from dv/hbg/doc/</p>
+        <ul style="margin-top:4px;">
+          <li style="font-size:0.92rem;"><strong>FSDB_TOOL_QUICK_REF.md</strong> — tool usage with modes &amp; gotchas</li>
+          <li style="font-size:0.92rem;"><strong>dma_agent_guide.md</strong> — DMA architecture &amp; test patterns</li>
+          <li style="font-size:0.92rem;"><strong>auto_debug.md</strong> — already written as AI instructions</li>
+          <li style="font-size:0.92rem;"><strong>fab_adder.md</strong> — hardware modes, registers, debug trees</li>
+        </ul>
+      </div>
+      <div class="arch-box" style="border-left:3px solid var(--green);">
+        <p style="font-size:0.88rem;"><strong>Zero new documentation.</strong> You already wrote it. The skill just makes it executable.</p>
+      </div>
+    </div>
+    <div class="col" style="display:flex; flex-direction:column;">
+      <div id="term-skill-writer" class="terminal" style="font-size:0.72rem; height:440px; margin-top:0; overflow-y:hidden;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 8 — Skills get smarter
+══════════════════════════════════════════════ -->
+<div class="slide" style="justify-content:flex-start; padding-top:44px; padding-bottom:20px;">
+  <h3>Continuous improvement</h3>
+  <h2 style="font-size:1.95rem; margin-bottom:16px;">Skills get smarter with <span style="color:var(--accent);">/skill-update</span></h2>
+  <div class="cols" style="gap:28px; align-items:stretch; flex:1; min-height:0;">
+    <!-- Left: terminal demo -->
+    <div class="col" style="flex:1.2; display:flex; flex-direction:column;">
+      <div id="term-skill-update" class="terminal" style="flex:1; font-size:0.75rem;"></div>
+    </div>
+    <!-- Right: explanation -->
+    <div class="col" style="flex:0.8; display:flex; flex-direction:column; gap:14px; align-items:center; justify-content:center;">
+      <!-- Mascot with file icon -->
+      <div style="display:flex; align-items:flex-end; gap:14px; margin-bottom:4px;">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:1rem; white-space:pre; line-height:1.3; color:var(--accent); animation: mascot-float 3s ease-in-out infinite;">  ▐▛███▜▌
+ ▝▜█████▛▘
+  <span style="color:var(--text-dim);"> ▘▘  ▝▝</span></div>
+        <!-- File icon SVG -->
+        <svg width="48" height="72" viewBox="0 0 48 72" style="animation: mascot-float 3s ease-in-out infinite 0.5s; flex-shrink:0;">
+          <path d="M4,2 L30,2 L44,18 L44,70 L4,70 Z" fill="#F0EAE0" stroke="#C4B0A0" stroke-width="1.4"/>
+          <path d="M30,2 L44,18 L30,18 Z" fill="#D4C9B8"/>
+          <line x1="10" y1="28" x2="36" y2="28" stroke="#C4B0A0" stroke-width="1.3"/>
+          <line x1="10" y1="36" x2="36" y2="36" stroke="#C4B0A0" stroke-width="1.3"/>
+          <line x1="10" y1="44" x2="28" y2="44" stroke="#C4B0A0" stroke-width="1.3"/>
+          <line x1="10" y1="52" x2="32" y2="52" stroke="#C4B0A0" stroke-width="1.3"/>
+        </svg>
+      </div>
+      <div style="font-family:'JetBrains Mono',monospace; font-size:0.68rem; font-weight:600; color:var(--text); text-align:center; margin-top:-8px;">ws-kernel-bugfix-agent</div>
+
+      <!-- Diff block -->
+      <div style="background:rgba(91,164,126,0.06); border:1.5px solid rgba(91,164,126,0.25); border-radius:10px; padding:14px 16px; width:100%;">
+        <p style="font-size:0.68rem; font-weight:700; color:var(--green); margin-bottom:8px; font-family:'JetBrains Mono',monospace;">+ Added to SKILL.md</p>
+        <div style="font-size:0.65rem; color:var(--text); line-height:1.65; font-family:'JetBrains Mono',monospace;">
+          <div style="color:var(--green); margin-bottom:4px;">+ <strong>Validate the fix is reachable, not just passing</strong> — A test that passes without triggering the fixed code path proves nothing.</div>
+          <div style="color:var(--green);">+ Trace the trigger condition from diagnosis through test parameters to confirm the fix is exercised.</div>
+        </div>
+      </div>
+
+      <!-- Explanation -->
+      <div class="arch-box" style="width:100%; border-left:3px solid var(--accent);">
+        <p style="font-size:0.82rem;"><strong>/skill-update</strong> analyzes your session for failure points, finds gaps in the skill, and opens a PR to fix them. The skill learns from every use.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════
+     SLIDE 9 — Close
+══════════════════════════════════════════════ -->
+<div class="slide" style="justify-content:center; align-items:center; text-align:center;">
+  <div class="claude-mascot" style="font-size:1.4rem;">  ▐▛███▜▌
+ ▝▜█████▛▘
+  <span class="eyes"> ▘▘ ▝▝</span></div>
+  <h3 style="margin-bottom:12px;">Get started</h3>
+  <h2 style="font-size:2.6rem; margin-bottom:20px;">Your expertise, amplified</h2>
+  <p style="font-size:1.15rem; color:var(--text-dim); max-width:640px; margin:0 auto 32px;">
+    You already wrote the playbook. Skills let AI run it.<br>
+    Try one skill on your next debug session. That's it.
+  </p>
+  <div style="background:white; border:1.5px solid var(--border); border-radius:12px; padding:20px 32px; display:inline-block; margin-bottom:28px; box-shadow:0 2px 12px rgba(26,17,8,0.06);">
+    <p style="font-family:'JetBrains Mono',monospace; font-size:1rem; color:var(--text);">
+      git clone git@github.com:Cerebras/skills.git \<br>
+      &ensp;&ensp;~/.claude/cerebras-skills-repo &amp;&amp; \<br>
+      &ensp;&ensp;~/.claude/cerebras-skills-repo/setup.sh
+    </p>
+  </div>
+  <p style="font-size:1.1rem; color:var(--accent); font-weight:600; font-family:'JetBrains Mono',monospace;">#growth-team on Slack for help</p>
+</div>
+
+</div><!-- end .deck -->
+
+<div class="progress" id="progress"></div>
+<div class="counter" id="counter"></div>
+<div class="nav-hint">← → or click to navigate</div>
+
+<div class="toc-bar" id="toc-bar">
+  <!-- TOC items populated by JavaScript -->
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+
+  // ── Topics for TOC ────────────────────────────────────────────
+  const topics = [
+    { name: 'Intro', slides: [0] },
+    { name: 'The Problem', slides: [1] },
+    { name: 'The Solution', slides: [2, 3] },
+    { name: 'How It Works', slides: [4, 5] },
+    { name: 'Live Demo', slides: [6] },
+    { name: 'Get Started', slides: [7] },
+    { name: 'Create & Improve', slides: [8, 9] },
+    { name: 'Wrap-up', slides: [10] }
+  ];
+
+  function getTopicForSlide(slideIndex) {
+    for (let i = 0; i < topics.length; i++) {
+      if (topics[i].slides.includes(slideIndex)) return i;
+    }
+    return -1;
+  }
+
+  // ── TOC Management ─────────────────────────────────────────────
+  function buildTOC() {
+    const tocBar = document.getElementById('toc-bar');
+    topics.forEach((topic, index) => {
+      if (index > 0) {
+        const divider = document.createElement('div');
+        divider.className = 'toc-divider';
+        tocBar.appendChild(divider);
+      }
+      const item = document.createElement('div');
+      item.className = 'toc-item';
+      item.textContent = topic.name;
+      item.dataset.topic = index;
+      item.addEventListener('click', () => show(topic.slides[0]));
+      tocBar.appendChild(item);
+    });
+  }
+
+  function updateTOC() {
+    const currentTopic = getTopicForSlide(current);
+    document.querySelectorAll('.toc-item').forEach((item) => {
+      const topicIndex = parseInt(item.dataset.topic);
+      item.classList.toggle('active', topicIndex === currentTopic);
+    });
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // Terminal Animation Engine
+  // ══════════════════════════════════════════════════════════════
+  const termTimers = {};
+
+  function stopTerm(id) {
+    (termTimers[id] || []).forEach(clearTimeout);
+    termTimers[id] = [];
+  }
+
+  function playTerm(id) {
+    const el = document.getElementById(id);
+    if (!el || !termAnims[id]) return;
+    stopTerm(id);
+    el.innerHTML = '';
+    const timers = termTimers[id] = [];
+    const steps = termAnims[id];
+    let si = 0;
+
+    function sched(fn, delay) { timers.push(setTimeout(fn, delay)); }
+    const noScroll = el.style.overflowY === 'hidden';
+    function scroll() { if (!noScroll) el.scrollTop = el.scrollHeight; }
+
+    function run() {
+      if (si >= steps.length) {
+        const cur = document.createElement('span');
+        cur.className = 'term-cursor';
+        el.appendChild(cur);
+        scroll();
+        return;
+      }
+      const s = steps[si++];
+      if (s.t === 'cmd') {
+        const prompt = document.createElement('span');
+        prompt.className = 'prompt';
+        prompt.textContent = '❯ ';
+        el.appendChild(prompt);
+        const span = document.createElement('span');
+        el.appendChild(span);
+        let ci = 0;
+        function typeChar() {
+          if (ci < s.text.length) {
+            span.textContent += s.text[ci++];
+            scroll();
+            timers.push(setTimeout(typeChar, (s.speed || 38) + Math.random() * 22));
+          } else {
+            el.appendChild(document.createElement('br'));
+            scroll();
+            sched(run, s.afterDelay !== undefined ? s.afterDelay : 380);
+          }
+        }
+        typeChar();
+      } else if (s.t === 'stream') {
+        const span = document.createElement('span');
+        if (s.cls) span.className = s.cls;
+        el.appendChild(span);
+        let ci = 0;
+        function streamChar() {
+          if (ci < s.text.length) {
+            span.textContent += s.text[ci++];
+            scroll();
+            timers.push(setTimeout(streamChar, s.speed || 16));
+          } else {
+            el.appendChild(document.createElement('br'));
+            scroll();
+            sched(run, s.afterDelay !== undefined ? s.afterDelay : 80);
+          }
+        }
+        streamChar();
+      } else if (s.t === 'out') {
+        el.insertAdjacentHTML('beforeend', s.html + '<br>');
+        scroll();
+        sched(run, s.delay !== undefined ? s.delay : 80);
+      } else if (s.t === 'br') {
+        el.appendChild(document.createElement('br'));
+        scroll();
+        sched(run, s.delay !== undefined ? s.delay : 40);
+      } else if (s.t === 'pause') {
+        sched(run, s.ms || 500);
+      }
+    }
+    run();
+  }
+
+  // ── Animation sequences ───────────────────────────────────────
+  const termAnims = {
+
+    'term-dv-demo': [
+      {t:'cmd', text:'/analyze-fsdb trace what drives west_out_data', speed:35, afterDelay:500},
+      {t:'br', delay:80},
+      {t:'stream', text:'Loading skill: analyze-fsdb', cls:'claude', speed:14, afterDelay:300},
+      {t:'br', delay:60},
+      {t:'out', html:'<span class="dim">   Using database mode (--dbdir) for driver tracing</span>', delay:300},
+      {t:'br', delay:150},
+      {t:'out', html:'<span class="tool">⚙  fsdb_analyzer.py --trace-drivers \\</span>', delay:350},
+      {t:'out', html:'<span class="tool">     --signal tb_fabric.u_fabric.west_out_data \\</span>', delay:100},
+      {t:'out', html:'<span class="tool">     --dbdir simv.tb_fabric.daidir</span>', delay:400},
+      {t:'br', delay:300},
+      {t:'out', html:'<span class="dim">   Driver trace:</span>', delay:200},
+      {t:'out', html:'<span class="dim">   ├── u_fabric.cfg_out_traffic_map[10]</span>', delay:150},
+      {t:'out', html:'<span class="dim">   ├── u_fabric.west_mux_sel</span>', delay:150},
+      {t:'out', html:'<span class="dim">   └── u_fabric.fab_out_w_ltg_oe</span>', delay:150},
+      {t:'br', delay:150},
+      {t:'out', html:'<span class="dim">   Checking for lightning mode (fabric.md)...</span>', delay:250},
+      {t:'out', html:'<span class="dim">   fab_ew_ltg_en=1, lightning_w_squash[10]=0</span>', delay:200},
+      {t:'br', delay:200},
+      {t:'out', html:'<span class="tool">⚙  fsdb_analyzer.py --file sim.fsdb \\</span>', delay:300},
+      {t:'out', html:'<span class="tool">     --get-value --signal u_fabric.west_out_data \\</span>', delay:100},
+      {t:'out', html:'<span class="tool">     --time 1247.999 --format hex</span>', delay:400},
+      {t:'br', delay:200},
+      {t:'out', html:'<span class="dim">────────────────────────────────────────</span>', delay:100},
+      {t:'stream', text:'Root cause:', cls:'warn', speed:12, afterDelay:200},
+      {t:'br', delay:80},
+      {t:'out', html:'<span class="removed">  Lightning mode active on color 10 — no egress</span>', delay:250},
+      {t:'out', html:'<span class="removed">  wavelet on west. Output suppressed by ltg_oe.</span>', delay:250},
+      {t:'br', delay:100},
+      {t:'out', html:'<span class="added">  Fix: Set cfg_out_traffic_map to route color 10</span>', delay:300},
+      {t:'out', html:'<span class="added">  through normal path, or disable fab_ew_ltg_en.</span>', delay:250},
+    ],
+
+    'term-team-select': [
+      {t:'cmd', text:'~/.claude/cerebras-skills-repo/setup.sh', speed:28, afterDelay:600},
+      {t:'br', delay:100},
+      {t:'out', html:'<span class="prompt">Select team(s) to install</span><br><span class="dim">  Use up/down arrows to move, enter to toggle, navigate to Confirm to continue</span><br><span class="dim">  Shortcuts: a = select all, n = clear all, space = toggle, q = quit</span><br><br>  <span class="added">&gt;</span> <span class="dim">[ ]</span> <span class="warn">1) Cluster Testing Team</span><br>      <span class="dim">Cluster validation, testing, and performance analysis</span><br>      <span class="dim">Skills: cluster-diagnostics, test-automation</span><br><br>    <span class="dim">[ ]</span> <span class="warn">2) Console QA</span><br>      <span class="dim">Quality assurance and regression testing for the Cerebras console platform</span><br>      <span class="dim">Skills: platform-coverage-test, test-plan, test-executor, console-debugging</span><br><br>    <span class="dim">[ ]</span> <span class="warn">3) DV Team</span><br>      <span class="dim">Design verification and directed test development</span><br>      <span class="dim">Skills: directed-test-gen-agent, directed-test-migration-agent, dv-reference, nightly-regression-agent</span><br><br>    <span class="dim">[ ]</span> <span class="warn">4) Growth Team</span><br>      <span class="dim">Developer experience, skills platform, and adoption</span><br>      <span class="dim">Skills: skill-writer, skill-update, create-pr, code-review, find-bugs, permissions-sync, confluence-guide-writer</span><br><br>    <span class="dim">[ ]</span> <span class="warn">5) Kernel Team</span><br>      <span class="dim">Low-level kernel and driver development</span><br>      <span class="dim">Skills: ws-kernel-bugfix-agent</span><br><br>    <span class="dim">[ ]</span> <span class="warn">6) ML Team</span><br>      <span class="dim">Machine learning team</span>', delay:0},
+    ],
+
+    'term-skill-writer': [
+      {t:'cmd', text:'/skill-writer', speed:40, afterDelay:500},
+      {t:'br', delay:80},
+      {t:'stream', text:'Loading skill: skill-writer', cls:'claude', speed:14, afterDelay:300},
+      {t:'br', delay:200},
+      {t:'out', html:'<span class="claude">Q1 — What kind of skill?</span>', delay:300},
+      {t:'out', html:'<span class="dim">  ○ Create from scratch</span>', delay:100},
+      {t:'out', html:'<span class="added">  ● Turn existing docs into a skill</span>', delay:100},
+      {t:'out', html:'<span class="dim">  ○ Update an existing skill</span>', delay:200},
+      {t:'br', delay:150},
+      {t:'out', html:'<span class="claude">Q2 — Starting materials?</span>', delay:300},
+      {t:'out', html:'<span class="added">  ☑ I have documentation/markdown to feed in</span>', delay:100},
+      {t:'out', html:'<span class="added">  ☑ Reference specific repo files/directories</span>', delay:100},
+      {t:'out', html:'<span class="dim">  ☐ Reference an existing skill as a template</span>', delay:200},
+      {t:'br', delay:300},
+      {t:'out', html:'<span class="claude">Paste or provide the path to your documentation:</span>', delay:300},
+      {t:'cmd', text:'dv/hbg/doc/dma_agent_guide.md', speed:32, afterDelay:400},
+      {t:'br', delay:100},
+      {t:'out', html:'<span class="tool">⚙  Read(dv/hbg/doc/dma_agent_guide.md)</span>', delay:500},
+      {t:'out', html:'<span class="dim">   Received 480 lines covering DMA architecture,</span>', delay:200},
+      {t:'out', html:'<span class="dim">   descriptors, CASM syntax, test generator, debugging</span>', delay:300},
+      {t:'br', delay:200},
+      {t:'out', html:'<span class="claude">Q3 — Skill name:</span>  <span class="added">● dma-agent</span>  <span class="dim">○ Other</span>', delay:250},
+      {t:'out', html:'<span class="claude">Q4 — Tools needed:</span>  <span class="added">● All tools</span>', delay:400},
+      {t:'br', delay:200},
+      {t:'out', html:'<span class="claude">Proposed structure:</span>', delay:200},
+      {t:'out', html:'<span class="dim">  SKILL.md — DMA procedures &amp; debugging</span>', delay:150},
+      {t:'out', html:'<span class="dim">  references/dma-descriptors.md — full field reference</span>', delay:150},
+      {t:'out', html:'<span class="dim">  references/thread-ids.md — thread ID &amp; color mapping</span>', delay:250},
+      {t:'br', delay:200},
+      {t:'stream', text:'Writing dma-agent/SKILL.md...', cls:'tool', speed:14, afterDelay:250},
+      {t:'br', delay:100},
+      {t:'out', html:'<span class="added">✓  Skill created! Try it with /dma-agent</span>', delay:300},
+    ],
+
+    'term-skill-update': [
+      {t:'cmd', text:'/skill-update', speed:40, afterDelay:500},
+      {t:'br', delay:80},
+      {t:'out', html:'<span class="tool">⚙  Scanning conversation for failure points...</span>', delay:900},
+      {t:'out', html:'<span class="tool">⚙  Running forensic gap analysis...</span>', delay:800},
+      {t:'br', delay:200},
+      {t:'stream', text:'## Forensic Analysis', cls:'warn', speed:18, afterDelay:300},
+      {t:'br', delay:80},
+      {t:'stream', text:'### Failure Point', cls:'dim', speed:14, afterDelay:150},
+      {t:'out', html:'<span class="dim">  Only modified 1 of 4 layout branches in getDefaultLayout()</span>', delay:250},
+      {t:'br', delay:100},
+      {t:'stream', text:'### Root Cause (5 whys)', cls:'dim', speed:14, afterDelay:150},
+      {t:'out', html:'<span class="dim">  Missing procedure for checking which dimensions are</span>', delay:180},
+      {t:'out', html:'<span class="dim">  shared across branches → layout-orthogonal diagnostic</span>', delay:180},
+      {t:'br', delay:200},
+      {t:'out', html:'<span class="tool">⚙  Reading ws-kernel-development/SKILL.md...</span>', delay:600},
+      {t:'out', html:'<span class="tool">⚙  Editing section: Layout Branch Coverage...</span>', delay:700},
+      {t:'br', delay:150},
+      {t:'out', html:'<span class="added">+  Step 1: List all layout branches</span>', delay:200},
+      {t:'out', html:'<span class="added">+  Step 2: Identify affected hierSrc dimension</span>', delay:200},
+      {t:'out', html:'<span class="added">+  Step 3: Check if dimension appears in ALL branches</span>', delay:200},
+      {t:'out', html:'<span class="added">+  Step 4: If yes → inner if/else in each branch</span>', delay:200},
+      {t:'br', delay:250},
+      {t:'out', html:'<span class="tool">⚙  git checkout -b skill-update/auto-20260313-142205</span>', delay:400},
+      {t:'out', html:'<span class="tool">⚙  git commit -m "Update ws-kernel-development: add layout-orthogonal diagnostic"</span>', delay:500},
+      {t:'out', html:'<span class="tool">⚙  git push -u origin HEAD</span>', delay:400},
+      {t:'out', html:'<span class="tool">⚙  gh pr create --reviewer "isaac-tai,daniel-kim"</span>', delay:600},
+      {t:'br', delay:150},
+      {t:'out', html:'<span class="added">✓  PR created: github.com/cerebras/skills/pull/42</span>', delay:300},
+    ],
+    'term-skills-sync': [
+      {t:'out', html:'<span class="claude">  ▐▛███▜▌</span>', delay:0},
+      {t:'out', html:'<span class="claude"> ▝▜█████▛▘</span>', delay:0},
+      {t:'out', html:'<span class="claude">   ▘▘  ▝▝</span>', delay:60},
+      {t:'br', delay:40},
+      {t:'out', html:'<span class="prompt"> ✻ Welcome to Claude Code!</span>', delay:40},
+      {t:'out', html:'<span class="dim">   v2.1.74  ·  claude-sonnet-4-6</span>', delay:40},
+      {t:'out', html:'<span class="dim">   ~/monolith/dv/hbg</span>', delay:40},
+      {t:'br', delay:80},
+      {t:'out', html:'<span class="tool">⚙  Syncing skills from cerebras/skills...</span>', delay:700},
+      {t:'out', html:'<span class="added">✓  dv-reference</span>', delay:280},
+      {t:'out', html:'<span class="added">✓  directed-test-gen-agent</span>', delay:180},
+      {t:'out', html:'<span class="added">✓  nightly-regression-agent</span>', delay:180},
+      {t:'out', html:'<span class="added">✓  directed-test-migration-agent</span>', delay:180},
+      {t:'out', html:'<span class="added">✓  code-review</span>', delay:180},
+      {t:'out', html:'<span class="added">✓  find-bugs</span>', delay:180},
+      {t:'out', html:'<span class="added">✓  create-pr</span>', delay:180},
+      {t:'out', html:'<span class="added">✓  skill-writer</span>', delay:180},
+      {t:'out', html:'<span class="dim">   ─────────────────────────────────────</span>', delay:280},
+      {t:'out', html:'<span class="added">✓  8 skills loaded  ·  2 updated</span>', delay:200},
+      {t:'br', delay:300},
+      {t:'out', html:'<span class="dim">   /help for help, /exit to quit</span>', delay:60},
+      {t:'out', html:'<span class="dim">────────────────────────────────────────────────────</span>', delay:100},
+      {t:'cmd', text:'', speed:0, afterDelay:0},
+    ],
+  };
+
+  // ── Map slide index → terminal IDs to play ────────────────────
+  const slideTerminals = {
+    3: ['term-dv-demo'],
+    5: ['term-skills-sync'],
+    7: ['term-team-select'],
+    8: ['term-skill-writer'],
+    9: ['term-skill-update'],
+  };
+
+  // ── Navigation ────────────────────────────────────────────────
+  function show(index) {
+    if (index < 0 || index >= total) return;
+    (slideTerminals[current] || []).forEach(stopTerm);
+    slides[current].classList.remove('active');
+    current = index;
+    slides[current].classList.add('active');
+    (slideTerminals[current] || []).forEach(id => setTimeout(() => playTerm(id), 120));
+    updateUI();
+  }
+
+  function advance() { show(current + 1); }
+  function goBack() { show(current - 1); }
+
+  function updateUI() {
+    document.getElementById('progress').style.width =
+      ((current + 1) / total * 100) + '%';
+    document.getElementById('counter').textContent =
+      (current + 1) + ' / ' + total;
+    updateTOC();
+  }
+
+  // ── Events ───────────────────────────────────────────────────
+  document.addEventListener('keydown', e => {
+    if (['ArrowRight', 'ArrowDown', ' '].includes(e.key)) { e.preventDefault(); advance(); }
+    if (['ArrowLeft', 'ArrowUp'].includes(e.key)) { e.preventDefault(); goBack(); }
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End') show(total - 1);
+  });
+
+  document.addEventListener('click', e => {
+    if (e.target.closest('.toc-item')) return;
+    if (e.clientX > window.innerWidth / 2) advance();
+    else goBack();
+  });
+
+  // ── Init ─────────────────────────────────────────────────────
+  buildTOC();
+  show(0);
+</script>
+</body>
+</html>
