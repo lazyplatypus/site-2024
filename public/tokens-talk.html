@@ -167,6 +167,38 @@ svg{display:block; width:100%; height:100%; overflow:visible}
   <div class="viz" data-reveal id="vizDeals"></div>
 </section>
 
+<!-- 4b PREMISE · energy per token — the intuitive hook -->
+<section class="slide" data-kicker="The premise" data-title="More tokens vs. faster tokens" data-init="tension">
+  <div class="two" style="grid-template-columns:1.55fr 1fr; gap:5%; align-items:center; height:100%">
+    <div class="viz" data-reveal id="vizTension"></div>
+    <div data-reveal style="display:flex; flex-direction:column; gap:3cqh">
+      <div style="font-family:var(--disp); font-size:3.1cqh; font-weight:600; color:var(--clay); line-height:1.12">Everyone wants both</div>
+      <div style="font-size:2.0cqh; color:var(--ink2); line-height:1.5"><b>More tokens</b> — throughput per chip, per dollar, per joule.<br><br><b>Faster tokens</b> — low latency for the one user waiting.</div>
+      <div style="font-size:2.0cqh; color:var(--ink); line-height:1.45">Push one and you pay in the other — going faster always costs more energy per token.</div>
+      <div style="font-family:var(--disp); font-style:italic; font-size:2.2cqh; color:var(--ink2); line-height:1.34; border-left:3px solid var(--clay); padding-left:2.2cqh">You can walk many miles on the energy it takes to sprint just one.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 4c PREMISE · the chart + the trade in one simple line -->
+<section class="slide" data-kicker="The premise · why" data-title="Faster tokens cost more energy" data-init="tensionMath">
+  <div class="two" style="grid-template-columns:1.4fr 1fr; gap:5%; align-items:center; height:100%">
+    <div class="viz" data-reveal id="vizTensionChart"></div>
+    <div data-reveal style="display:flex; flex-direction:column; gap:2.6cqh; justify-content:center">
+      <div style="font-family:var(--disp); font-size:2.6cqh; font-weight:600; color:var(--clay)">Where the speed comes from</div>
+      <div style="font-size:1.85cqh; color:var(--ink2); line-height:1.45">To make one user's tokens faster, you split the model across more GPUs. Call that number <b>k</b> — split across <b>k</b> GPUs and each one reads only <span class="mono">1/k</span> of the weights.</div>
+      <div style="background:var(--card); border:1px solid var(--line); border-radius:12px; padding:2.6cqh 2.4cqh">
+        <div class="mono" style="font-size:2.4cqh; color:var(--ink); text-align:center; line-height:1.3">time per token = <span style="color:var(--clay)">read ÷ k</span> + <span style="color:var(--ochre)">sync</span></div>
+        <div style="display:flex; gap:2.4cqh; margin-top:2.2cqh">
+          <div style="flex:1"><div class="mono" style="font-size:1.6cqh; color:var(--clay); font-weight:700">read ÷ k</div><div style="font-size:1.5cqh; color:var(--ink2); line-height:1.36; margin-top:.4cqh">Each GPU reads its <span class="mono">1/k</span> slice in parallel. This is the speedup.</div></div>
+          <div style="flex:1"><div class="mono" style="font-size:1.6cqh; color:var(--ochre); font-weight:700">sync</div><div style="font-size:1.5cqh; color:var(--ink2); line-height:1.36; margin-top:.4cqh">After every layer the GPUs stop to combine results. Add GPUs and this grows.</div></div>
+        </div>
+      </div>
+      <div style="font-size:1.9cqh; color:var(--ink); line-height:1.45">The work never shrinks. You read the whole model either way, and now you pay for the sync on top. <b>Faster tokens cost more energy.</b></div>
+    </div>
+  </div>
+</section>
+
 <!-- 5 SCOREBOARD -->
 <section class="slide" data-slide="4" data-kicker="The scoreboard" data-title="The Pareto frontier" data-init="score">
   <div class="viz" data-reveal id="vizScore"></div>
@@ -289,9 +321,39 @@ svg{display:block; width:100%; height:100%; overflow:visible}
   </div>
 </section>
 
+<!-- WHAT WE'RE BUILDING: Gimlet — the multi-silicon inference cloud -->
+<section class="slide" data-kicker="What we're building" data-title="No single chip is best — so use them all" data-init="gimlet">
+  <div class="two" style="grid-template-columns:0.82fr 1.18fr; align-items:center; height:100%; gap:3.2cqh">
+    <div data-reveal style="display:flex; flex-direction:column; gap:2.8cqh">
+      <div>
+        <div style="font-family:var(--disp); font-weight:700; font-size:3.4cqh; color:var(--clay); line-height:1.1">Gimlet</div>
+        <div style="font-family:var(--disp); font-style:italic; font-size:2.1cqh; color:var(--ink2); margin-top:.5cqh">the first multi-silicon inference cloud</div>
+      </div>
+      <div style="font-size:2.0cqh; color:var(--ink); line-height:1.5">Different phases belong on different hardware. We slice each workload across heterogeneous silicon and <b>physically unify it under one inference cloud</b>.</div>
+      <div style="font-family:var(--disp); font-style:italic; font-size:2.0cqh; color:var(--clay); line-height:1.32; border-left:3px solid var(--clay); padding-left:2.2cqh">And there are many ways to slice a workload&nbsp;→</div>
+    </div>
+    <div class="viz" data-reveal id="vizGimlet"></div>
+  </div>
+</section>
+
+<!-- L3 · SPECULATIVE DECODING DISAGGREGATION -->
+<section class="slide" data-kicker="Layer 3 · disaggregate by job" data-title="Draft on one chip, verify on another" data-init="specDecode">
+  <div class="viz" data-reveal id="vizSpecDecode"></div>
+</section>
+
+<!-- L3 · ATTENTION / FFN DISAGGREGATION -->
+<section class="slide" data-kicker="Layer 3 · disaggregate within the layer" data-title="Split attention from the feed-forward" data-init="attnFfn">
+  <div class="viz" data-reveal id="vizAttnFfn"></div>
+</section>
+
 <!-- 19 FINISH LINE -->
 <section class="slide" data-slide="24" data-kicker="What's next · the target moves" data-title="Agents move the target, not the frontier" data-init="finish">
   <div class="viz" data-reveal id="vizFinish"></div>
+</section>
+
+<!-- FINALE · the crazy stuff that's coming: JIT everything -->
+<section class="slide" data-kicker="What's next · the crazy stuff" data-title="If the target keeps moving — generate the target" data-init="jit">
+  <div class="viz" data-reveal id="vizJit"></div>
 </section>
 
 </div></div>
@@ -316,6 +378,8 @@ title:"The title is half a joke. Every time you type a prompt and hit enter, som
 capex:"Start with the money, because the money tells you how serious people are. Goldman's baseline model puts AI capex at about 765 billion dollars this year, climbing toward 1.6 trillion by 2031. Numbers that big stop meaning anything, so here is the one that should stick: this is one of the largest infrastructure build-outs in the history of the planet, and almost all of it exists to move tokens in and out of a model.",
 gauge:"Here's the contradiction at the center of this talk. We spend three quarters of a trillion dollars a year on this hardware, and average fleet utilization sits somewhere between ten and fifty percent. You buy a fifty billion dollar data center and a lot of the time you run it like it cost five. Why? Hold that question — the whole talk is the answer, and the industry clawing that number upward, optimization by optimization.",
 deals:"The scramble has a shape, and the shape is diversification. Read it as a grid — labs down the side, silicon across the top — and the story is that every lab is spread across every kind of chip. OpenAI alone: ten gigawatts with NVIDIA for a hundred billion, plus another thirty-eight billion of NVIDIA through AWS; six gigawatts with AMD; about two gigawatts of Trainium on top of a hundred-billion AWS expansion; ten gigawatts of custom Broadcom accelerators — that one's the same headline scale as the NVIDIA deal; and Cerebras wafers, seven-fifty megawatts growing toward two gigawatts. Anthropic spread across Google's TPUs, a gigawatt-plus AzureNVIDIA deal, five gigawatts of Trainium for a hundred billion, and five more gigawatts of next-gen Broadcom-and-Google silicon from 2027. Meta is buying NVIDIA by the millions and up to six gigawatts of AMD. xAI built Colossus on half a million NVIDIA GPUs. Nobody bets the company on one vendor — and the custom-silicon column argues the GPU isn't even the right shape. Hold that thought.",
+tension:"Here's the tension the whole talk lives inside. Everyone wants two things at once — more tokens, meaning more throughput per chip, per dollar, per joule — and faster tokens, low latency for the one person waiting on the screen. The trouble is they fight. Watch one model make a single token, two ways. On top, one GPU reads the whole model and grinds the token out — slow, but nothing is wasted. On the bottom, we split that same model across four GPUs; each reads only a quarter, they work in parallel, and the token lands sooner. But look at the orange: every layer, the cards have to stop and sync with each other, and that syncing is pure overhead the single card never paid. So splitting buys you speed, but you do strictly more work to get it. It's the same reason you can walk many miles on the energy it takes to sprint a single one. Faster is always more expensive — next, the actual numbers.",
+tensionMath:"Here are the numbers — one user, a seventy-billion-parameter model, run at different degrees of splitting. The whole trade fits on one line: time per token equals the model read divided by k, the number of cards you split across, plus the sync between them. More cards shrink the read, so you go faster — that's the curve sliding right. But the cards have to talk every layer, and that sync is overhead that only grows the more you split. The key thing to hold onto: you never read less of the model in total, and now you're paying to sync on top — so every step faster costs more energy per token. You can see it on the chart: going from one card to many makes a user roughly ten times faster and burns several times the energy for each token. That trade is the scoreboard we'll use for the rest of the talk.",
 score:"Before we rewind, here's a way to keep score. Across the bottom, throughput, total tokens per second across everybody. Up the side, interactivity, how fast one user gets their tokens. They fight each other: bigger batches buy throughput and cost responsiveness. The curve is the best tradeoff you can reach. In 2022 it sat down here, hugging the origin. Over the next twenty minutes every innovation shoves this curve somewhere, and I'll show you where each year.",
 loop:"At the core of every model is a loop. It takes everything so far, runs one forward pass, predicts the next token, appends it, and does it again. It's sequential: token five hundred can't exist until token four hundred ninety-nine does. That sequential, one-at-a-time nature is the root of everything that follows.",
 mem:"Here's the first thing that should surprise you. To produce a single token, the model has to read every one of its weights out of memory. For a seventy-billion-parameter model in half precision, that's a hundred and forty gigabytes — moved across the memory bus, for every single token.",
@@ -339,7 +403,11 @@ benefits:"And splitting helps even on identical hardware. Once prefill and decod
 roof16:"So which chip do you build the decode pool from? Decode reads the whole model for every token but does tiny math — it's pure memory bandwidth. A GPU keeps its weights in far-off HBM and drags all 140 GB through a narrow pipe, every token. A Cerebras wafer keeps the entire model on-chip in SRAM — thousands of times the bandwidth, nothing to fetch. For decode, that's the whole game.",
 awscere:"And it just became real. In March 2026 AWS and Cerebras announced a disaggregated inference service on Amazon Bedrock — exactly the split we've been building toward. Here's the data flow on the right: a request comes in, AWS Trainium does the prefill and computes the KV cache, that cache ships over Amazon's EFA interconnect to the Cerebras CS-3, and the wafer does nothing but decode — thousands of tokens a second instead of hundreds on a GPU. The headline: an order of magnitude faster inference and five times the high-speed token capacity in the same footprint.",
 cere:"Watch a decode workload actually run. It's just tokens, generated one at a time, as fast as memory allows. On the same model a GPU manages a few hundred a second; the Cerebras CS-3 streams out around three thousand — five times the tokens. Decode is the workload Cerebras is number one at, and it's exactly what reasoning and agentic coding are starving for.",
-finish:"You've watched three layers of optimization push that curve, each one earned. Here's the uncomfortable part. Agents move the target. Reasoning thinks for ten to a hundred times as many tokens, exactly the long-decode the wafer loves. But the same agents fan out into parallel calls and long context inflates prefill and the KV cache, loading the prefill side right back up. The target lands in the corner that needs high throughput and high interactivity at once — the one corner none of our layers reaches alone. So the curve has to move again."
+finish:"You've watched three layers of optimization push that curve, each one earned. Here's the uncomfortable part. Agents move the target. Reasoning thinks for ten to a hundred times as many tokens, exactly the long-decode the wafer loves. But the same agents fan out into parallel calls and long context inflates prefill and the KV cache, loading the prefill side right back up. The target lands in the corner that needs high throughput and high interactivity at once — the one corner none of our layers reaches alone. So the curve has to move again.",
+specDecode:"Disaggregation isn't only prefill versus decode — you can split by job. Speculative decoding has three jobs with completely different shapes. Prefill reads the prompt, compute-heavy. Then a small, fast draft model races ahead and guesses the next several tokens — that step is tiny but it's on the critical path, so latency is everything. Then the big target model verifies all of those guesses in one parallel forward pass and accepts the longest run that matches what it would have said — here three accepted, one rejected and corrected. Three jobs, three compute shapes, so you give each its own pool. And the draft step is the perfect fit for SRAM-heavy hardware like Cerebras: the whole little model lives on-chip, so every speculative token is near-instant. You verify in big batches where the GPU is happy, and you draft where memory bandwidth is free.",
+attnFfn:"And you can split even finer — inside a single layer. A transformer layer is really two sub-layers with opposite appetites. Attention streams the whole KV cache for every token and does almost no math — it's memory-bound, it wants bandwidth. The feed-forward block is the opposite: dense matmuls, all FLOPs, compute-bound — and in a mixture-of-experts model the experts are enormous and dominate the compute entirely. Force both onto one chip and you compromise both. So the emerging move, in work like ByteDance's MegaScale-Infer, is to put attention on a bandwidth pool and the FFN or expert pool on a compute pool, and shuttle the activations between them every layer. Each sub-layer finally runs on the chip it was built for. It's early, but it's gaining real traction at the largest scale.",
+gimlet:"This is what we're building at Gimlet — the first multi-silicon inference cloud. The whole talk has been one idea: no single chip is best for inference. So we don't pick one — we slice each workload across heterogeneous hardware, run each phase on the silicon that's best at it, and physically wire it all together into one cloud. Here's the payoff, back on our scoreboard: any single chip gives you a modest frontier — good at throughput or good at latency, never both. Combine two complementary chips and you reach a frontier neither gets to alone, far past what a homogeneous data center can do. And prefill-versus-decode is only the start — there are many ways to slice a workload. Let me show you two more.",
+jit:"So the target keeps moving, and the curve has to keep chasing it. Here's where it goes next, and it gets a little crazy on purpose. Beat one — JIT kernels. This is already real, and it's part of what we do at Gimlet. A given shape, a given batch size, a given chip wants its own specifically-tuned kernel, and tools like Triton and FlashInfer generate that kernel just in time for the exact config you're running — and increasingly the models write the kernels themselves. Press. Beat two — take it further: JIT binaries. The inference engine is a general program that handles any model, any shape, and pays overhead for all that generality. So cut it out — generate a perfect binary for one inference slice: this model, this quant, this batch shape, this chip, and strip everything else away. This one's more hand-wavy, a direction not a product, but you can already see the runway in TensorRT engine builds and ahead-of-time compilers. Press. Beat three — and why stop at software? JIT chips. AI-designed silicon is already being pursued: Google's AlphaChip designs chip floorplans, and the team behind it founded Ricursive Intelligence to build a recursive loop between hardware and software — AI that designs silicon for a workload, and silicon that speeds up designing the next one. Kernel, binary, chip — each layer, we stop hand-tuning and start generating. That's how you chase a target that won't sit still."
 };
 
 /* ---------- helpers ---------- */
@@ -1267,6 +1335,90 @@ function mapViz(host){
 }
 
 /* ---------- PARETO FRONTIER (scoreboard setup) ---------- */
+/* ---------- SPLIT RACE (premise) — 1 GPU vs k GPUs: faster but with comms overhead ---------- */
+function splitRace(host){
+  const W=1220,H=560,x0=214,x1=1066,bw=x1-x0;
+  const yA=112,hA=58;                          // 1-GPU row
+  const yB=206,laneH=58,laneGap=7,nL=4;        // 4-GPU row — each lane as thick as the 1-GPU bar = 4× the silicon
+  const bandB=nL*laneH+(nL-1)*laneGap;
+  // wall-clock fractions [0..1]: split does 3 rounds of (compute || , then all-reduce)
+  const rounds=[[0,0.13],[0.17,0.30],[0.34,0.47]];
+  const comms =[[0.13,0.17],[0.30,0.34],[0.47,0.51]];
+  const splitEnd=0.51;
+  const mx=f=>x0+bw*f;
+  const tokenChip=(cx,cy)=>`<rect x="${cx-44}" y="${cy-18}" width="88" height="36" rx="18" fill="${P.sage}"/><text x="${cx}" y="${cy+6}" font-size="18" fill="#fff" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">1 token</text>`;
+  function render(){
+    clearAnims();
+    function frame(p){
+      let s=`<svg viewBox="0 0 ${W} ${H}">`;
+      s+=`<text x="${x0}" y="78" font-size="19" fill="${P.soft}" font-family="IBM Plex Mono,monospace">time →</text>`;
+      s+=`<line x1="${x0}" y1="94" x2="${x1+48}" y2="94" stroke="${P.line}" stroke-width="2"/><polygon points="${x1+62},94 ${x1+48},87 ${x1+48},101" fill="${P.line}"/>`;
+      // ---- Row A: one GPU ----
+      s+=`<text x="${x0-24}" y="${yA+hA/2-4}" font-size="22" fill="${P.ink}" text-anchor="end" font-weight="700">1 GPU</text>`;
+      s+=`<text x="${x0-24}" y="${yA+hA/2+22}" font-size="14" fill="${P.soft}" text-anchor="end" font-family="IBM Plex Mono,monospace">reads whole model</text>`;
+      s+=`<rect x="${x0}" y="${yA}" width="${bw}" height="${hA}" rx="12" fill="${P.line2}"/>`;
+      const aVis=Math.min(1,p)*bw;
+      s+=`<rect x="${x0}" y="${yA}" width="${aVis}" height="${hA}" rx="12" fill="${P.clay}"/>`;
+      if(aVis>140)s+=`<text x="${x0+Math.min(aVis,bw)/2}" y="${yA+hA/2+9}" font-size="26" fill="#fff" text-anchor="middle" font-weight="800" font-family="Fraunces,serif">compute</text>`;
+      if(p>=1){s+=tokenChip(x1+60,yA+hA/2);s+=`<text x="${x1+60}" y="${yA-6}" font-size="18" fill="${P.soft}" text-anchor="middle" font-weight="700">slow</text>`;}
+      // ---- Row B: four GPUs split ----
+      s+=`<text x="${x0-24}" y="${yB+bandB/2-4}" font-size="22" fill="${P.ink}" text-anchor="end" font-weight="700">4 GPUs</text>`;
+      s+=`<text x="${x0-24}" y="${yB+bandB/2+22}" font-size="14" fill="${P.soft}" text-anchor="end" font-family="IBM Plex Mono,monospace">each reads ¼</text>`;
+      for(let l=0;l<nL;l++){const ly=yB+l*(laneH+laneGap);s+=`<rect x="${x0}" y="${ly}" width="${bw*splitEnd}" height="${laneH}" rx="5" fill="${P.line2}"/>`;}
+      rounds.forEach(r=>{const sx=mx(r[0]),sw=bw*(r[1]-r[0]),vis=Math.max(0,Math.min(sw,mx(Math.min(p,r[1]))-sx));
+        if(vis>0)for(let l=0;l<nL;l++){const ly=yB+l*(laneH+laneGap);s+=`<rect x="${sx}" y="${ly}" width="${vis}" height="${laneH}" rx="5" fill="${P.clay}"/>`;}});
+      comms.forEach(c=>{const sx=mx(c[0]),sw=bw*(c[1]-c[0]),vis=Math.max(0,Math.min(sw,mx(Math.min(p,c[1]))-sx));
+        if(vis>0)s+=`<rect x="${sx}" y="${yB}" width="${vis}" height="${bandB}" rx="4" fill="${P.ochre}"/>`;
+        if(vis>=sw*0.85){const cx=sx+sw/2,cy=yB+bandB/2;s+=`<text x="${cx}" y="${cy}" font-size="15" fill="#fff" text-anchor="middle" font-weight="700" transform="rotate(-90 ${cx} ${cy})" font-family="IBM Plex Mono,monospace">sync</text>`;}});
+      if(p>=splitEnd){s+=tokenChip(mx(splitEnd)+60,yB+bandB/2);s+=`<text x="${mx(splitEnd)+60}" y="${yB-8}" font-size="18" fill="${P.clay}" text-anchor="middle" font-weight="700">~2× faster</text>`;}
+      // playhead
+      const phx=mx(Math.min(1,p));
+      s+=`<line x1="${phx}" y1="118" x2="${phx}" y2="${yB+bandB+16}" stroke="${P.ink2}" stroke-width="2" opacity="0.45"/>`;
+      // legend + caption
+      s+=`<rect x="${x0}" y="${H-50}" width="20" height="14" rx="3" fill="${P.clay}"/><text x="${x0+28}" y="${H-38}" font-size="17" fill="${P.ink2}">compute</text>`;
+      s+=`<rect x="${x0+148}" y="${H-50}" width="20" height="14" rx="3" fill="${P.ochre}"/><text x="${x0+176}" y="${H-38}" font-size="17" fill="${P.ink2}">all-reduce — the cards sync after each layer (overhead)</text>`;
+      s+=`<text x="${W/2}" y="${H-14}" font-size="25" fill="${P.ink2}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">More GPUs gets the token out sooner — but each orange sync is overhead one GPU never pays</text>`;
+      s+=`</svg>`;host.innerHTML=s;
+    }
+    function play(){let st=null;function f(ts){if(!st)st=ts;let p=Math.min(1,(ts-st)/3200);frame(p);if(p<1)reg(requestAnimationFrame(f));}reg(requestAnimationFrame(f));}
+    frame(0);regT(setTimeout(play,250));regT(setInterval(play,4400));
+  }
+  render();
+}
+
+/* ---------- SINGLE-USER PARETO (premise) — modeled, Llama-70B FP8, NVL72 ---------- */
+function paretoSingle(host){
+  const W=1000,H=620,padL=98,padR=58,padT=58,padB=86,X0=padL,X1=W-padR,Y0=H-padB,Y1=padT;
+  // [k, tok/s (one user), J/token] — from pareto_single_user.py (NVL72, 32k ctx)
+  const pts=[[1,100,5.4],[2,195,5.7],[4,340,6.2],[8,530,7.3],[16,745,9.6],[32,940,14.1],[64,1075,23.0]];
+  const maxX=1180,maxY=25;
+  const mx=v=>X0+(v/maxX)*(X1-X0), my=v=>Y0-(v/maxY)*(Y0-Y1);
+  let grid='';for(let i=1;i<=5;i++){const y=Y0-(i/5)*(Y0-Y1);grid+=`<line x1="${X0}" y1="${y}" x2="${X1}" y2="${y}" stroke="${P.line2}" stroke-width="1"/>`;}
+  let ylab='';for(let i=0;i<=5;i++){const v=maxY*i/5,y=my(v);ylab+=`<text class="mono" x="${X0-14}" y="${y+6}" font-size="17" fill="${P.soft}" text-anchor="end">${Math.round(v)}</text>`;}
+  const dpath='M '+pts.map(p=>`${mx(p[1])} ${my(p[2])}`).join(' L ');
+  const area=dpath+` L ${mx(pts[pts.length-1][1])} ${Y0} L ${mx(pts[0][1])} ${Y0} Z`;
+  const dots=pts.map(p=>`<circle cx="${mx(p[1])}" cy="${my(p[2])}" r="8" fill="${P.clay}"/>`+
+    `<text class="mono" x="${mx(p[1])}" y="${my(p[2])-15}" font-size="18" fill="${P.clay}" font-weight="700" text-anchor="middle">k=${p[0]}</text>`).join('');
+  host.innerHTML=`<svg viewBox="0 0 ${W} ${H}">
+    ${grid}
+    <line x1="${X0}" y1="${Y0}" x2="${X1}" y2="${Y0}" stroke="${P.line}" stroke-width="2.5"/>
+    <line x1="${X0}" y1="${Y0}" x2="${X0}" y2="${Y1}" stroke="${P.line}" stroke-width="2.5"/>
+    <polygon points="${X1},${Y0} ${X1-13},${Y0-7} ${X1-13},${Y0+7}" fill="${P.line}"/>
+    <polygon points="${X0},${Y1} ${X0-7},${Y1+13} ${X0+7},${Y1+13}" fill="${P.line}"/>
+    ${ylab}
+    <text x="${(X0+X1)/2}" y="${H-20}" font-size="24" fill="${P.ink2}" text-anchor="middle" font-weight="700">tokens / sec — one user →</text>
+    <text x="30" y="${(Y0+Y1)/2}" font-size="24" fill="${P.ink2}" text-anchor="middle" font-weight="700" transform="rotate(-90 30 ${(Y0+Y1)/2})">energy per token (J) ↑</text>
+    <path d="${area}" fill="${P.clay}" opacity="0.09"/>
+    <path id="psline" d="${dpath}" fill="none" stroke="${P.clay}" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+    ${dots}
+    <text class="mono" x="${mx(100)}" y="${my(5.4)+34}" font-size="16" fill="${P.soft}" font-weight="700" text-anchor="middle">cheapest</text>
+    <text class="mono" x="${mx(1075)}" y="${my(23)-30}" font-size="16" fill="${P.soft}" font-weight="700" text-anchor="middle">fastest</text>
+  </svg>`;
+  const ln=host.querySelector('#psline');const len=ln.getTotalLength();
+  ln.style.strokeDasharray=len;ln.style.strokeDashoffset=len;ln.getBoundingClientRect();
+  ln.style.transition='stroke-dashoffset 1.5s ease';ln.style.strokeDashoffset=0;
+}
+
 function paretoViz(host){
   const W=1000,H=560,padL=120,padR=60,padT=50,padB=96,X0=padL,X1=W-padR,Y0=H-padB,Y1=padT;
   const mx=n=>X0+n*(X1-X0),my=n=>Y0-n*(Y0-Y1);
@@ -1313,7 +1465,9 @@ const PAPERS={
  orca:{title:'Orca: A Distributed Serving System for Transformer-Based Generative Models',authors:'Yu et al.',venue:'USENIX OSDI 2022',badge:'OSDI ’22',tag:'origin of continuous batching'},
  vllm:{title:'Efficient Memory Management for Large Language Model Serving with PagedAttention',authors:'Kwon et al.',venue:'SOSP 2023',badge:'arXiv:2309.06180',tag:'origin of the paged KV cache · vLLM'},
  sarathi:{title:'SARATHI: Efficient LLM Inference by Piggybacking Decodes with Chunked Prefills',authors:'Agrawal et al.',venue:'2023',badge:'arXiv:2308.16369',tag:'origin of chunked prefill'},
- disagg:{title:'Mooncake: A KVCache-centric Disaggregated Architecture for LLM Serving',authors:'Qin et al. · Moonshot AI (Kimi)',venue:'2024',badge:'arXiv:2407.00079',tag:'KV-centric prefill / decode disaggregation'}};
+ disagg:{title:'Mooncake: A KVCache-centric Disaggregated Architecture for LLM Serving',authors:'Qin et al. · Moonshot AI (Kimi)',venue:'2024',badge:'arXiv:2407.00079',tag:'KV-centric prefill / decode disaggregation'},
+ specdecode:{title:'Fast Inference from Transformers via Speculative Decoding',authors:'Leviathan, Kalman & Matias · Google Research',venue:'ICML 2023',badge:'arXiv:2211.17192',tag:'origin of speculative decoding'},
+ attnffn:{title:'MegaScale-Infer: Serving Mixture-of-Experts at Scale with Disaggregated Expert Parallelism',authors:'ByteDance',venue:'SIGCOMM 2025',badge:'arXiv:2504.02263',tag:'disaggregating attention from FFN / expert pools'}};
 function paperCard(host,key){
   const p=PAPERS[key];
   host.innerHTML=`<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center">
@@ -1334,12 +1488,274 @@ function paperCard(host,key){
   </div>`;
 }
 
+/* ---------- SPECULATIVE-DECODING DISAGGREGATION ---------- */
+function specDecodeDisagg(host){
+  const W=1240,H=560,top=134,BAND=206;
+  const pf={x:96, w:215,h:BAND,c:P.slate,label:'Prefill',foot:'heavy compute'};
+  const dr={x:410,w:230,h:126,c:P.ochre,label:'Draft',  foot:'tiny — runs in SRAM'};
+  const vf={x:742,w:330,h:BAND,c:P.clay, label:'Verify', foot:'heavy compute'};
+  const NSPEC=4,ACCEPT=3,tokY=398,tokH=60,tokW=120,tokGap=16,tokX0=dr.x;
+  const pY=p=>top+(BAND-p.h)/2;
+  const arrow=(x1,y1,x2,y2,c,w)=>{const a=Math.atan2(y2-y1,x2-x1),hl=13,bx=x2-hl*Math.cos(a),by=y2-hl*Math.sin(a);
+    return `<line x1="${x1}" y1="${y1}" x2="${bx}" y2="${by}" stroke="${c}" stroke-width="${w}"/><polygon points="${x2},${y2} ${bx-7*Math.sin(a)},${by+7*Math.cos(a)} ${bx+7*Math.sin(a)},${by-7*Math.cos(a)}" fill="${c}"/>`;};
+  function poolBox(p){const y=pY(p);
+    let s=`<rect x="${p.x}" y="${y}" width="${p.w}" height="${p.h}" rx="16" fill="${p.c}" opacity="0.06"/>`;
+    s+=`<rect x="${p.x}" y="${y}" width="${p.w}" height="${p.h}" rx="16" fill="none" stroke="${p.c}" stroke-width="3"/>`;
+    s+=`<text x="${p.x+p.w/2}" y="${top-34}" font-size="27" fill="${p.c}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">${p.label}</text>`;
+    s+=`<text x="${p.x+p.w/2}" y="${top+BAND+30}" font-size="17" fill="${p.c}" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-weight="700">${p.foot}</text>`;
+    return s;}
+  function aluGrid(p,frac){const cols=7,rows=5,cell=18,gap=7;
+    const totW=cols*cell+(cols-1)*gap, totH=rows*cell+(rows-1)*gap;
+    const ox=p.x+(p.w-totW)/2, oy=top+(p.h-totH)/2;
+    let s='',lit=Math.round(cols*rows*frac),k=0;
+    for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const on=k<lit;
+      s+=`<rect x="${ox+c*(cell+gap)}" y="${oy+r*(cell+gap)}" width="${cell}" height="${cell}" rx="3" fill="${on?p.c:P.line2}"/>`;k++;}
+    return s;}
+  function draftChip(p){const y=pY(p),cw=130,ch=58,cx=p.x+p.w/2-cw/2,cyy=y+p.h/2-ch/2;
+    let s=`<rect x="${cx}" y="${cyy}" width="${cw}" height="${ch}" rx="9" fill="${p.c}" opacity="0.2" stroke="${p.c}" stroke-width="2.5"/>`;
+    s+=`<text x="${p.x+p.w/2}" y="${cyy+ch/2+6}" font-size="17" fill="${p.c}" text-anchor="middle" font-weight="700" font-family="IBM Plex Mono,monospace">SRAM</text>`;
+    return s;}
+  function frame(prog){
+    const pfFill=Math.min(1,prog/0.22), draftP=prog<0.30?0:Math.min(1,(prog-0.30)/0.24), verifyP=prog<0.66?0:Math.min(1,(prog-0.66)/0.30);
+    const proposed=Math.floor(draftP*NSPEC+1e-6);
+    let s=`<svg viewBox="0 0 ${W} ${H}">`;
+    s+=`<text x="64" y="36" font-size="18" fill="${P.soft}" font-family="IBM Plex Mono,monospace">time →</text>`;
+    s+=`<line x1="116" y1="48" x2="1176" y2="48" stroke="${P.line}" stroke-width="2"/><polygon points="1190,48 1176,42 1176,54" fill="${P.line}"/>`;
+    s+=poolBox(pf)+aluGrid(pf,pfFill);
+    s+=poolBox(dr)+draftChip(dr);
+    s+=poolBox(vf)+aluGrid(vf,verifyP);
+    s+=arrow(pf.x+pf.w+6, top+BAND/2, dr.x-8, pY(dr)+dr.h/2, P.ink2, 3);
+    s+=arrow(dr.x+dr.w+6, top+BAND/2, vf.x-8, top+BAND/2, P.ink2, 3);
+    // tokens
+    for(let i=0;i<NSPEC;i++){const x=tokX0+i*(tokW+tokGap), shown=i<proposed;
+      let fill=P.line2,txtc=P.faint,label='?',sw=0,stroke='none';
+      if(shown&&verifyP===0){fill=P.ochre;txtc='#fff';label='t'+(i+1);}
+      if(verifyP>0){ if(i<ACCEPT){fill=P.sage;txtc='#fff';label='✓';}
+        else if(i===ACCEPT){fill=P.rose;txtc='#fff';label='✗';}
+        else {fill=P.line2;txtc=P.faint;label='—';sw=1.5;stroke=P.faint;} }
+      s+=`<rect x="${x}" y="${tokY}" width="${tokW}" height="${tokH}" rx="11" fill="${fill}"${sw?` stroke="${stroke}" stroke-width="${sw}" stroke-dasharray="6 6"`:''} opacity="${shown||verifyP>0?1:0.5}"/>`;
+      if(shown||verifyP>0)s+=`<text x="${x+tokW/2}" y="${tokY+tokH/2+9}" font-size="24" fill="${txtc}" text-anchor="middle" font-weight="700" font-family="IBM Plex Mono,monospace">${label}</text>`;
+    }
+    if(verifyP>0.5){const op=Math.min(1,(verifyP-0.5)/0.4);
+      s+=`<text x="${tokX0}" y="${tokY+tokH+36}" font-size="19" fill="${P.sage}" font-weight="700" font-family="Fraunces,serif" opacity="${op}">${ACCEPT} accepted at once<tspan fill="${P.rose}"> · 1 corrected</tspan></text>`;}
+    const phx=116+(1176-116)*Math.min(1,prog);
+    s+=`<line x1="${phx}" y1="44" x2="${phx}" y2="${tokY+tokH+48}" stroke="${P.ink2}" stroke-width="2" opacity="0.3"/>`;
+    s+=`<text x="${W/2}" y="${H-24}" font-size="25" fill="${P.ink}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">Drafting is tiny — it flies in SRAM. Verifying is heavy — it wants compute.</text>`;
+    s+=`<text x="${W-40}" y="${H-6}" font-size="13" fill="${P.faint}" text-anchor="end" font-family="IBM Plex Mono,monospace">speculative decoding · Leviathan et al. · ICML 2023</text>`;
+    s+=`</svg>`;host.innerHTML=s;
+  }
+  function play(){let st=null;function f(ts){if(!st)st=ts;let p=Math.min(1,(ts-st)/4400);frame(p);if(p<1)reg(requestAnimationFrame(f));}reg(requestAnimationFrame(f));}
+  frame(0);regT(setTimeout(play,300));regT(setInterval(play,5600));
+}
+
+/* ---------- ATTENTION–FFN DISAGGREGATION ---------- */
+function attnFfnDisagg(host){
+  const W=1240,H=560,cy=272;
+  const at={x:160,y:cy-120,w:320,h:240,c:P.slate,label:'Attention',  foot:'best at attention'};
+  const fn={x:760,y:cy-120,w:320,h:240,c:P.clay, label:'FFN / experts',foot:'best at matmul'};
+  const arrow=(x1,y1,x2,y2,c,w)=>{const a=Math.atan2(y2-y1,x2-x1),hl=14,bx=x2-hl*Math.cos(a),by=y2-hl*Math.sin(a);
+    return `<line x1="${x1}" y1="${y1}" x2="${bx}" y2="${by}" stroke="${c}" stroke-width="${w}"/><polygon points="${x2},${y2} ${bx-8*Math.sin(a)},${by+8*Math.cos(a)} ${bx+8*Math.sin(a)},${by-8*Math.cos(a)}" fill="${c}"/>`;};
+  function poolBox(p){
+    let s=`<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" rx="18" fill="${p.c}" opacity="0.06"/>`;
+    s+=`<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" rx="18" fill="none" stroke="${p.c}" stroke-width="4"/>`;
+    s+=`<text x="${p.x+p.w/2}" y="${p.y+52}" font-size="30" fill="${p.c}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">${p.label}</text>`;
+    s+=`<text x="${p.x+p.w/2}" y="${p.y+p.h+38}" font-size="20" fill="${p.c}" text-anchor="middle" font-weight="700" font-family="IBM Plex Mono,monospace">${p.foot}</text>`;
+    return s;}
+  function attnInner(p){let s='';const sx=p.x+p.w/2-72,sy=p.y+96,bw=144,bh=16,gap=10;
+    for(let i=0;i<5;i++)s+=`<rect x="${sx}" y="${sy+i*(bh+gap)}" width="${bw}" height="${bh}" rx="4" fill="${p.c}" opacity="${0.4+i*0.08}"/>`;
+    return s;}
+  function ffnInner(p){let s='';const cols=2,rows=2,cw=108,ch=52,gx=22,gy=16;
+    const gx0=p.x+(p.w-(cols*cw+(cols-1)*gx))/2, gy0=p.y+88;let idx=0;
+    for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const x=gx0+c*(cw+gx),y=gy0+r*(ch+gy),active=(idx===0||idx===3);
+      s+=`<rect x="${x}" y="${y}" width="${cw}" height="${ch}" rx="9" fill="${active?p.c:P.card}" stroke="${p.c}" stroke-width="${active?0:2}" opacity="${active?0.9:0.5}"/>`;
+      s+=`<text x="${x+cw/2}" y="${y+ch/2+6}" font-size="14" fill="${active?'#fff':p.c}" text-anchor="middle" font-family="IBM Plex Mono,monospace">expert</text>`;idx++;}
+    return s;}
+  function staticSVG(){let s=`<svg viewBox="0 0 ${W} ${H}">`;
+    s+=`<text x="${W/2}" y="62" font-size="20" fill="${P.soft}" text-anchor="middle" font-family="IBM Plex Mono,monospace">every layer: attention, then feed-forward</text>`;
+    s+=poolBox(at)+attnInner(at);
+    s+=poolBox(fn)+ffnInner(fn);
+    const yTop=cy-46,yBot=cy+46;
+    s+=arrow(at.x+at.w+4,yTop,fn.x-6,yTop,P.ochre,4);
+    s+=`<text x="${(at.x+at.w+fn.x)/2}" y="${yTop-14}" font-size="16" fill="${P.ochre}" text-anchor="middle" font-weight="600">activations →</text>`;
+    s+=arrow(fn.x-6,yBot,at.x+at.w+4,yBot,P.sage,4);
+    s+=`<text x="${(at.x+at.w+fn.x)/2}" y="${yBot+30}" font-size="16" fill="${P.sage}" text-anchor="middle" font-weight="600">← next layer</text>`;
+    s+=arrow(64,cy,at.x-8,cy,P.line,3.5);
+    s+=`<text x="${(64+at.x)/2}" y="${cy-14}" font-size="15" fill="${P.soft}" text-anchor="middle">tokens in</text>`;
+    s+=arrow(fn.x+fn.w+8,cy,W-58,cy,P.clay,3.5);
+    s+=`<text x="${(fn.x+fn.w+W-58)/2}" y="${cy-14}" font-size="15" fill="${P.clay}" text-anchor="middle">tokens out</text>`;
+    s+=`<circle id="afpkt" cx="64" cy="${cy}" r="10" fill="${P.ochre}"/>`;
+    s+=`<text x="${W/2}" y="${H-24}" font-size="25" fill="${P.ink}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">Split the layer — run each half where it runs best</text>`;
+    s+=`<text x="${W-40}" y="${H-6}" font-size="13" fill="${P.faint}" text-anchor="end" font-family="IBM Plex Mono,monospace">MegaScale-Infer · arXiv:2504.02263</text>`;
+    s+=`</svg>`;return s;}
+  host.innerHTML=staticSVG();
+  const pkt=host.querySelector('#afpkt'),yTop=cy-46,yBot=cy+46,atC=at.x+at.w/2,fnC=fn.x+fn.w/2;
+  const path=[[64,cy,P.ochre],[atC,cy,P.slate],[at.x+at.w+4,yTop,P.ochre],[fn.x-6,yTop,P.ochre],
+    [fnC,cy,P.clay],[fn.x-6,yBot,P.sage],[at.x+at.w+4,yBot,P.sage],[atC,cy,P.slate],
+    [at.x+at.w+4,yTop,P.ochre],[fn.x-6,yTop,P.ochre],[fnC,cy,P.clay],[fn.x+fn.w+8,cy,P.clay],[W-58,cy,P.clay]];
+  let seg=0,t=0;
+  function f(){t+=0.02;if(t>=1){t=0;seg=(seg+1)%(path.length-1);}
+    const a=path[seg],b=path[seg+1],e=ease(t);
+    pkt.setAttribute('cx',a[0]+(b[0]-a[0])*e);pkt.setAttribute('cy',a[1]+(b[1]-a[1])*e);pkt.setAttribute('fill',b[2]);
+    reg(requestAnimationFrame(f));}
+  reg(requestAnimationFrame(f));
+}
+
+/* ---------- GIMLET — latency/throughput Pareto (modeled on gimlet.ai) ---------- */
+function gimletViz(host){
+  const W=1040,H=600,padL=92,padR=48,padT=70,padB=120,X0=padL,X1=W-padR,Y0=H-padB,Y1=padT;
+  const mx=n=>X0+n*(X1-X0),my=n=>Y0-n*(Y0-Y1);
+  // normalized [faster-tokens, more-tokens]; HW1 wins the top, HW2 reaches furthest right, Gimlet stays just inside both extremes
+  const hw1=[[.03,.96],[.06,.82],[.09,.60],[.12,.36],[.15,.23],[.20,.18],[.26,.15],[.32,.09],[.40,.05]];
+  const hw2=[[.03,.43],[.12,.42],[.22,.40],[.34,.37],[.47,.34],[.60,.30],[.73,.26],[.86,.22],[.99,.17]];
+  const gim=[[.08,.86],[.15,.83],[.23,.79],[.33,.73],[.44,.66],[.55,.58],[.66,.50],[.76,.42],[.84,.34],[.90,.28]];
+  function smooth(pts){const P2=pts.map(p=>[mx(p[0]),my(p[1])]);let d=`M ${P2[0][0]} ${P2[0][1]}`;
+    for(let i=0;i<P2.length-1;i++){const p0=P2[i-1]||P2[i],p1=P2[i],p2=P2[i+1],p3=P2[i+2]||p2;
+      d+=` C ${p1[0]+(p2[0]-p0[0])/6} ${p1[1]+(p2[1]-p0[1])/6}, ${p2[0]-(p3[0]-p1[0])/6} ${p2[1]-(p3[1]-p1[1])/6}, ${p2[0]} ${p2[1]}`;}
+    return d;}
+  const marks=(pts,c)=>pts.map(p=>`<rect x="${mx(p[0])-5}" y="${my(p[1])-5}" width="10" height="10" rx="2" fill="${c}"/>`).join('');
+  const uid='gm'+Math.floor(Math.random()*1e6);
+  let grid='';for(let i=1;i<=4;i++){const y=Y0-(i/5)*(Y0-Y1);grid+=`<line x1="${X0}" y1="${y}" x2="${X1}" y2="${y}" stroke="${P.line2}" stroke-width="1"/>`;}
+  for(let i=1;i<=5;i++){const x=X0+(i/6)*(X1-X0);grid+=`<line x1="${x}" y1="${Y0}" x2="${x}" y2="${Y1}" stroke="${P.line2}" stroke-width="1"/>`;}
+  function legend(){const items=[['Homogeneous HW 1',P.slate],['Homogeneous HW 2',P.ochre],['Heterogeneous HW 1 + HW 2 — Gimlet',P.clay]];
+    let x=X0, s='';items.forEach(it=>{s+=`<rect x="${x}" y="${H-30}" width="14" height="14" rx="3" fill="${it[1]}"/>`;
+      s+=`<text x="${x+22}" y="${H-19}" font-size="15" fill="${P.ink2}" font-family="IBM Plex Mono,monospace">${it[0]}</text>`;x+=it[0].length*8.6+54;});
+    return s;}
+  host.innerHTML=`<svg viewBox="0 0 ${W} ${H}">
+    <defs><filter id="${uid}g" x="-20%" y="-20%" width="140%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="${P.clay}" flood-opacity="0.25"/></filter></defs>
+    ${grid}
+    <line x1="${X0}" y1="${Y0}" x2="${X1}" y2="${Y0}" stroke="${P.line}" stroke-width="2.5"/>
+    <line x1="${X0}" y1="${Y0}" x2="${X0}" y2="${Y1}" stroke="${P.line}" stroke-width="2.5"/>
+    <polygon points="${X1},${Y0} ${X1-13},${Y0-7} ${X1-13},${Y0+7}" fill="${P.line}"/>
+    <polygon points="${X0},${Y1} ${X0-7},${Y1+13} ${X0+7},${Y1+13}" fill="${P.line}"/>
+    <text x="${(X0+X1)/2}" y="${Y0+50}" font-size="22" fill="${P.ink2}" text-anchor="middle" font-weight="700">Faster tokens →</text>
+    <text x="34" y="${(Y0+Y1)/2}" font-size="22" fill="${P.ink2}" text-anchor="middle" font-weight="700" transform="rotate(-90 34 ${(Y0+Y1)/2})">More tokens ↑</text>
+    <path d="${smooth(hw1)}" fill="none" stroke="${P.slate}" stroke-width="3.5" stroke-linecap="round" opacity="0.85"/>${marks(hw1,P.slate)}
+    <path d="${smooth(hw2)}" fill="none" stroke="${P.ochre}" stroke-width="3.5" stroke-linecap="round" opacity="0.85"/>${marks(hw2,P.ochre)}
+    <path id="${uid}c" d="${smooth(gim)}" fill="none" stroke="${P.clay}" stroke-width="6" stroke-linecap="round" filter="url(#${uid}g)"/>${marks(gim,P.clay)}
+    ${legend()}
+  </svg>`;
+  const c=host.querySelector('#'+uid+'c');const len=c.getTotalLength();
+  c.style.strokeDasharray=len;c.style.strokeDashoffset=len;c.getBoundingClientRect();
+  c.style.transition='stroke-dashoffset 1.5s ease .3s';c.style.strokeDashoffset=0;
+}
+
+/* ---------- FINALE · JIT EVERYTHING (kernel -> inference -> chip) ---------- */
+function jitViz(host){
+  const W=1220,H=600;
+  const steps=['JIT KERNELS','JIT INFERENCE','JIT CHIPS'];
+  const cset=[P.clay,P.ochre,P.sage];
+  const titles=['JIT kernels','JIT inference','JIT chips'];
+  const subs=['one kernel, hypertuned to each target — generated just in time',
+              'skip the general-purpose engine — run only this slice of this workload',
+              'AI designs the silicon; the silicon trains better AI'];
+  const tags=['real today','build only what you run','emerging'];
+  const punch=['We hypertune every kernel to the hardware, the config, the SLA, and the workload.',
+               'No general-purpose engine — a binary that does one thing, perfectly.',
+               'Recursive Self-Improvement is coming.'];
+  let beat=0, flow=0;
+  const ah=(x,y,a,c,sz)=>`<polygon points="${x},${y} ${x-sz*Math.cos(a-0.4)},${y-sz*Math.sin(a-0.4)} ${x-sz*Math.cos(a+0.4)},${y-sz*Math.sin(a+0.4)}" fill="${c}"/>`;
+
+  function header(){let s='';
+    steps.forEach((st,i)=>{const x=130+i*250, cur=i===beat, on=i<=beat;
+      s+=`<text x="${x}" y="46" font-size="16" fill="${cur?cset[i]:(on?P.ink2:P.faint)}" font-weight="${cur?700:500}" font-family="IBM Plex Mono,monospace">${i+1} · ${st}</text>`;});
+    s+=`<text x="${W-30}" y="46" font-size="16" fill="${P.faint}" text-anchor="end" font-family="IBM Plex Mono,monospace">${beat+1}/3 · press →</text>`;
+    s+=`<line x1="120" y1="60" x2="${W-120}" y2="60" stroke="${P.line2}" stroke-width="1.5"/>`;
+    s+=`<text x="120" y="118" font-size="42" fill="${cset[beat]}" font-weight="700" font-family="Fraunces,serif">${titles[beat]}</text>`;
+    s+=`<text x="122" y="150" font-size="20" fill="${P.ink2}">${subs[beat]}</text>`;
+    s+=`<text x="${W-120}" y="118" font-size="16" fill="${cset[beat]}" text-anchor="end" font-family="IBM Plex Mono,monospace" font-weight="600">${tags[beat]}</text>`;
+    return s;}
+
+  function sceneKernels(){let s='';
+    const src={x:130,y:240,w:200,h:140};
+    s+=`<rect x="${src.x}" y="${src.y}" width="${src.w}" height="${src.h}" rx="12" fill="${P.card}" stroke="${P.ink2}" stroke-width="3"/>`;
+    s+=`<text x="${src.x+src.w/2}" y="${src.y+40}" font-size="20" fill="${P.ink}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">one kernel</text>`;
+    for(let i=0;i<4;i++)s+=`<line x1="${src.x+24}" y1="${src.y+66+i*16}" x2="${src.x+src.w-24-((i%2)*40)}" y2="${src.y+66+i*16}" stroke="${P.ink2}" stroke-width="3" opacity="0.22"/>`;
+    const comp={x:430,y:276,w:160,h:68};
+    s+=`<rect x="${comp.x}" y="${comp.y}" width="${comp.w}" height="${comp.h}" rx="12" fill="${P.clay}" opacity="0.14" stroke="${P.clay}" stroke-width="3"/>`;
+    s+=`<text x="${comp.x+comp.w/2}" y="${comp.y+42}" font-size="22" fill="${P.clay}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">hypertune</text>`;
+    s+=`<line x1="${src.x+src.w}" y1="${src.y+src.h/2}" x2="${comp.x-6}" y2="${comp.y+comp.h/2}" stroke="${P.ink2}" stroke-width="3" stroke-dasharray="8 7" stroke-dashoffset="${-flow}"/>`;
+    s+=ah(comp.x-4,comp.y+comp.h/2,0,P.ink2,12);
+    const backs=[['HW 1',P.slate],['HW 2',P.sage],['HW 3',P.ochre]];
+    const bx=760,bw=330,bh=76,gy=26,by0=200;
+    backs.forEach((b,i)=>{const y=by0+i*(bh+gy);
+      s+=`<rect x="${bx}" y="${y}" width="${bw}" height="${bh}" rx="11" fill="${P.card}" stroke="${b[1]}" stroke-width="3"/>`;
+      s+=`<rect x="${bx}" y="${y}" width="9" height="${bh}" rx="4" fill="${b[1]}"/>`;
+      s+=`<text x="${bx+30}" y="${y+34}" font-size="22" fill="${b[1]}" font-weight="700" font-family="Fraunces,serif">${b[0]}</text>`;
+      s+=`<text x="${bx+30}" y="${y+58}" font-size="14" fill="${P.soft}" font-family="IBM Plex Mono,monospace">its own tuned kernel</text>`;
+      const ex=comp.x+comp.w, ey=comp.y+comp.h/2, tx=bx-6, ty=y+bh/2;
+      s+=`<path d="M ${ex} ${ey} C ${ex+110} ${ey}, ${tx-110} ${ty}, ${tx} ${ty}" fill="none" stroke="${b[1]}" stroke-width="2.5" stroke-dasharray="8 7" stroke-dashoffset="${-flow}"/>`;
+      s+=ah(tx,ty,0,b[1],11);});
+    return s;}
+
+  function sceneInference(){let s='';
+    const eng={x:150,y:186,w:300,h:332};
+    s+=`<rect x="${eng.x}" y="${eng.y}" width="${eng.w}" height="${eng.h}" rx="14" fill="${P.card}" stroke="${P.ink2}" stroke-width="3" opacity="0.6"/>`;
+    s+=`<text x="${eng.x+eng.w/2}" y="${eng.y+34}" font-size="19" fill="${P.ink2}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">general-purpose engine</text>`;
+    const mods=['any model','any shape','any dtype','dynamic dispatch','schedulers','fallback paths'];
+    mods.forEach((m,i)=>{const y=eng.y+60+i*40;
+      s+=`<rect x="${eng.x+20}" y="${y}" width="${eng.w-40}" height="30" rx="7" fill="${P.line2}" opacity="0.7" stroke="${P.faint}" stroke-width="1.5" stroke-dasharray="6 6"/>`;
+      s+=`<text x="${eng.x+eng.w/2}" y="${y+20}" font-size="14" fill="${P.soft}" text-anchor="middle" font-family="IBM Plex Mono,monospace">${m}</text>`;});
+    s+=`<text x="${eng.x+eng.w/2}" y="${eng.y+eng.h+30}" font-size="15" fill="${P.soft}" text-anchor="middle">carries weight for everything it might run</text>`;
+    const bin={x:760,y:300,w:330,h:108};
+    s+=`<rect x="${bin.x}" y="${bin.y}" width="${bin.w}" height="${bin.h}" rx="14" fill="${P.ochre}" opacity="0.16" stroke="${P.ochre}" stroke-width="4"/>`;
+    s+=`<text x="${bin.x+bin.w/2}" y="${bin.y+42}" font-size="24" fill="${P.ochre}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">one bespoke binary</text>`;
+    s+=`<text x="${bin.x+bin.w/2}" y="${bin.y+74}" font-size="15" fill="${P.ink2}" text-anchor="middle" font-family="IBM Plex Mono,monospace">one slice · one workload · one SLA</text>`;
+    s+=`<text x="${bin.x+bin.w/2}" y="${bin.y+96}" font-size="14" fill="${P.soft}" text-anchor="middle">and nothing else</text>`;
+    const ex=eng.x+eng.w, ey=eng.y+eng.h/2, tx=bin.x-8, ty=bin.y+bin.h/2;
+    s+=`<line x1="${ex+12}" y1="${ey}" x2="${tx-6}" y2="${ty}" stroke="${P.ochre}" stroke-width="3.5" stroke-dasharray="9 7" stroke-dashoffset="${-flow}"/>`;
+    s+=ah(tx-4,ty,Math.atan2(ty-ey,tx-ex),P.ochre,13);
+    s+=`<text x="${(ex+tx)/2}" y="${(ey+ty)/2-14}" font-size="16" fill="${P.ochre}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">specialize</text>`;
+    return s;}
+
+  function chipDie(cx,cy,sz,c){let r='';const half=sz/2;
+    for(let i=0;i<5;i++){const off=-half+16+i*((sz-32)/4);
+      r+=`<rect x="${cx+off-4}" y="${cy-half-13}" width="8" height="13" rx="2" fill="${c}"/>`;
+      r+=`<rect x="${cx+off-4}" y="${cy+half}" width="8" height="13" rx="2" fill="${c}"/>`;
+      r+=`<rect x="${cx-half-13}" y="${cy+off-4}" width="13" height="8" rx="2" fill="${c}"/>`;
+      r+=`<rect x="${cx+half}" y="${cy+off-4}" width="13" height="8" rx="2" fill="${c}"/>`;}
+    r+=`<rect x="${cx-half}" y="${cy-half}" width="${sz}" height="${sz}" rx="14" fill="${c}" opacity="0.14" stroke="${c}" stroke-width="4"/>`;
+    r+=`<rect x="${cx-half+22}" y="${cy-half+22}" width="${sz-44}" height="${sz-44}" rx="6" fill="none" stroke="${c}" stroke-width="2" opacity="0.45"/>`;
+    for(let i=1;i<4;i++)r+=`<line x1="${cx-half+22}" y1="${cy-half+22+i*((sz-44)/4)}" x2="${cx+half-22}" y2="${cy-half+22+i*((sz-44)/4)}" stroke="${c}" stroke-width="1.5" opacity="0.3"/>`;
+    return r;}
+
+  function sceneChips(){let s='';const ai={x:330,y:310},si={x:820,y:310},r=78,die=150;
+    s+=`<circle cx="${ai.x}" cy="${ai.y}" r="${r}" fill="${P.slate}" opacity="0.14" stroke="${P.slate}" stroke-width="4"/>`;
+    s+=`<text x="${ai.x}" y="${ai.y+4}" font-size="30" fill="${P.slate}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">AI</text>`;
+    s+=`<text x="${ai.x}" y="${ai.y+34}" font-size="13" fill="${P.soft}" text-anchor="middle" font-family="IBM Plex Mono,monospace">designs the chip</text>`;
+    s+=chipDie(si.x,si.y,die,P.sage);
+    s+=`<text x="${si.x}" y="${si.y+die/2+34}" font-size="15" fill="${P.sage}" text-anchor="middle" font-family="IBM Plex Mono,monospace">custom silicon</text>`;
+    s+=`<path d="M ${ai.x+44} ${ai.y-64} Q ${(ai.x+si.x)/2} ${ai.y-176} ${si.x-die/2-6} ${si.y-44}" fill="none" stroke="${P.clay}" stroke-width="4" stroke-dasharray="10 8" stroke-dashoffset="${-flow}"/>`;
+    s+=ah(si.x-die/2-4,si.y-44,0.7,P.clay,13);
+    s+=`<text x="${(ai.x+si.x)/2}" y="${ai.y-126}" font-size="18" fill="${P.clay}" text-anchor="middle" font-weight="600">designs →</text>`;
+    s+=`<path d="M ${si.x-die/2-6} ${si.y+44} Q ${(ai.x+si.x)/2} ${si.y+176} ${ai.x+44} ${ai.y+64}" fill="none" stroke="${P.ochre}" stroke-width="4" stroke-dasharray="10 8" stroke-dashoffset="${-flow}"/>`;
+    s+=ah(ai.x+44,ai.y+64,Math.PI-0.5,P.ochre,13);
+    s+=`<text x="${(ai.x+si.x)/2}" y="${si.y+150}" font-size="18" fill="${P.ochre}" text-anchor="middle" font-weight="600">← accelerates</text>`;
+    const ang=flow*0.03, cx=(ai.x+si.x)/2+220*Math.cos(ang), cy=ai.y-2+120*Math.sin(ang);
+    s+=`<circle cx="${cx}" cy="${cy}" r="8" fill="${P.rose}"/>`;
+    return s;}
+
+  function render(){
+    let s=`<svg viewBox="0 0 ${W} ${H}">`+header();
+    s+= beat===0?sceneKernels():beat===1?sceneInference():sceneChips();
+    const pc = beat===2?P.clay:cset[beat];
+    s+=`<text x="${W/2}" y="${H-30}" font-size="26" fill="${pc}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">${punch[beat]}${beat===2?' <tspan fill="'+P.soft+'" font-size="18" font-style="italic">(we’re only half joking)</tspan>':''}</text>`;
+    s+=`</svg>`;
+    host.innerHTML=s;
+  }
+  function loop(){flow+=1.6;render();reg(requestAnimationFrame(loop));}
+  render();
+  reg(requestAnimationFrame(loop));
+  return {next(){if(beat>=2)return false;beat++;render();return true;}};
+}
+
 /* ---------- init dispatch (keyed by data-init) ---------- */
 let frScore,frFinish;
 const INIT={
   capex:el=>{capex(el.querySelector('#vizCapex'));animNum($('#capexA'),0,765,1300,usd);regT(setTimeout(()=>animNum($('#capexB'),0,1600,1300,usd),200));},
   gauge:el=>{gauge(el.querySelector('#vizGauge'));animNum($('#bigSpend'),0,765,1400,usd);},
   deals:el=>deals(el.querySelector('#vizDeals')),
+  tension:el=>splitRace(el.querySelector('#vizTension')),
+  tensionMath:el=>paretoSingle(el.querySelector('#vizTensionChart')),
   score:el=>paretoViz(el.querySelector('#vizScore')),
   loop:el=>loop(el.querySelector('#vizLoop')),
   mem:el=>whyViz(el.querySelector('#vizMem'),1),
@@ -1361,9 +1777,13 @@ const INIT={
   f2026:el=>frontier(el.querySelector('#vizF2026'),{ghosts:['2022','2023','2024'],current:'2026',from:'2024'}).play(),
   benefits:el=>benefitsViz(el.querySelector('#vizBenefits')),
   awscere:el=>caseStudyV(el.querySelector('#vizDisagg')),
+  specDecode:el=>specDecodeDisagg(el.querySelector('#vizSpecDecode')),
+  attnFfn:el=>attnFfnDisagg(el.querySelector('#vizAttnFfn')),
+  gimlet:el=>gimletViz(el.querySelector('#vizGimlet')),
   roof16:el=>whyDecode(el.querySelector('#vizRoof16')),
   cere:el=>decodeRace(el.querySelector('#vizBars')),
-  finish:el=>{frFinish=frontier(el.querySelector('#vizFinish'),{ghosts:['2022','2023','2024','2026'],current:null,target:true,interactive:true});frFinish.play();}
+  finish:el=>{frFinish=frontier(el.querySelector('#vizFinish'),{ghosts:['2022','2023','2024','2026'],current:null,target:true,interactive:true});frFinish.play();},
+  jit:el=>jitViz(el.querySelector('#vizJit'))
 };
 let stepper=null;
 function initSlide(i,el){const k=el.dataset.init;stepper=null;if(k&&INIT[k]){const r=INIT[k](el);if(r&&typeof r.next==='function')stepper=r;}}
@@ -1395,13 +1815,13 @@ function go(n){
   if(er)er.querySelectorAll('.es').forEach((e,i)=>e.classList.toggle('on',i===ei));
 }
 const ERAS=['Stakes','Foundation','2023','2024','2025–26','Next'];
-const ERAOF={title:0,capex:0,gauge:0,deals:0,score:0,loop:1,mem:2,util:2,f2023:2,paperOrca:2,batch:2,paperVllm:2,kv1:2,kv2:2,kv3:2,f2024:3,reqAnatomy:3,chunkB:3,paperSarathi:3,chunkFix:3,f2026:4,workloadMix:4,paperDisagg:4,roof16:4,cere:4,awscere:4,benefits:4,finish:5};
+const ERAOF={title:0,capex:0,gauge:0,deals:0,tension:0,tensionMath:0,score:0,loop:1,mem:2,util:2,f2023:2,paperOrca:2,batch:2,paperVllm:2,kv1:2,kv2:2,kv3:2,f2024:3,reqAnatomy:3,chunkB:3,paperSarathi:3,chunkFix:3,f2026:4,workloadMix:4,paperDisagg:4,roof16:4,cere:4,awscere:4,specDecode:4,attnFfn:4,benefits:4,gimlet:4,finish:5,jit:5};
 function buildEraRail(){const r=$('#erarail');if(!r)return;r.innerHTML=ERAS.map(e=>`<span class="es">${e}</span>`).join('<span class="sep">›</span>');}
 function buildOverview(){const ov=$('#overview');
   ov.innerHTML=slides.map((s,i)=>`<div class="ovcard" data-go="${i}"><div class="n mono">${String(i+1).padStart(2,'0')}</div><div class="t">${s.dataset.title||'Title'}</div></div>`).join('');
   ov.querySelectorAll('[data-go]').forEach(c=>c.addEventListener('click',()=>{go(+c.dataset.go);ov.classList.remove('open');}));}
 
-function advance(){if(stepper&&stepper.next())return;go(idx+1);}
+function advance(){if(stepper&&stepper.next())return;if(idx<N-1)go(idx+1);}
 document.addEventListener('keydown',e=>{
   if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown'){e.preventDefault();advance();}
   else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(idx-1);}
