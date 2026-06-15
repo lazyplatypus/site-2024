@@ -56,8 +56,9 @@ svg{display:block; width:100%; height:100%; overflow:visible}
 .counter{right:2.4cqh; bottom:2cqh; letter-spacing:.12em}
 .counter b{color:var(--ink); font-weight:600}
 .hint{display:none}
-.erarail{position:fixed; left:50%; bottom:1.8cqh; transform:translateX(-50%); z-index:9100; display:flex; gap:1.1cqh; align-items:center; font-family:var(--mono); font-size:1.45cqh; letter-spacing:.08em; color:var(--faint); pointer-events:none}
-.erarail .es{position:relative; padding-bottom:.5cqh; transition:color .3s}
+.erarail{position:fixed; left:50%; bottom:1.8cqh; transform:translateX(-50%); z-index:9100; display:flex; gap:1.1cqh; align-items:center; font-family:var(--mono); font-size:1.45cqh; letter-spacing:.08em; color:var(--faint)}
+.erarail .es{position:relative; padding-bottom:.5cqh; transition:color .3s; cursor:pointer}
+.erarail .es:hover{color:var(--soft)}
 .erarail .es.on{color:var(--clay); font-weight:600}
 .erarail .es.on::after{content:""; position:absolute; left:0; right:0; bottom:0; height:2px; background:var(--clay); border-radius:2px}
 .erarail .sep{opacity:.45}
@@ -1813,10 +1814,15 @@ function go(n){
   $('#notesText').textContent=NOTES[sl.dataset.init]||'';
   const ei=ERAOF[sl.dataset.init]; const er=$('#erarail');
   if(er)er.querySelectorAll('.es').forEach((e,i)=>e.classList.toggle('on',i===ei));
+  history.replaceState(null,'','?s='+(idx+1));
 }
 const ERAS=['Stakes','Foundation','2023','2024','2025–26','Next'];
 const ERAOF={title:0,capex:0,gauge:0,deals:0,tension:0,tensionMath:0,score:0,loop:1,mem:2,util:2,f2023:2,paperOrca:2,batch:2,paperVllm:2,kv1:2,kv2:2,kv3:2,f2024:3,reqAnatomy:3,chunkB:3,paperSarathi:3,chunkFix:3,f2026:4,workloadMix:4,paperDisagg:4,roof16:4,cere:4,awscere:4,specDecode:4,attnFfn:4,benefits:4,gimlet:4,finish:5,jit:5};
-function buildEraRail(){const r=$('#erarail');if(!r)return;r.innerHTML=ERAS.map(e=>`<span class="es">${e}</span>`).join('<span class="sep">›</span>');}
+function buildEraRail(){const r=$('#erarail');if(!r)return;
+  const eraFirst=ERAS.map((_,ei)=>slides.findIndex(s=>ERAOF[s.dataset.init]===ei));
+  r.innerHTML=ERAS.map((e,i)=>`<span class="es" data-era="${i}">${e}</span>`).join('<span class="sep">›</span>');
+  r.querySelectorAll('.es').forEach(el=>{const ei=+el.dataset.era,fi=eraFirst[ei];if(fi>=0)el.addEventListener('click',()=>go(fi));});
+}
 function buildOverview(){const ov=$('#overview');
   ov.innerHTML=slides.map((s,i)=>`<div class="ovcard" data-go="${i}"><div class="n mono">${String(i+1).padStart(2,'0')}</div><div class="t">${s.dataset.title||'Title'}</div></div>`).join('');
   ov.querySelectorAll('[data-go]').forEach(c=>c.addEventListener('click',()=>{go(+c.dataset.go);ov.classList.remove('open');}));}
@@ -1838,7 +1844,8 @@ document.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-tx
 
 buildKickers();buildOverview();buildEraRail();
 tstream($('#streamTop'));tstream($('#streamBot'));tstream($('#streamClose'));
-go(0);
+const _sp=new URLSearchParams(location.search);
+go(_sp.has('s')?Math.max(0,+_sp.get('s')-1):0);
 </script>
 </body>
 </html>
