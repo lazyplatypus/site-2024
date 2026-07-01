@@ -184,16 +184,6 @@ svg{display:block; width:100%; height:100%; overflow:visible}
   <div class="viz" data-reveal id="vizGoals"></div>
 </section>
 
-<!-- 4c PREMISE · energy per token — the intuitive hook -->
-<section class="slide" data-kicker="The premise" data-title="More tokens vs. faster tokens" data-init="tension">
-  <div class="viz" data-reveal id="vizTension"></div>
-</section>
-
-<!-- 4d PREMISE · the chart + the trade in one simple line -->
-<section class="slide" data-kicker="The premise · why" data-title="Faster tokens cost more energy" data-init="tensionMath">
-  <div class="viz" data-reveal id="vizTensionChart"></div>
-</section>
-
 <!-- 6 LOOP -->
 <section class="slide" data-slide="5" data-kicker="Foundation · how a token is made" data-title="The autoregressive loop" data-init="loop">
   <div class="viz" data-reveal id="vizLoop"></div>
@@ -202,11 +192,6 @@ svg{display:block; width:100%; height:100%; overflow:visible}
 <!-- 7 MEMORY READ + UTILIZATION (tees up Layer 1) -->
 <section class="slide" data-slide="8" data-kicker="Layer 1 · make the hardware work harder" data-title="One token = read the whole model — so the chip waits" data-init="util">
   <div class="viz" data-reveal id="vizUtil"></div>
-</section>
-
-<!-- 8 FRONTIER 2023 -->
-<section class="slide" data-slide="9" data-kicker="Layer 1 · make the hardware work harder" data-title="More tokens, same speed" data-init="f2023">
-  <div class="viz" data-reveal id="vizF2023"></div>
 </section>
 
 <!-- L1 · OPPORTUNITY: the read is a fixed cost — amortize it -->
@@ -222,6 +207,21 @@ svg{display:block; width:100%; height:100%; overflow:visible}
 <!-- 9 CONTINUOUS BATCHING (one slide, spacebar steps) -->
 <section class="slide" data-slide="10" data-kicker="Layer 1 · continuous batching" data-title="Continuous batching" data-init="batch">
   <div class="viz" data-reveal id="vizBatch"></div>
+</section>
+
+<!-- L1 · THE TRADE — batching bought throughput; speed is the other thing, and it costs energy -->
+<section class="slide" data-kicker="Layer 1 · the trade" data-title="More tokens vs. faster tokens" data-init="tension">
+  <div class="viz" data-reveal id="vizTension"></div>
+</section>
+
+<!-- L1 · THE TRADE · the math + the Pareto frontier scoreboard -->
+<section class="slide" data-kicker="Layer 1 · the trade" data-title="Faster tokens cost more energy" data-init="tensionMath">
+  <div class="viz" data-reveal id="vizTensionChart"></div>
+</section>
+
+<!-- 8 FRONTIER 2023 — how batching moved the frontier -->
+<section class="slide" data-slide="9" data-kicker="Layer 1 · the payoff" data-title="More tokens, same speed" data-init="f2023">
+  <div class="viz" data-reveal id="vizF2023"></div>
 </section>
 
 <!-- PAPER · VLLM -->
@@ -304,15 +304,22 @@ svg{display:block; width:100%; height:100%; overflow:visible}
   <div class="viz" data-reveal id="vizBars"></div>
 </section>
 
-<!-- L3 · IT'S REAL + HOW IT WORKS (combined): screenshot + vertical Trainium→Cerebras flow -->
-<section class="slide" data-kicker="Layer 3 · it's real" data-title="Disaggregation, now a product" data-init="awscere">
-  <div class="two" style="grid-template-columns:1.05fr 0.95fr; align-items:stretch; height:100%; gap:3cqh">
-    <div data-reveal style="display:flex; flex-direction:column; justify-content:center; gap:2.4cqh">
-      <img src="images/amazoncerebras.png" alt="AWS × Cerebras collaboration" style="width:100%; border-radius:14px; box-shadow:0 16px 44px rgba(43,38,32,.22)"/>
-      <div style="font-family:var(--disp); font-weight:700; font-size:5.6cqh; color:var(--ochre); line-height:1">10× faster inference</div>
-      <div class="mono" style="color:var(--faint); font-size:1.4cqh">5× the high-speed token capacity · March 2026 · Trainium prefill + Cerebras CS-3 decode on Amazon Bedrock</div>
+<!-- L3 · IT'S REAL + HOW IT WORKS: horizontal Trainium→Cerebras flow + stat row + press clipping -->
+<section class="slide" data-kicker="Layer 3 · it's real" data-title="Cerebras × AWS Trainium" data-init="awscere">
+  <div class="viz" data-reveal id="vizAws" style="flex:1; min-height:0"></div>
+  <div data-reveal style="flex:none; display:flex; align-items:center; gap:7cqh; padding:1.4cqh 1cqh 0">
+    <div>
+      <div style="font-family:var(--disp); font-weight:700; font-size:6.6cqh; color:var(--clay); line-height:1">10×</div>
+      <div style="font-size:1.9cqh; color:var(--ink2); margin-top:.5cqh">faster inference</div>
     </div>
-    <div class="viz" data-reveal id="vizDisagg"></div>
+    <div>
+      <div style="font-family:var(--disp); font-weight:700; font-size:6.6cqh; color:var(--ochre); line-height:1">5×</div>
+      <div style="font-size:1.9cqh; color:var(--ink2); margin-top:.5cqh">high-speed token capacity</div>
+    </div>
+    <div style="margin-left:auto; display:flex; flex-direction:column; align-items:center; gap:1cqh">
+      <img src="images/amazoncerebras.png" alt="Reuters: Cerebras Systems, Amazon strike deal to offer Cerebras AI chips on Amazon's cloud" style="width:32cqh; border-radius:12px; box-shadow:0 12px 34px rgba(43,38,32,.25); transform:rotate(-1.5deg)"/>
+      <div class="mono" style="font-size:1.4cqh; color:var(--faint)">March 2026 · Amazon Bedrock</div>
+    </div>
   </div>
 </section>
 
@@ -415,13 +422,13 @@ capex:"Start with the money, because the money tells you how serious people are.
 gauge:"Here's the contradiction at the center of this talk. We spend three quarters of a trillion dollars a year on this hardware, and average fleet utilization sits somewhere between ten and fifty percent. You buy a fifty billion dollar data center and a lot of the time you run it like it cost five. Why? Hold that question — the whole talk is the answer, and the industry clawing that number upward, optimization by optimization.",
 deals:"And here's how the money is being spent — read it as a grid, labs down the side, silicon across the top, and notice every lab is spread across every kind of chip. OpenAI alone stretches from a hundred-billion-dollar NVIDIA deal all the way to custom Broadcom accelerators and Cerebras wafers. Nobody bets the company on one vendor — and the custom-silicon column argues the GPU isn't even the right shape. Hold that thought.",
 pricespeed:"And it's working. Take one fixed model — Llama 3.3 70B, the same weights the whole way — and watch what happened from its launch in December 2024 through today. On the left, the price to serve a million tokens drifted down maybe a quarter; it didn't collapse, because the cheapest GPU providers were already near the floor at launch. The real story is on the right: on GPUs alone — no Groq, no Cerebras, just the same class of chip — average speed more than tripled and the fastest latency-optimized endpoints roughly doubled, from FP8, speculative decoding, and better serving. Same model, same silicon, several times faster. That doesn't happen by accident, and it isn't one trick — it's a stack of them. The rest of the talk is that stack.",
-goals:"So here's what I actually want to do in the next twenty minutes. Two questions. One: what have we already done — the systems tricks that got us the throughput and the speed you just saw? We'll walk the last three years of them, each one a real paper you can go read. Two: what's next — the things we're building now to push it further, once you stop forcing every job onto the same chip. Keep those two questions in your head; everything else hangs off them.",
-tension:"Here's the tension the whole talk lives inside. Everyone wants two things at once — more tokens, meaning more throughput per chip, per dollar, per joule — and faster tokens, low latency for the one person waiting on the screen. The trouble is they fight. Watch one model make a single token, two ways. On top, one GPU reads the whole model and grinds the token out — slow, but nothing is wasted. On the bottom, we split that same model across four GPUs; each reads only a quarter, they work in parallel, and the token lands sooner. But look at the orange: every layer, the cards have to stop and sync with each other, and that syncing is pure overhead the single card never paid. So splitting buys you speed, but you do strictly more work to get it. It's the same reason you can walk many miles on the energy it takes to sprint a single one. Faster is always more expensive — next, the actual numbers.",
-tensionMath:"Here are the numbers — one user, a seventy-billion-parameter model, run at different degrees of splitting. The whole trade fits on one line: time per token equals the model read divided by k, the number of cards you split across, plus the sync between them. More cards shrink the read, so you go faster — that's the curve sliding right. But the cards have to talk every layer, and that sync is overhead that only grows the more you split. The key thing to hold onto: you never read less of the model in total, and now you're paying to sync on top — so every step faster costs more energy per token. You can see it on the chart: going from one card to many makes a user roughly ten times faster and burns several times the energy for each token. Now press once and watch the same points flip — put throughput-per-watt on the vertical axis, which is just one over energy-per-token, and the cost curve becomes a frontier: you can be fast, or you can be efficient, never both at once. That frontier is the scoreboard we'll use for the rest of the talk. Press once more and the real systems drop in beneath it — every shipping configuration sits below that line, dominated by it. So that's how we keep score: throughput across the bottom, how fast one user gets their tokens up the side, and over the next twenty minutes every innovation shoves this frontier outward — I'll show you where each year. Then we rewind to how a token actually gets made.",
+goals:"So here's what I actually want to do in the next twenty minutes. Two questions. One: how have we already optimized inference — the systems tricks that got us the throughput and the speed you just saw? We'll walk the last three years of them, each one a real paper you can go read. Two: how are we juicing performance and throughput even further — the things we're building now, once you stop forcing every job onto the same chip. Keep those two questions in your head; everything else hangs off them.",
+tension:"Notice everything we just did happened inside one GPU — one copy of the weights, one shared read. Batching packed that chip completely full, but it made nobody faster: every token still waits on the same 140 GB read, and sharing the read doesn't shrink it. So the moment a user asks 'can my tokens come faster?', you've run out of moves on a single chip — the only lever left is to make the read smaller by splitting the model across more chips. And that's where the trouble starts. Everyone wants two things at once — more tokens, meaning more throughput per chip, per dollar, per joule — and faster tokens, low latency for the one person waiting on the screen. The trouble is they fight. Watch one model make a single token, two ways. On top, one GPU reads the whole model and grinds the token out — slow, but nothing is wasted. On the bottom, we split that same model across four GPUs; each reads only a quarter, they work in parallel, and the token lands sooner. But look at the orange: every layer, the cards have to stop and sync with each other, and that syncing is pure overhead the single card never paid. So splitting buys you speed, but you do strictly more work to get it. It's the same reason you can walk many miles on the energy it takes to sprint a single one. Faster is always more expensive — next, the actual numbers.",
+tensionMath:"Here are the numbers — one user, a seventy-billion-parameter model, run at different degrees of splitting. The whole trade fits on one line: time per token equals the model read divided by k, the number of cards you split across, plus the sync between them. More cards shrink the read, so you go faster — that's the curve sliding right. But the cards have to talk every layer, and that sync is overhead that only grows the more you split. The key thing to hold onto: you never read less of the model in total, and now you're paying to sync on top — so every step faster costs more energy per token. You can see it on the chart: going from one card to many makes a user roughly ten times faster and burns several times the energy for each token. Now press once and watch the same points flip — put throughput-per-watt on the vertical axis, which is just one over energy-per-token, and the cost curve becomes a frontier: you can be fast, or you can be efficient, never both at once. That frontier is the scoreboard we'll use for the rest of the talk. Press once more and the real systems drop in beneath it — every shipping configuration sits below that line, dominated by it. So that's how we keep score: throughput across the bottom, how fast one user gets their tokens up the side, and for the rest of the talk every innovation shoves this frontier outward — I'll show you where, year by year. Starting with the trick you just watched.",
 loop:"At the core of every model is a loop. It takes everything so far, runs one forward pass, predicts the next token, appends it, and does it again. It's sequential: token five hundred can't exist until token four hundred ninety-nine does. That sequential, one-at-a-time nature is the root of everything that follows.",
 util:"Here's the first thing that should surprise you. To produce a single token, the model has to read every one of its weights out of memory — for a seventy-billion-parameter model in half precision, that's a hundred and forty gigabytes across the memory bus, for every single token. So the compute units finish their little bit of math almost instantly, then sit idle waiting on memory. That idle time IS the low utilization you saw earlier — that's the ten percent. Drag the model size: the memory bill explodes, the math barely moves. This is what people mean by memory-bound.",
-f2023:"So in 2023 the frontier stretched right. Same per-user speed, many times more total throughput. A pure throughput win, and it didn't come from a new chip. It came from two old systems ideas.",
-batchWhy:"Start with the first of those two ideas. Look again at what we just diagnosed: one token drags all 140 gigabytes of weights out of memory, and while it does, ninety-two percent of the chip's compute sits idle. But here's the pivot — you already paid for that read. It's a fixed cost, and nothing says it can only serve one request. So what if that same read fed a whole batch at once, every idle lane finally doing real work? That's the idea — and it has a name, and a paper.",
+f2023:"So here's 2023 on the scoreboard: the frontier stretched right. Same per-user speed, many times more total throughput. A pure throughput win, and it didn't come from a new chip — that's continuous batching moving the Pareto frontier. And there's a second idea that packs it even tighter.",
+batchWhy:"So what do we do about it? Look again at what we just diagnosed: one token drags all 140 gigabytes of weights out of memory, and while it does, ninety-two percent of the chip's compute sits idle. But here's the pivot — you already paid for that read. It's a fixed cost, and nothing says it can only serve one request. So what if that same read fed a whole batch at once, every idle lane finally doing real work? That's the idea — and it has a name, and a paper.",
 paperOrca:"It's called continuous batching, and it comes from this paper — Orca, out of OSDI 2022, where it was introduced. I'll show you the mechanism on the next slides, but I want you to see that these aren't folklore — each one is a specific result you can go read.",
 paperVllm:"The second idea is PagedAttention, from the vLLM paper at SOSP 2023. It borrows virtual memory paging from operating systems and applies it to the KV cache. Again — here's the exact source.",
 paperSarathi:"2024's scheduling trick comes from Sarathi: chunked prefill. The title literally describes the mechanism — piggybacking decodes on chunked prefills. Here's the paper.",
@@ -438,15 +445,15 @@ chunkB:"Now here's the problem, and it's getting worse fast. Coding agents are e
 chunkFix:"Sarathi's fix, now that you've seen both the clog and why the phases differ. Chop User A's long prefill into small chunks, and slip B's and C's decode steps in between them. The big prompt still finishes about as fast, but everyone keeps getting tokens the whole time — no more stall. This is the first move that treats prefill and decode as different kinds of work, and it sets up the bigger idea: actually splitting them apart.",
 f2026:"And here's 2025 and 2026. The entire curve jumped, up and right at once. More throughput and better interactivity together. You only get a move like that when you stop compromising between two things you'd forced onto the same hardware.",
 benefits:"And splitting helps even on identical hardware. Once prefill and decode are separate pools you can scale each on its own — add decode servers for long outputs without touching prefill. A big prefill burst can't stall everyone's decode anymore. And you can tune batch size and latency targets per phase. Then, on top of all that, you can also specialize the hardware — which is where Cerebras comes in.",
-roof16:"So which chip do you build the decode pool from? Decode reads the whole model for every token but does tiny math — it's pure memory bandwidth. A GPU keeps its weights in far-off HBM and drags all 140 GB through a narrow pipe, every token. A Cerebras wafer keeps the entire model on-chip in SRAM — thousands of times the bandwidth, nothing to fetch. For decode, that's the whole game.",
-awscere:"And it just became real. In March 2026 AWS and Cerebras announced a disaggregated inference service on Amazon Bedrock — exactly the split we've been building toward. Here's the data flow on the right: a request comes in, AWS Trainium does the prefill and computes the KV cache, that cache ships over Amazon's EFA interconnect to the Cerebras CS-3, and the wafer does nothing but decode — thousands of tokens a second instead of hundreds on a GPU. The headline: ten times faster inference and five times the high-speed token capacity in the same footprint.",
+roof16:"Here are our two pools again — and notice the decode pool is just an empty box. Nothing says it has to be GPUs. Decode reads the whole model for every token but does tiny math — it's pure memory bandwidth. So what silicon wants that job? Press. A GPU keeps its weights in far-off HBM and drags all 140 GB through a narrow pipe, every token — about three and a third terabytes a second on an H100. A Cerebras wafer keeps the entire model on-chip in SRAM — twenty-one thousand terabytes a second, seven thousand times the bandwidth, nothing to fetch. For decode, that's the whole game.",
+awscere:"And it just became real. In March 2026 AWS and Cerebras announced a disaggregated inference service on Amazon Bedrock — exactly the split we've been building toward. Follow the flow: a request comes in, AWS Trainium does the prefill and computes the KV cache, that cache ships over Amazon's EFA interconnect to the Cerebras CS-3, and the wafer does nothing but decode — thousands of tokens a second instead of hundreds on a GPU. The headline: ten times faster inference and five times the high-speed token capacity in the same footprint.",
 cere:"Watch a decode workload actually run. It's just tokens, generated one at a time, as fast as memory allows. On the same model a GPU manages a few hundred a second; the Cerebras CS-3 streams out around three thousand — five times the tokens. Decode is the workload Cerebras is number one at, and it's exactly what reasoning and agentic coding are starving for.",
 finish:"You've watched three layers of optimization push that curve, each one earned. Here's the uncomfortable part. Agents move the target. Reasoning thinks for ten to a hundred times as many tokens, exactly the long-decode the wafer loves. But the same agents fan out into parallel calls and long context inflates prefill and the KV cache, loading the prefill side right back up. The target lands in the corner that needs high throughput and high interactivity at once — the one corner none of our layers reaches alone. So the curve has to move again. And here's the thought to leave them on: every move so far was hand-engineered by people. What if we used AI for this — to chase the target for us? That's where the last slide goes.",
 specDecode:"Disaggregation isn't only prefill versus decode — you can split by job. Speculative decoding has three jobs with completely different shapes. Prefill reads the prompt, compute-heavy. Then a small, fast draft model races ahead and guesses the next several tokens — that step is tiny but it's on the critical path, so latency is everything. Then the big target model verifies all of those guesses in one parallel forward pass and accepts the longest run that matches what it would have said — here three accepted, one rejected and corrected. Three jobs, three compute shapes, so you give each its own pool. And the draft step is the perfect fit for SRAM-heavy hardware: the whole little model lives on-chip, so every speculative token is near-instant. You verify in big batches where the GPU is happy, and you draft where memory bandwidth is free.",
 specResults:"And we measured exactly this. Target model is gpt-oss-120b; the draft is a 1.6-billion-parameter model. We keep prefill and verify on the GPU and move only the speculative decoder onto d-Matrix Corsair — an SRAM-centric chip with about twenty times the GPU's memory bandwidth, so the whole draft model lives on two cards. Same scoreboard as before: throughput per kilowatt up the side, interactivity across the bottom. The slate curve is plain GPU decode. Turn on speculative decoding, still all on GPU, and the frontier jumps right. Now move just the drafting to Corsair and it jumps right again — two to five times faster on interactivity-tuned configs, and up to ten times on energy-tuned ones, all at the same throughput per watt. In wall-clock terms: a twenty-five-second request drops more than five-fold from speculative decoding alone, then another two-point-six times once Corsair runs the drafts. And the draft is accepted ninety-two to ninety-six percent of the time, so the speculation almost never wastes work. This is the whole thesis, measured on real silicon.",
 attnFfn:"And you can split even finer — inside a single layer. A transformer layer is really two sub-layers with opposite appetites. Attention streams the whole KV cache for every token and does almost no math — it's memory-bound, it wants bandwidth. The feed-forward block is the opposite: dense matmuls, all FLOPs, compute-bound — and in a mixture-of-experts model the experts are enormous and dominate the compute entirely. Force both onto one chip and you compromise both. So the emerging move, in work like ByteDance's MegaScale-Infer, is to put attention on a bandwidth pool and the FFN or expert pool on a compute pool, and shuttle the activations between them every layer. Each sub-layer finally runs on the chip it was built for. It's early, but it's gaining real traction at the largest scale.",
 gimlet:"This is what we're building at Gimlet — a multi-silicon inference cloud. The whole talk has been one idea: no single chip is best for inference. So we don't pick one. We disaggregate each workload across many types of hardware, run every part on the silicon that's best at it, and physically wire it all together into one cloud. The pairs on the right are just examples — NVIDIA with Cerebras, NVIDIA with d-Matrix, AMD with Cerebras, NVIDIA with Gaudi — we mix and match per workload. And the payoff is the number that matters to anyone paying the power bill: three to ten times faster inference for the same power budget as homogeneous systems. And there are many ways to slice a workload — let me show you two more.",
-kforge:"Remember question two — what are we building next? This is it. So here's the move that chases the target: stop hand-tuning kernels and build an agent that generates them — tuned for the exact workload and the exact hardware it'll run on. That agent is kforge. Here's the idea in miniature. On the left, the PyTorch you write: add a bias, clamp, scale, clamp, divide — five ops, five separate passes over memory. On the right, the same function as one kernel kforge wrote for the target — it fuses the whole chain into a single pass, in bf16, using the hardware's own saturating-clamp instruction. Same math, a fraction of the memory traffic. This is just the flavor; the real win is bigger. Last week kforge sped up gpt-oss-120b on AMD by thirty-three percent end to end.",
+kforge:"Remember question two — how do we juice performance even further? This is it. So here's the move that chases the target: stop hand-tuning kernels and build an agent that generates them — tuned for the exact workload and the exact hardware it'll run on. That agent is kforge. Here's the idea in miniature. On the left, the PyTorch you write: add a bias, clamp, scale, clamp, divide — five ops, five separate passes over memory. On the right, the same function as one kernel kforge wrote for the target — it fuses the whole chain into a single pass, in bf16, using the hardware's own saturating-clamp instruction. Same math, a fraction of the memory traffic. This is just the flavor; the real win is bigger. Last week kforge sped up gpt-oss-120b on AMD by thirty-three percent end to end.",
 recursive:"And why stop at software? AI-designed silicon is already real — Google's AlphaChip lays out chip floorplans, and the team behind it spun out to chase exactly this loop: AI designs a faster chip, that chip trains a smarter AI, which designs the next chip faster still. Kernel, then silicon — at every layer we stop hand-tuning and start generating. That's recursive self-improvement aimed straight at inference performance, and it's how you chase a target that refuses to sit still.",
 recap:"So, one last look at the scoreboard. Three years of systems work pushed this frontier out — batching, paging, scheduling, and finally splitting the work apart — and agents have already moved the target again. The lesson of the whole talk fits in one line: no single chip is best at inference, so we stopped pretending one is. We run every piece of the workload on the silicon that's best at it — and next, we let AI generate the kernels and the chips that push the frontier for us. Thank you."
 };
@@ -682,8 +689,8 @@ function goalsViz(host){
   // this slide carries no heading — strip the auto-injected kicker/title
   const sl=host.closest('.slide'); if(sl)sl.querySelectorAll('h1.title,.kicker').forEach(e=>e.remove());
   const items=[
-    {n:'01',c:P.clay,q:'What have we already done?'},
-    {n:'02',c:P.ochre,q:'What are we building next?'}
+    {n:'01',c:P.clay,q:'How have we already optimized inference?'},
+    {n:'02',c:P.ochre,q:'How are we juicing perf &amp; throughput even further?'}
   ];
   host.innerHTML=`<div style="height:100%;display:flex;flex-direction:column;gap:4cqh;align-items:center;justify-content:center;padding:0 4cqw">`+
     items.map(it=>`<div class="goalcard" style="width:100%;max-width:74cqw;display:flex;align-items:center;gap:2.6cqw;background:var(--card);border:2px solid var(--line);border-left:8px solid ${it.c};border-radius:18px;padding:5cqh 4cqw;opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s cubic-bezier(.3,1.2,.5,1)">
@@ -1111,51 +1118,66 @@ function caseStudy(host){
 }
 
 /* ---------- CASE STUDY (vertical): Trainium prefill → Cerebras decode, top to bottom ---------- */
-function caseStudyV(host){
-  const W=560,H=712,cx=280;
-  const pf={x:120,y:118,w:320,h:202},dc={x:120,y:404,w:320,h:212};
+function awsFlow(host){
+  // request → Trainium prefill → KV over EFA → CS-3 decode → tokens, left to right
+  const W=1240,H=400,cy=196;
+  const pf={x:190,y:56,w:310,h:280},dc={x:740,y:56,w:310,h:280};
   let s=`<svg viewBox="0 0 ${W} ${H}">`;
-  s+=kUser(cx,44,'request',P.slate);
-  s+=`<line x1="${cx}" y1="84" x2="${cx}" y2="${pf.y-16}" stroke="${P.line}" stroke-width="3.5"/><polygon points="${cx},${pf.y-2} ${cx-8},${pf.y-16} ${cx+8},${pf.y-16}" fill="${P.line}"/>`;
+  s+=kUser(84,cy-24,'request',P.slate);
+  s+=`<line x1="124" y1="${cy}" x2="${pf.x-20}" y2="${cy}" stroke="${P.line}" stroke-width="3.5"/><polygon points="${pf.x-4},${cy} ${pf.x-22},${cy-9} ${pf.x-22},${cy+9}" fill="${P.line}"/>`;
   // prefill — 2×2 Trainium
   s+=`<rect x="${pf.x}" y="${pf.y}" width="${pf.w}" height="${pf.h}" rx="16" fill="${P.card}" stroke="${P.slate}" stroke-width="4"/>`;
-  const gx=18,gyy=16,cw=(pf.w-gx*3)/2,ch=(pf.h-54-gyy*3)/2;
-  for(let i=0;i<4;i++){const ix=pf.x+gx+(i%2)*(cw+gx),iy=pf.y+gyy+Math.floor(i/2)*(ch+gyy);s+=`<image href="images/trainum.png" x="${ix}" y="${iy}" width="${cw}" height="${ch}" preserveAspectRatio="xMidYMid meet"/>`;}
-  s+=`<text x="${cx}" y="${pf.y+pf.h-16}" font-size="22" fill="${P.slate}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">AWS Trainium · prefill</text>`;
-  // KV cache · EFA — down
-  s+=`<line x1="${cx}" y1="${pf.y+pf.h+8}" x2="${cx}" y2="${dc.y-18}" stroke="${P.ochre}" stroke-width="5"/><polygon points="${cx},${dc.y-4} ${cx-9},${dc.y-18} ${cx+9},${dc.y-18}" fill="${P.ochre}"/>`;
-  s+=`<text x="${cx+20}" y="${(pf.y+pf.h+dc.y)/2+6}" font-size="19" fill="${P.ochre}" text-anchor="start" font-weight="600">KV cache · EFA</text>`;
-  // decode — wafer
+  const gxp=18,gyp=16,cw=(pf.w-gxp*3)/2,ch=(pf.h-58-gyp*3)/2;
+  for(let i=0;i<4;i++){const ix=pf.x+gxp+(i%2)*(cw+gxp),iy=pf.y+gyp+Math.floor(i/2)*(ch+gyp);s+=`<image href="images/trainum.png" x="${ix}" y="${iy}" width="${cw}" height="${ch}" preserveAspectRatio="xMidYMid meet"/>`;}
+  s+=`<text x="${pf.x+pf.w/2}" y="${pf.y+pf.h-20}" font-size="23" fill="${P.slate}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">AWS Trainium · prefill</text>`;
+  // KV cache over EFA — the handoff is the whole idea, so it gets the loudest arrow
+  s+=`<line id="kvrail" x1="${pf.x+pf.w+12}" y1="${cy}" x2="${dc.x-28}" y2="${cy}" stroke="${P.ochre}" stroke-width="6" stroke-dasharray="12 10"/><polygon points="${dc.x-8},${cy} ${dc.x-30},${cy-12} ${dc.x-30},${cy+12}" fill="${P.ochre}"/>`;
+  s+=`<text x="${(pf.x+pf.w+dc.x)/2}" y="${cy-26}" font-size="22" fill="${P.ochre}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">KV cache · EFA</text>`;
+  // decode — the wafer
   s+=`<rect x="${dc.x}" y="${dc.y}" width="${dc.w}" height="${dc.h}" rx="16" fill="${P.card}" stroke="${P.clay}" stroke-width="4"/>`;
-  s+=`<image href="images/wafer.avif" x="${dc.x+20}" y="${dc.y+16}" width="${dc.w-40}" height="${dc.h-66}" preserveAspectRatio="xMidYMid meet"/>`;
-  s+=`<text x="${cx}" y="${dc.y+dc.h-16}" font-size="22" fill="${P.clay}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">Cerebras CS-3 · decode</text>`;
-  // tokens out — down
-  s+=`<line x1="${cx}" y1="${dc.y+dc.h+8}" x2="${cx}" y2="${H-42}" stroke="${P.clay}" stroke-width="3.5"/><polygon points="${cx},${H-28} ${cx-8},${H-42} ${cx+8},${H-42}" fill="${P.clay}"/>`;
-  s+=`<text x="${cx+16}" y="${H-48}" font-size="19" fill="${P.clay}" text-anchor="start">tokens</text>`;
-  s+=`<circle id="pktv" cx="${cx}" cy="84" r="9" fill="${P.clay}"/></svg>`;
+  s+=`<image href="images/wafer.avif" x="${dc.x+34}" y="${dc.y+16}" width="${dc.w-68}" height="${dc.h-74}" preserveAspectRatio="xMidYMid meet"/>`;
+  s+=`<text x="${dc.x+dc.w/2}" y="${dc.y+dc.h-20}" font-size="23" fill="${P.clay}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">Cerebras CS-3 · decode</text>`;
+  // tokens out
+  s+=`<line x1="${dc.x+dc.w+12}" y1="${cy}" x2="${W-124}" y2="${cy}" stroke="${P.clay}" stroke-width="3.5"/><polygon points="${W-108},${cy} ${W-126},${cy-9} ${W-126},${cy+9}" fill="${P.clay}"/>`;
+  for(let i=0;i<3;i++)s+=`<rect x="${W-96}" y="${cy-44+i*30}" width="54" height="22" rx="6" fill="${P.clay}" opacity="${0.85-i*0.25}"/>`;
+  s+=`<text x="${W-69}" y="${cy+66}" font-size="19" fill="${P.clay}" text-anchor="middle">tokens</text>`;
+  s+=`<circle id="awspkt" cx="130" cy="${cy}" r="9" fill="${P.clay}"/></svg>`;
   host.innerHTML=s;
-  const pkt=host.querySelector('#pktv'),stops=[84,pf.y+pf.h/2,(pf.y+pf.h+dc.y)/2,dc.y+dc.h/2,H-38];let seg=0,t=0;
-  function f(){t+=0.018;if(t>=1){t=0;seg=(seg+1)%(stops.length-1);}const a=stops[seg],b=stops[seg+1];pkt.setAttribute('cy',a+(b-a)*ease(t));reg(requestAnimationFrame(f));}
+  const pkt=host.querySelector('#awspkt'),rail=host.querySelector('#kvrail');
+  const stops=[130,pf.x+pf.w/2,(pf.x+pf.w+dc.x)/2,dc.x+dc.w/2,W-116];let seg=0,t=0,dash=0;
+  function f(){t+=0.016;dash=(dash+0.8)%22;rail.setAttribute('stroke-dashoffset',-dash);
+    if(t>=1){t=0;seg=(seg+1)%(stops.length-1);}
+    const a=stops[seg],b=stops[seg+1];pkt.setAttribute('cx',a+(b-a)*ease(t));reg(requestAnimationFrame(f));}
   reg(requestAnimationFrame(f));
 }
 
 /* ---------- DECODE RACE: why Cerebras owns decode ---------- */
 function decodeRace(host){
-  const W=1200,H=520,x0=130,x1=1150,trackW=x1-x0;
-  const lanes=[{name:'GPU',c:P.slate,rate:600,chips:10,sz:34,y:178},{name:'Cerebras CS-3',c:P.clay,rate:3000,chips:46,sz:18,y:330}];
+  // same three seconds of wall-clock, two streams of actual tokens
+  const W=1200,H=520,x0=110,x1=1090;
+  const words=['the','fast','est','way','to','de','code','is','to','keep','the','weights','on','chip','no','fetch','ing','just','tok','ens','at','full','tilt','stream','ing','out','one','after','an','other','and','never','wait','for','mem'];
+  const chipW=70,chipH=38,gap=9,perRow=Math.floor((x1-x0-32)/(chipW+gap));
+  const lanes=[
+    {name:'GPU',c:P.slate,rate:600,total:7,rows:1,y:108},
+    {name:'Cerebras CS-3',c:P.clay,rate:3000,total:35,rows:3,y:254}
+  ];
   function frame(p){
     let s=`<svg viewBox="0 0 ${W} ${H}">`;
     lanes.forEach(ln=>{
-      s+=`<text x="${x0}" y="${ln.y-20}" font-size="24" fill="${ln.c}" font-weight="700" font-family="Fraunces,serif">${ln.name}</text>`;
-      s+=`<text x="${x1}" y="${ln.y-20}" font-size="28" fill="${ln.c}" text-anchor="end" font-weight="700" font-family="IBM Plex Mono,monospace">${Math.round(ln.rate*p).toLocaleString()} tok/s</text>`;
-      s+=`<rect x="${x0}" y="${ln.y}" width="${trackW}" height="62" rx="10" fill="${P.line2}"/>`;
-      const n=Math.floor(ln.chips*p);for(let i=0;i<n;i++){const cx=x0+8+i*(ln.sz+6);if(cx+ln.sz>x1-8)break;s+=`<rect x="${cx}" y="${ln.y+8}" width="${ln.sz}" height="46" rx="5" fill="${ln.c}" opacity="0.9"/>`;}
+      const h=ln.rows*(chipH+10)+14;
+      s+=`<text x="${x0}" y="${ln.y-20}" font-size="26" fill="${ln.c}" font-weight="700" font-family="Fraunces,serif">${ln.name}</text>`;
+      s+=`<text x="${x1}" y="${ln.y-20}" font-size="30" fill="${ln.c}" text-anchor="end" font-weight="700" font-family="IBM Plex Mono,monospace">${Math.round(ln.rate*p).toLocaleString()} tok/s</text>`;
+      s+=`<rect x="${x0}" y="${ln.y}" width="${x1-x0}" height="${h}" rx="14" fill="${P.line2}" opacity="0.55"/>`;
+      const n=Math.floor(ln.total*p+0.0001);
+      for(let i=0;i<n;i++){const r=Math.floor(i/perRow),cxx=x0+16+(i%perRow)*(chipW+gap),cyy=ln.y+8+r*(chipH+10);
+        s+=`<rect x="${cxx}" y="${cyy}" width="${chipW}" height="${chipH}" rx="8" fill="${ln.c}" opacity="0.13"/><rect x="${cxx}" y="${cyy}" width="${chipW}" height="${chipH}" rx="8" fill="none" stroke="${ln.c}" stroke-width="2"/>`;
+        s+=`<text x="${cxx+chipW/2}" y="${cyy+chipH/2+6}" font-size="16" fill="${ln.c}" text-anchor="middle" font-family="IBM Plex Mono,monospace">${words[i%words.length]}</text>`;}
     });
-    s+=`<text x="${W/2}" y="${H-28}" font-size="38" fill="${P.ochre}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">~5× the tokens</text>`;
+    s+=`<text x="${W/2}" y="${H-30}" font-size="38" fill="${P.ochre}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">~5× the tokens</text>`;
     s+=`</svg>`;host.innerHTML=s;
   }
   function play(){let st=null;function f(ts){if(!st)st=ts;let p=Math.min(1,(ts-st)/3000);frame(p);if(p<1)reg(requestAnimationFrame(f));}reg(requestAnimationFrame(f));}
-  frame(0);regT(setTimeout(play,300));regT(setInterval(play,4400));
+  frame(0);regT(setTimeout(play,300));regT(setInterval(play,4600));
 }
 
 /* ---------- PRODUCTION CARDS ---------- */
@@ -1450,27 +1472,74 @@ function twoPhases(host){
   </div>`;
 }
 
-/* ---------- WHY CEREBRAS WINS DECODE — two balanced columns ---------- */
+/* ---------- WHY CEREBRAS WINS DECODE — beat 1: which silicon for the decode pool (bridges from
+   the benefits two-pool picture) · beat 2: GPU vs wafer anatomy with the bandwidth numbers ---------- */
 function whyDecode(host){
-  const W=1200,H=500,mid=W/2;
-  let s=`<svg viewBox="0 0 ${W} ${H}">`;
-  s+=`<line x1="${mid}" y1="64" x2="${mid}" y2="418" stroke="${P.line2}" stroke-width="2" stroke-dasharray="6 9"/>`;
-  // ===== LEFT: GPU — weights off-chip, narrow pipe =====
-  const lc=300;
-  s+=`<text x="${lc}" y="58" font-size="32" fill="${P.ink}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">GPU</text>`;
-  s+=`<rect x="${lc-180}" y="90" width="360" height="96" rx="14" fill="${P.card}" stroke="${P.slate}" stroke-width="3"/><text x="${lc}" y="146" font-size="22" fill="${P.ink2}" text-anchor="middle" font-weight="600">compute cores</text>`;
-  // narrow pipe down to HBM
-  s+=`<rect x="${lc-13}" y="186" width="26" height="132" fill="${P.clay}" opacity="0.4"/>`;
-  s+=`<text x="${lc+28}" y="258" font-size="19" fill="${P.clay}" font-weight="600">narrow pipe —</text><text x="${lc+28}" y="282" font-size="19" fill="${P.clay}" font-weight="600">refetch every token</text>`;
-  s+=`<rect x="${lc-180}" y="318" width="360" height="96" rx="14" fill="${P.card}" stroke="${P.line}" stroke-width="2.5"/><text x="${lc}" y="358" font-size="22" fill="${P.ink2}" text-anchor="middle" font-weight="600">weights in HBM</text><text x="${lc}" y="388" font-size="18" fill="${P.soft}" text-anchor="middle">off-chip · far away</text>`;
-  // ===== RIGHT: Cerebras wafer — weights on-chip =====
-  const rc=900;
-  s+=`<text x="${rc}" y="58" font-size="32" fill="${P.clay}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">Cerebras wafer</text>`;
-  s+=`<image href="images/wafer.avif" x="${rc-190}" y="96" width="380" height="280" preserveAspectRatio="xMidYMid meet"/>`;
-  s+=`<text x="${rc}" y="408" font-size="22" fill="${P.clay}" text-anchor="middle" font-weight="700">weights on-chip — no fetching</text>`;
-  s+=`<text x="${mid}" y="466" font-size="28" fill="${P.ink}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">thousands× the memory bandwidth</text>`;
-  s+=`</svg>`;
-  host.innerHTML=s;
+  const W=1240,H=560;
+  let beat=0;
+  function pool(x,y,w,h,n,color,label,dim){
+    let s=`<g opacity="${dim?0.3:1}">`;
+    s+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="18" fill="${color}" opacity="0.05"/><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="18" fill="none" stroke="${color}" stroke-width="3"/>`;
+    s+=`<text x="${x+w/2}" y="${y-20}" font-size="28" fill="${color}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">${label}</text>`;
+    const pad=20,sh=(h-pad*(n+1))/n;
+    for(let i=0;i<n;i++){const sy=y+pad+i*(sh+pad);
+      s+=`<rect x="${x+16}" y="${sy}" width="${w-32}" height="${sh}" rx="10" fill="${P.card}" stroke="${color}" stroke-width="2"/><circle cx="${x+34}" cy="${sy+sh/2}" r="5" fill="${color}"/>`;
+      for(let k=0;k<3;k++)s+=`<line x1="${x+50}" y1="${sy+sh/2-8+k*8}" x2="${x+w-32}" y2="${sy+sh/2-8+k*8}" stroke="${color}" stroke-width="2" opacity="0.32"/>`;}
+    s+=`</g>`;return s;}
+  function render(){
+    clearAnims();
+    if(beat===0){
+      // the two pools from the previous slide, but the decode pool is now an open question
+      const cy=284,pf={x:240,w:230,h:250,n:3},dc={x:690,w:310,h:360,n:5};
+      let s=`<svg viewBox="0 0 ${W} ${H}">`;
+      s+=pool(pf.x,cy-pf.h/2,pf.w,pf.h,pf.n,P.slate,'Prefill pool',true);
+      s+=pool(dc.x,cy-dc.h/2,dc.w,dc.h,dc.n,P.clay,'Decode pool',false);
+      s+=`<line x1="${pf.x+pf.w+14}" y1="${cy}" x2="${dc.x-26}" y2="${cy}" stroke="${P.ochre}" stroke-width="4" stroke-dasharray="10 9"/><polygon points="${dc.x-10},${cy} ${dc.x-28},${cy-10} ${dc.x-28},${cy+10}" fill="${P.ochre}"/>`;
+      s+=`<g id="qmark"><circle cx="${dc.x+dc.w/2}" cy="${cy}" r="66" fill="${P.paper}" stroke="${P.clay}" stroke-width="4"/><text x="${dc.x+dc.w/2}" y="${cy+32}" font-size="92" fill="${P.clay}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">?</text></g>`;
+      s+=`<text x="${W/2}" y="${H-26}" font-size="30" fill="${P.ink}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">the decode pool can be any silicon — so what does decode want?</text>`;
+      s+=`<text x="${W-30}" y="40" font-size="18" fill="${P.faint}" text-anchor="end" font-family="IBM Plex Mono,monospace">1/2 · press →</text>`;
+      s+=`</svg>`;host.innerHTML=s;
+      const q=host.querySelector('#qmark'),qcx=dc.x+dc.w/2;let t=0;
+      function pulse(){t+=0.045;const sc=1+0.045*Math.sin(t);q.setAttribute('transform',`translate(${qcx*(1-sc)} ${cy*(1-sc)}) scale(${sc})`);reg(requestAnimationFrame(pulse));}
+      reg(requestAnimationFrame(pulse));
+    } else {
+      // anatomy: where the weights live decides the bandwidth
+      const cardY=88,cardH=330,gx=80,gw=470,rx=690,rw=470,mid=W/2;
+      const dieX=gx+95,dieW=gw-190,dieY=cardY+26,dieH=84;
+      const pcx=gx+gw/2,pipeTop=dieY+dieH,hbmY=cardY+206;
+      let s=`<svg viewBox="0 0 ${W} ${H}">`;
+      // ----- GPU card -----
+      s+=`<text x="${gx+gw/2}" y="${cardY-24}" font-size="30" fill="${P.slate}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">GPU</text>`;
+      s+=`<rect x="${gx}" y="${cardY}" width="${gw}" height="${cardH}" rx="18" fill="${P.card}" stroke="${P.slate}" stroke-width="3"/>`;
+      s+=`<rect x="${dieX}" y="${dieY}" width="${dieW}" height="${dieH}" rx="12" fill="${P.slate}" opacity="0.08"/><rect x="${dieX}" y="${dieY}" width="${dieW}" height="${dieH}" rx="12" fill="none" stroke="${P.slate}" stroke-width="2.5"/>`;
+      s+=`<text x="${gx+gw/2}" y="${dieY+34}" font-size="20" fill="${P.ink2}" text-anchor="middle" font-weight="600">compute cores</text>`;
+      for(let i=0;i<10;i++)s+=`<rect x="${dieX+22+i*((dieW-44)/10)}" y="${dieY+48}" width="16" height="16" rx="3" fill="${P.slate}" opacity="0.5"/>`;
+      s+=`<rect x="${pcx-11}" y="${pipeTop}" width="22" height="${hbmY-pipeTop}" fill="${P.slate}" opacity="0.18"/>`;
+      s+=`<text x="${pcx+28}" y="${(pipeTop+hbmY)/2+7}" font-size="18" fill="${P.clay}" font-weight="600">140 GB per token</text>`;
+      s+=`<circle class="wpkt" cx="${pcx}" cy="${hbmY-8}" r="7" fill="${P.clay}"/><circle class="wpkt" cx="${pcx}" cy="${hbmY-8}" r="7" fill="${P.clay}"/><circle class="wpkt" cx="${pcx}" cy="${hbmY-8}" r="7" fill="${P.clay}"/>`;
+      for(let i=0;i<3;i++)s+=`<rect x="${gx+120}" y="${hbmY+i*26}" width="${gw-240}" height="20" rx="6" fill="${P.slate}" opacity="${0.5-i*0.12}"/>`;
+      s+=`<text x="${gx+gw/2}" y="${hbmY+104}" font-size="19" fill="${P.ink2}" text-anchor="middle" font-weight="600">weights in HBM — off-chip</text>`;
+      s+=`<text x="${gx+gw/2}" y="${cardY+cardH+58}" font-size="42" fill="${P.slate}" text-anchor="middle" font-weight="700" font-family="IBM Plex Mono,monospace">3.35 TB/s</text>`;
+      s+=`<text x="${gx+gw/2}" y="${cardY+cardH+90}" font-size="18" fill="${P.soft}" text-anchor="middle">memory bandwidth · H100</text>`;
+      // ----- Cerebras card -----
+      s+=`<text x="${rx+rw/2}" y="${cardY-24}" font-size="30" fill="${P.clay}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">Cerebras wafer</text>`;
+      s+=`<rect x="${rx}" y="${cardY}" width="${rw}" height="${cardH}" rx="18" fill="${P.card}" stroke="${P.clay}" stroke-width="3"/>`;
+      s+=`<image href="images/wafer.avif" x="${rx+rw/2-125}" y="${cardY+20}" width="250" height="246" preserveAspectRatio="xMidYMid meet"/>`;
+      s+=`<text x="${rx+rw/2}" y="${cardY+cardH-22}" font-size="19" fill="${P.ink2}" text-anchor="middle" font-weight="600">weights live on the wafer — SRAM</text>`;
+      s+=`<text x="${rx+rw/2}" y="${cardY+cardH+58}" font-size="42" fill="${P.clay}" text-anchor="middle" font-weight="700" font-family="IBM Plex Mono,monospace">21,000 TB/s</text>`;
+      s+=`<text x="${rx+rw/2}" y="${cardY+cardH+90}" font-size="18" fill="${P.soft}" text-anchor="middle">memory bandwidth · CS-3</text>`;
+      // ----- the multiplier -----
+      s+=`<circle cx="${mid}" cy="${cardY+cardH/2}" r="78" fill="${P.paper}" stroke="${P.ochre}" stroke-width="4"/>`;
+      s+=`<text x="${mid}" y="${cardY+cardH/2-2}" font-size="44" fill="${P.ochre}" text-anchor="middle" font-weight="800" font-family="Fraunces,serif">7,000×</text>`;
+      s+=`<text x="${mid}" y="${cardY+cardH/2+34}" font-size="17" fill="${P.ink2}" text-anchor="middle" font-weight="600">the bandwidth</text>`;
+      s+=`</svg>`;host.innerHTML=s;
+      const pks=[...host.querySelectorAll('.wpkt')];let t=0;
+      function fl(){t+=0.012;pks.forEach((pk,i)=>{const ph=(t+i/3)%1;pk.setAttribute('cy',hbmY-8-(hbmY-pipeTop-14)*ph);pk.setAttribute('opacity',ph<0.06||ph>0.94?0:1);});reg(requestAnimationFrame(fl));}
+      reg(requestAnimationFrame(fl));
+    }
+  }
+  render();
+  return {next(){if(beat<1){beat++;render();return true;}return false;},prev(){if(beat>0){beat--;render();return true;}return false;}};
 }
 
 /* ---------- prefill compute-bound vs decode memory-bound (tokens per weight-read) ---------- */
@@ -1629,10 +1698,10 @@ function paretoSingle(host){
   const titleEl=slideEl&&slideEl.querySelector('h1.title'), kickEl=slideEl&&slideEl.querySelector('.kicker');
   // reset head to the base title on (re)entry — clear any inline opacity/transition left by an
   // interrupted beat-2 cross-fade so the normal reveal can show it again
-  [[titleEl,'Faster tokens cost more energy'],[kickEl,'The premise · why']].forEach(([el,txt])=>{
+  [[titleEl,'Faster tokens cost more energy'],[kickEl,'Layer 1 · the trade']].forEach(([el,txt])=>{
     if(!el)return; el.textContent=txt; el.style.opacity=''; el.style.transition=''; });
   function setHead(score){
-    const T=score?'The Pareto frontier':'Faster tokens cost more energy', K=score?'The scoreboard':'The premise · why';
+    const T=score?'The Pareto frontier':'Faster tokens cost more energy', K=score?'The scoreboard':'Layer 1 · the trade';
     [[titleEl,T],[kickEl,K]].forEach(([el,txt])=>{ if(!el||el.textContent===txt)return;
       el.style.transition='opacity .22s'; el.style.opacity='0';
       regT(setTimeout(()=>{el.textContent=txt; el.style.opacity='1';},220)); });
@@ -2059,7 +2128,7 @@ const INIT={
   chunkFix:el=>chunkBlock(el.querySelector('#vizChunkFix'),'fix'),
   f2026:el=>frontier(el.querySelector('#vizF2026'),{ghosts:['2022','2023','2024'],current:'2026',from:'2024'}).play(),
   benefits:el=>benefitsViz(el.querySelector('#vizBenefits')),
-  awscere:el=>caseStudyV(el.querySelector('#vizDisagg')),
+  awscere:el=>awsFlow(el.querySelector('#vizAws')),
   specDecode:el=>specDecodeDisagg(el.querySelector('#vizSpecDecode')),
   specResults:el=>specResults(el.querySelector('#vizSpecResults')),
   attnFfn:el=>attnFfnDisagg(el.querySelector('#vizAttnFfn')),
@@ -2108,7 +2177,7 @@ function go(n){
   syncingHash=false;
 }
 const ERAS=['Stakes','Foundation','2023','2024','2025–26','Next'];
-const ERAOF={title:0,capex:0,gauge:0,deals:0,pricespeed:0,goals:0,tension:0,tensionMath:0,loop:1,util:2,f2023:2,batchWhy:2,paperOrca:2,batch:2,paperVllm:2,kv1:2,kv2:2,kv3:2,kvShare:2,f2024:3,reqAnatomy:3,chunkB:3,paperSarathi:3,chunkFix:3,f2026:4,workloadMix:4,paperDisagg:4,roof16:4,cere:4,awscere:4,specDecode:4,specResults:4,attnFfn:4,benefits:4,gimlet:4,finish:5,kforge:5,recursive:5,recap:5};
+const ERAOF={title:0,capex:0,gauge:0,deals:0,pricespeed:0,goals:0,loop:1,util:2,tension:2,tensionMath:2,f2023:2,batchWhy:2,paperOrca:2,batch:2,paperVllm:2,kv1:2,kv2:2,kv3:2,kvShare:2,f2024:3,reqAnatomy:3,chunkB:3,paperSarathi:3,chunkFix:3,f2026:4,workloadMix:4,paperDisagg:4,roof16:4,cere:4,awscere:4,specDecode:4,specResults:4,attnFfn:4,benefits:4,gimlet:4,finish:5,kforge:5,recursive:5,recap:5};
 function buildEraRail(){const r=$('#erarail');if(!r)return;r.innerHTML=ERAS.map(e=>`<span class="es">${e}</span>`).join('<span class="sep">›</span>');}
 function buildOverview(){const ov=$('#overview');
   ov.innerHTML=slides.map((s,i)=>`<div class="ovcard" data-go="${i}"><div class="n mono">${String(i+1).padStart(2,'0')}</div><div class="t">${s.dataset.title||'Title'}</div></div>`).join('');
