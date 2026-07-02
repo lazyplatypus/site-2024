@@ -54,6 +54,7 @@ svg{display:block; width:100%; height:100%; overflow:visible}
 .qr{position:absolute; top:2cqh; right:2cqh; z-index:9100; display:flex; flex-direction:column; align-items:center; gap:.4cqh; pointer-events:none}
 .qr img{width:7cqh; height:7cqh; display:block; border-radius:.6cqh; background:#fff; padding:.5cqh; box-shadow:0 .3cqh 1cqh rgba(43,38,32,.12)}
 .qr span{font-family:var(--mono); font-size:1.15cqh; letter-spacing:.14em; text-transform:uppercase; color:var(--soft)}
+.slide[data-init="thanks"].active ~ .qr{display:none}   /* the thank-you slide has its own prominent QR */
 .progress{position:fixed; top:0; left:0; height:3px; background:var(--clay); width:0; z-index:9100; transition:width .4s ease}
 .chrome{position:fixed; z-index:9100; font-family:var(--mono); font-size:1.5cqh; color:var(--soft)}
 .counter{right:2.4cqh; bottom:2cqh; letter-spacing:.12em}
@@ -394,6 +395,30 @@ svg{display:block; width:100%; height:100%; overflow:visible}
   <div class="viz" data-reveal id="vizStarted"></div>
 </section>
 
+<!-- FINAL · THANK YOU -->
+<section class="slide" data-title="Thank you" data-init="thanks">
+  <div style="height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4.4cqh">
+    <div data-reveal style="display:flex; flex-direction:column; align-items:center; gap:1.6cqh">
+      <h1 style="font-family:var(--disp); font-weight:700; font-size:8.4cqh; color:var(--ink); line-height:1; margin:0">Thank you</h1>
+      <div style="font-size:2.6cqh; color:var(--ink2)">We are working as hard as possible to give you faster cheaper tokens</div>
+    </div>
+    <div data-reveal style="display:flex; gap:5cqh; align-items:flex-start">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:1.4cqh">
+        <video src="images/michelle.mp4" autoplay loop muted playsinline style="width:26cqh; aspect-ratio:1; object-fit:cover; border-radius:18px; box-shadow:0 14px 34px rgba(43,38,32,.25)"></video>
+        <div style="font-size:2cqh; color:var(--ink2); font-weight:600">Michelle Nguyen</div>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; gap:1.4cqh">
+        <video src="images/profile.mp4" autoplay loop muted playsinline style="width:26cqh; aspect-ratio:1; object-fit:cover; border-radius:18px; box-shadow:0 14px 34px rgba(43,38,32,.25)"></video>
+        <div style="font-family:var(--mono); font-size:2cqh; color:var(--clay); font-weight:600">@learnwdaniel</div>
+      </div>
+    </div>
+    <div data-reveal style="display:flex; flex-direction:column; align-items:center; gap:1cqh">
+      <img src="images/qr-code.png" alt="Scan for slides" style="width:15cqh; height:15cqh; border-radius:1cqh; background:#fff; padding:1cqh; box-shadow:0 .6cqh 2cqh rgba(43,38,32,.14)">
+      <div style="font-family:var(--mono); font-size:1.4cqh; letter-spacing:.14em; text-transform:uppercase; color:var(--soft)">scan for slides</div>
+    </div>
+  </div>
+</section>
+
 <div class="qr"><img src="images/qr-code.png" alt="Scan for slides"><span>slides</span></div>
 </div></div>
 
@@ -442,7 +467,7 @@ roof16:"Here are our two pools again — and notice the decode pool is just an e
 awscere:"And it just became real. In March 2026 AWS and Cerebras announced a disaggregated inference service on Amazon Bedrock — exactly the split we've been building toward. Follow the flow: a request comes in, AWS Trainium does the prefill and computes the KV cache, that cache ships over Amazon's EFA interconnect to the Cerebras CS-3, and the wafer does nothing but decode — thousands of tokens a second instead of hundreds on a GPU. The headline: ten times faster inference and five times the high-speed token capacity in the same footprint.",
 cere:"Watch a decode workload actually run. It's just tokens, generated one at a time, as fast as memory allows. On the same model a GPU manages a few hundred a second; the Cerebras CS-3 streams out around three thousand — five times the tokens. Decode is the workload Cerebras is number one at, and it's exactly what reasoning and agentic coding are starving for.",
 finish:"You've watched three layers of optimization push that curve, each one earned. Here's the uncomfortable part. Agents move the target. Reasoning thinks for ten to a hundred times as many tokens, exactly the long-decode the wafer loves. But the same agents fan out into parallel calls and long context inflates prefill and the KV cache, loading the prefill side right back up. The target lands in the corner that needs high throughput and high interactivity at once — the one corner none of our layers reaches alone. So the curve has to move again. And here's the thought to leave them on: every move so far was hand-engineered by people. What if we used AI for this — to chase the target for us? That's where the last slide goes.",
-specDecode:"Disaggregation isn't only prefill versus decode — you can split by job. Speculative decoding has three jobs with completely different shapes. Prefill reads the prompt, compute-heavy. Then a small, fast draft model races ahead and guesses the next several tokens — that step is tiny but it's on the critical path, so latency is everything. Then the big target model verifies all of those guesses in one parallel forward pass and accepts the longest run that matches what it would have said — here three accepted, one rejected and corrected. Three jobs, three compute shapes, so you give each its own pool. And the draft step is the perfect fit for SRAM-heavy hardware: the whole little model lives on-chip, so every speculative token is near-instant. You verify in big batches where the GPU is happy, and you draft where memory bandwidth is free.",
+specDecode:"Watch the two rows race in real time. Standard decoding, top: every single token costs one full pass of the big model — nine tokens, nine big passes. Speculative decoding, bottom: a tiny draft model takes a few near-instant guesses, then one big-model pass checks them all and confirms three tokens at once — the green dots are tokens landing. Same nine tokens, about twice as soon, because the big model runs a third as often — and the output is identical, since the big model still signs off on every token. The two kinds of block want different silicon, too: the tiny drafts fit in SRAM, the big verify passes belong on GPUs — draft on one chip, verify on another.",
 specResults:"And we measured exactly this. Target model is gpt-oss-120b; the draft is a 1.6-billion-parameter model. We keep prefill and verify on the GPU and move only the speculative decoder onto d-Matrix Corsair — an SRAM-centric chip with about twenty times the GPU's memory bandwidth, so the whole draft model lives on two cards. Same scoreboard as before: throughput per kilowatt up the side, interactivity across the bottom. The slate curve is plain GPU decode. Turn on speculative decoding, still all on GPU, and the frontier jumps right. Now move just the drafting to Corsair and it jumps right again — two to five times faster on interactivity-tuned configs, and up to ten times on energy-tuned ones, all at the same throughput per watt. In wall-clock terms: a twenty-five-second request drops more than five-fold from speculative decoding alone, then another two-point-six times once Corsair runs the drafts. And the draft is accepted ninety-two to ninety-six percent of the time, so the speculation almost never wastes work. This is the whole thesis, measured on real silicon.",
 attnFfn:"And you can split even finer — inside a single layer. A transformer layer is really two sub-layers with opposite appetites. Attention streams the whole KV cache for every token and does almost no math — it's memory-bound, it wants bandwidth. The feed-forward block is the opposite: dense matmuls, all FLOPs, compute-bound — and in a mixture-of-experts model the experts are enormous and dominate the compute entirely. Force both onto one chip and you compromise both. So the emerging move, in work like ByteDance's MegaScale-Infer, is to put attention on a bandwidth pool and the FFN or expert pool on a compute pool, and shuttle the activations between them every layer. Each sub-layer finally runs on the chip it was built for. It's early, but it's gaining real traction at the largest scale.",
 gimlet:"This is what we're building at Gimlet — a multi-silicon inference cloud. The whole talk has been one idea: no single chip is best for inference. So we don't pick one. We disaggregate each workload across many types of hardware, run every part on the silicon that's best at it, and physically wire it all together into one cloud. The pairs on the right are just examples — NVIDIA with Cerebras, NVIDIA with d-Matrix, AMD with Cerebras, NVIDIA with Gaudi — we mix and match per workload. And the payoff is the number that matters to anyone paying the power bill: three to ten times faster inference for the same power budget as homogeneous systems. And there are many ways to slice a workload — let me show you two more.",
@@ -994,7 +1019,7 @@ function chunkBlock(host,mode){
   const band0=112,bandH=356,ty=band0+(bandH-totalH)/2;
   const laneY=lanes.map((_,i)=>ty+i*(lh+gap));
   const yEnd=laneY[laneY.length-1]+lh;
-  const cap=fix?'chunked prefill + interleaved decodes — no one stalls':"one giant prefill — everyone waits";
+  const cap=fix?'':"one giant prefill — everyone waits";
   const capC=fix?P.sage:P.ochre;
   function render(){
     clearAnims();
@@ -1015,7 +1040,7 @@ function chunkBlock(host,mode){
             else if(b.chunk&&vis>bw2*0.5)s+=`<text x="${bx+bw2/2}" y="${y+lh/2+7}" font-size="17" fill="#fff" text-anchor="middle" font-weight="700">A</text>`;}});});
       const phx=x0+bw*Math.min(1,play);s+=`<line x1="${phx}" y1="${ty-12}" x2="${phx}" y2="${yEnd+12}" stroke="${P.ink2}" stroke-width="2"/>`;
       s+=`<text x="${x1}" y="${yEnd+42}" font-size="18" fill="${P.soft}" text-anchor="end">time →</text>`;
-      s+=`<text x="${W/2}" y="${H-22}" font-size="27" fill="${capC}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">${cap}</text>`;
+      if(cap)s+=`<text x="${W/2}" y="${H-22}" font-size="27" fill="${capC}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">${cap}</text>`;
       s+=`</svg>`;host.innerHTML=s;
     }
     function play(){let st=null;function f(ts){if(!st)st=ts;let p=Math.min(1,(ts-st)/3600);frame(p);if(p<1)reg(requestAnimationFrame(f));}reg(requestAnimationFrame(f));}
@@ -2037,63 +2062,54 @@ function paperCard(host,key){
   </div>`;
 }
 
-/* ---------- SPECULATIVE-DECODING DISAGGREGATION ---------- */
-function specDecodeDisagg(host){
-  const W=1240,H=560,top=134,BAND=206;
-  const pf={x:96, w:215,h:BAND,c:P.slate,label:'Prefill',foot:'heavy compute'};
-  const dr={x:410,w:230,h:126,c:P.ochre,label:'Draft',  foot:'tiny — runs in SRAM'};
-  const vf={x:742,w:330,h:BAND,c:P.clay, label:'Verify', foot:'heavy compute'};
-  const NSPEC=4,ACCEPT=3,tokY=398,tokH=60,tokW=120,tokGap=16,tokX0=dr.x;
-  const pY=p=>top+(BAND-p.h)/2;
-  const arrow=(x1,y1,x2,y2,c,w)=>{const a=Math.atan2(y2-y1,x2-x1),hl=13,bx=x2-hl*Math.cos(a),by=y2-hl*Math.sin(a);
-    return `<line x1="${x1}" y1="${y1}" x2="${bx}" y2="${by}" stroke="${c}" stroke-width="${w}"/><polygon points="${x2},${y2} ${bx-7*Math.sin(a)},${by+7*Math.cos(a)} ${bx+7*Math.sin(a)},${by-7*Math.cos(a)}" fill="${c}"/>`;};
-  function poolBox(p){const y=pY(p);
-    let s=`<rect x="${p.x}" y="${y}" width="${p.w}" height="${p.h}" rx="16" fill="${p.c}" opacity="0.06"/>`;
-    s+=`<rect x="${p.x}" y="${y}" width="${p.w}" height="${p.h}" rx="16" fill="none" stroke="${p.c}" stroke-width="3"/>`;
-    s+=`<text x="${p.x+p.w/2}" y="${top-34}" font-size="27" fill="${p.c}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">${p.label}</text>`;
-    s+=`<text x="${p.x+p.w/2}" y="${top+BAND+30}" font-size="17" fill="${p.c}" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-weight="700">${p.foot}</text>`;
-    return s;}
-  function aluGrid(p,frac){const cols=7,rows=5,cell=18,gap=7;
-    const totW=cols*cell+(cols-1)*gap, totH=rows*cell+(rows-1)*gap;
-    const ox=p.x+(p.w-totW)/2, oy=top+(p.h-totH)/2;
-    let s='',lit=Math.round(cols*rows*frac),k=0;
-    for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){const on=k<lit;
-      s+=`<rect x="${ox+c*(cell+gap)}" y="${oy+r*(cell+gap)}" width="${cell}" height="${cell}" rx="3" fill="${on?p.c:P.line2}"/>`;k++;}
-    return s;}
-  function draftChip(p){const y=pY(p),cw=130,ch=58,cx=p.x+p.w/2-cw/2,cyy=y+p.h/2-ch/2;
-    let s=`<rect x="${cx}" y="${cyy}" width="${cw}" height="${ch}" rx="9" fill="${p.c}" opacity="0.2" stroke="${p.c}" stroke-width="2.5"/>`;
-    s+=`<text x="${p.x+p.w/2}" y="${cyy+ch/2+6}" font-size="17" fill="${p.c}" text-anchor="middle" font-weight="700" font-family="IBM Plex Mono,monospace">SRAM</text>`;
-    return s;}
-  function frame(prog){
-    const pfFill=Math.min(1,prog/0.22), draftP=prog<0.30?0:Math.min(1,(prog-0.30)/0.24), verifyP=prog<0.66?0:Math.min(1,(prog-0.66)/0.30);
-    const proposed=Math.floor(draftP*NSPEC+1e-6);
+/* ---------- SPECULATIVE DECODING — standard vs draft/verify race timeline ---------- */
+function specDecodeTimeline(host){
+  const W=1240,H=560;
+  const X0=280,BW=84,BG=13,TW=18,TG=7;         // big pass w/gap · draft tick w/gap
+  const R1=170,R2=330,RH=60;                   // row tops
+  const N=9,G=3,K=3;                           // 9 std passes · 3 spec groups × 3 tokens
+  const T70=1,TD=0.18,total=N*T70;             // durations in 70B-pass units
+  const grpW=K*TW+(K-1)*TG+9+BW, grpDur=K*TD+T70;
+  const clamp=v=>Math.max(0,Math.min(1,v));
+  const stdX=i=>X0+i*(BW+BG), grpX=g=>X0+g*(grpW+BG);
+  function frame(p){
+    const t=p*total;
     let s=`<svg viewBox="0 0 ${W} ${H}">`;
-    s+=`<text x="64" y="36" font-size="18" fill="${P.soft}" font-family="IBM Plex Mono,monospace">time →</text>`;
-    s+=`<line x1="116" y1="48" x2="1176" y2="48" stroke="${P.line}" stroke-width="2"/><polygon points="1190,48 1176,42 1176,54" fill="${P.line}"/>`;
-    s+=poolBox(pf)+aluGrid(pf,pfFill);
-    s+=poolBox(dr)+draftChip(dr);
-    s+=poolBox(vf)+aluGrid(vf,verifyP);
-    s+=arrow(pf.x+pf.w+6, top+BAND/2, dr.x-8, pY(dr)+dr.h/2, P.ink2, 3);
-    s+=arrow(dr.x+dr.w+6, top+BAND/2, vf.x-8, top+BAND/2, P.ink2, 3);
-    // tokens
-    for(let i=0;i<NSPEC;i++){const x=tokX0+i*(tokW+tokGap), shown=i<proposed;
-      let fill=P.line2,txtc=P.faint,label='?',sw=0,stroke='none';
-      if(shown&&verifyP===0){fill=P.ochre;txtc='#fff';label='t'+(i+1);}
-      if(verifyP>0){ if(i<ACCEPT){fill=P.sage;txtc='#fff';label='✓';}
-        else if(i===ACCEPT){fill=P.rose;txtc='#fff';label='✗';}
-        else {fill=P.line2;txtc=P.faint;label='—';sw=1.5;stroke=P.faint;} }
-      s+=`<rect x="${x}" y="${tokY}" width="${tokW}" height="${tokH}" rx="11" fill="${fill}"${sw?` stroke="${stroke}" stroke-width="${sw}" stroke-dasharray="6 6"`:''} opacity="${shown||verifyP>0?1:0.5}"/>`;
-      if(shown||verifyP>0)s+=`<text x="${x+tokW/2}" y="${tokY+tokH/2+9}" font-size="24" fill="${txtc}" text-anchor="middle" font-weight="700" font-family="IBM Plex Mono,monospace">${label}</text>`;
-    }
-    if(verifyP>0.5){const op=Math.min(1,(verifyP-0.5)/0.4);
-      s+=`<text x="${tokX0}" y="${tokY+tokH+36}" font-size="19" fill="${P.sage}" font-weight="700" font-family="Fraunces,serif" opacity="${op}">${ACCEPT} accepted at once<tspan fill="${P.rose}"> · 1 corrected</tspan></text>`;}
-    const phx=116+(1176-116)*Math.min(1,prog);
-    s+=`<line x1="${phx}" y1="44" x2="${phx}" y2="${tokY+tokH+48}" stroke="${P.ink2}" stroke-width="2" opacity="0.3"/>`;
+    // row labels
+    s+=`<text x="${X0-24}" y="${R1+RH/2+6}" font-size="16" fill="${P.ink2}" text-anchor="end" font-weight="700" font-family="IBM Plex Mono,monospace">standard</text>`;
+    s+=`<text x="${X0-24}" y="${R2+RH/2+6}" font-size="16" fill="${P.ink2}" text-anchor="end" font-weight="700" font-family="IBM Plex Mono,monospace">speculative</text>`;
+    // ── standard row: one 70B pass per token ──
+    let stdDone=0;
+    for(let i=0;i<N;i++){const w=BW*clamp((t-i*T70)/T70);if(w<=0)continue;
+      s+=`<rect x="${stdX(i)}" y="${R1}" width="${w}" height="${RH}" rx="${Math.min(8,w/2)}" fill="${P.clay}"/>`;
+      if(t>=(i+1)*T70){stdDone++;s+=`<circle cx="${stdX(i)+BW/2}" cy="${R1-13}" r="4.5" fill="${P.sage}"/>`;}}
+    if(stdDone>0)s+=`<text x="${stdX(N-1)+BW+18}" y="${R1+RH/2+6}" font-size="15" fill="${P.ink2}" font-weight="700" font-family="IBM Plex Mono,monospace">${stdDone} tok</text>`;
+    // ── speculative row: K quick drafts, then one 70B pass → K tokens ──
+    let specDone=0;
+    for(let g=0;g<G;g++){const s0=g*grpDur,x0=grpX(g);
+      for(let j=0;j<K;j++){const w=TW*clamp((t-(s0+j*TD))/TD);if(w<=0)continue;
+        s+=`<rect x="${x0+j*(TW+TG)}" y="${R2}" width="${w}" height="${RH}" rx="${Math.min(4,w/2)}" fill="${P.ochre}"/>`;}
+      const vs=s0+K*TD,vx=x0+K*TW+(K-1)*TG+9,w=BW*clamp((t-vs)/T70);
+      if(w>0)s+=`<rect x="${vx}" y="${R2}" width="${w}" height="${RH}" rx="${Math.min(8,w/2)}" fill="${P.clay}"/>`;
+      if(t>=vs+T70){specDone+=K;
+        for(let k=0;k<K;k++)s+=`<circle cx="${vx+(k+0.5)*BW/K}" cy="${R2-13}" r="4.5" fill="${P.sage}"/>`;}}
+    if(specDone>0)s+=`<text x="${grpX(G-1)+grpW+18}" y="${R2+RH/2+6}" font-size="15" fill="${P.ink2}" font-weight="700" font-family="IBM Plex Mono,monospace">${specDone} tok</text>`;
+    // legend (between the rows, right)
+    const LGX=1006;
+    s+=`<rect x="${LGX}" y="${R1+RH+34}" width="18" height="18" rx="4" fill="${P.ochre}"/>`;
+    s+=`<text x="${LGX+28}" y="${R1+RH+48}" font-size="15" fill="${P.ink2}" font-family="IBM Plex Mono,monospace">draft model</text>`;
+    s+=`<rect x="${LGX}" y="${R1+RH+62}" width="18" height="18" rx="4" fill="${P.clay}"/>`;
+    s+=`<text x="${LGX+28}" y="${R1+RH+76}" font-size="15" fill="${P.ink2}" font-family="IBM Plex Mono,monospace">full model</text>`;
+    s+=`<circle cx="${LGX+9}" cy="${R1+RH+99}" r="4.5" fill="${P.sage}"/>`;
+    s+=`<text x="${LGX+28}" y="${R1+RH+104}" font-size="15" fill="${P.ink2}" font-family="IBM Plex Mono,monospace">token out</text>`;
+    // time axis
+    s+=`<line x1="${X0}" y1="478" x2="${stdX(N-1)+BW-14}" y2="478" stroke="${P.line}" stroke-width="2"/><polygon points="${stdX(N-1)+BW},478 ${stdX(N-1)+BW-14},472 ${stdX(N-1)+BW-14},484" fill="${P.line}"/>`;
+    s+=`<text x="${(X0+stdX(N-1)+BW)/2}" y="508" font-size="15" fill="${P.soft}" text-anchor="middle" font-family="IBM Plex Mono,monospace">inference time →</text>`;
     s+=`<text x="${W-40}" y="${H-6}" font-size="13" fill="${P.faint}" text-anchor="end" font-family="IBM Plex Mono,monospace">speculative decoding · Leviathan et al. · ICML 2023</text>`;
     s+=`</svg>`;host.innerHTML=s;
   }
-  function play(){let st=null;function f(ts){if(!st)st=ts;let p=Math.min(1,(ts-st)/4400);frame(p);if(p<1)reg(requestAnimationFrame(f));}reg(requestAnimationFrame(f));}
-  frame(0);regT(setTimeout(play,300));
+  function play(){let st=null;function f(ts){if(!st)st=ts;const p=Math.min(1,(ts-st)/7600);frame(p);if(p<1)reg(requestAnimationFrame(f));}reg(requestAnimationFrame(f));}
+  frame(0);regT(setTimeout(play,300));regT(setInterval(play,9800));
 }
 
 /* ---------- SPEC-DECODE RESULTS — Gimlet × d-Matrix Corsair (source: gimletlabs.ai) ----------
@@ -2185,7 +2201,7 @@ function attnFfnDisagg(host){
     for(let i=0;i<4;i++)s+=`<rect x="${sx}" y="${sy+i*13}" width="${lw}" height="6" rx="3" fill="${AC}" opacity="${0.32+i*0.12}"/>`;
     return s;}
   function moeBox(x){let s=`<rect x="${x}" y="${fTop}" width="${bw}" height="${bh}" rx="14" fill="${FC}" opacity="0.07"/><rect x="${x}" y="${fTop}" width="${bw}" height="${bh}" rx="14" fill="none" stroke="${FC}" stroke-width="3.5"/>`;
-    s+=`<text x="${x+bw/2}" y="${fTop+34}" font-size="21" fill="${FC}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">MoE experts</text>`;
+    s+=`<text x="${x+bw/2}" y="${fTop+34}" font-size="21" fill="${FC}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">FFN</text>`;
     const cw=34,gx=10,cols=4,tot=cols*cw+(cols-1)*gx,gx0=x+(bw-tot)/2,gy=fTop+52;
     for(let c=0;c<cols;c++){const ex=gx0+c*(cw+gx),active=(c===1||c===2);
       s+=`<rect x="${ex}" y="${gy}" width="${cw}" height="${cw}" rx="7" fill="${active?FC:P.card}" stroke="${FC}" stroke-width="${active?0:2}" opacity="${active?0.9:0.55}"/>`;}
@@ -2201,6 +2217,7 @@ function attnFfnDisagg(host){
     s+=arrow(colL[nL-1]+bw+4,yF,W-30,yF,P.clay,3);
     s+=`<text x="${(colL[nL-1]+bw+4+W-30)/2}" y="${yF-16}" font-size="14" fill="${P.clay}" text-anchor="middle">tokens out</text>`;
     s+=`<circle id="afpkt" cx="90" cy="${yA}" r="10" fill="${AC}"/>`;
+    s+=`<text x="${W/2}" y="${H-32}" font-size="26" fill="${P.ink}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">Disaggregate each layer of the model</text>`;
     s+=`</svg>`;return s;}
   host.innerHTML=staticSVG();
   const pkt=host.querySelector('#afpkt');
@@ -2360,7 +2377,7 @@ const INIT={
   chunkFix:el=>chunkBlock(el.querySelector('#vizChunkFix'),'fix'),
   benefits:el=>benefitsViz(el.querySelector('#vizBenefits')),
   awscere:el=>awsFlow(el.querySelector('#vizAws')),
-  specDecode:el=>specDecodeDisagg(el.querySelector('#vizSpecDecode')),
+  specDecode:el=>specDecodeTimeline(el.querySelector('#vizSpecDecode')),
   specResults:el=>specResults(el.querySelector('#vizSpecResults')),
   attnFfn:el=>attnFfnDisagg(el.querySelector('#vizAttnFfn')),
   gimlet:el=>gimletViz(el.querySelector('#vizGimlet')),
@@ -2408,7 +2425,7 @@ function go(n){
   syncingHash=false;
 }
 const ERAS=['Stakes','Foundation','Batching','Scheduling','Disaggregation','Next'];
-const ERAOF={title:0,capex:0,deals:0,tokens:0,pricespeed:0,goals:0,rewind:1,loop:1,util:2,tensionMath:2,batchWhy:2,paperOrca:2,batch:2,paperVllm:2,kv1:2,kv2:2,kv3:2,kvShare:2,reqAnatomy:3,chunkB:3,paperSarathi:3,chunkFix:3,workloadMix:4,paperDisagg:4,roof16:4,cere:4,awscere:4,specDecode:4,specResults:4,attnFfn:4,benefits:4,gimlet:4,finish:5,kforge:5,recursive:5,started:5};
+const ERAOF={title:0,capex:0,deals:0,tokens:0,pricespeed:0,goals:0,rewind:1,loop:1,util:2,tensionMath:2,batchWhy:2,paperOrca:2,batch:2,paperVllm:2,kv1:2,kv2:2,kv3:2,kvShare:2,reqAnatomy:3,chunkB:3,paperSarathi:3,chunkFix:3,workloadMix:4,paperDisagg:4,roof16:4,cere:4,awscere:4,specDecode:4,specResults:4,attnFfn:4,benefits:4,gimlet:4,finish:5,kforge:5,recursive:5,started:5,thanks:5};
 function buildEraRail(){const r=$('#erarail');if(!r)return;r.innerHTML=ERAS.map(e=>`<span class="es">${e}</span>`).join('<span class="sep">›</span>');}
 function buildOverview(){const ov=$('#overview');
   ov.innerHTML=slides.map((s,i)=>`<div class="ovcard" data-go="${i}"><div class="n mono">${String(i+1).padStart(2,'0')}</div><div class="t">${s.dataset.title||'Title'}</div></div>`).join('');
