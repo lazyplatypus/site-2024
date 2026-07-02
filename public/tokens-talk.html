@@ -233,14 +233,14 @@ svg{display:block; width:100%; height:100%; overflow:visible}
   <div class="viz" data-reveal id="vizBatch"></div>
 </section>
 
+<!-- 10a WHAT IS KV CACHE -->
+<section class="slide" data-slide="13" data-kicker="Layer 1 · KV cache management" data-title="More requests = KV cache explodes" data-init="kv1">
+  <div class="viz" data-reveal id="vizKv1"></div>
+</section>
+
 <!-- PAPER · VLLM -->
 <section class="slide" data-init="paperVllm">
   <div class="viz" data-reveal id="vizPaperVllm"></div>
-</section>
-
-<!-- 10a WHAT IS KV CACHE -->
-<section class="slide" data-slide="13" data-kicker="Layer 1 · KV cache management" data-title="Each request needs a KV cache" data-init="kv1">
-  <div class="viz" data-reveal id="vizKv1"></div>
 </section>
 
 <!-- 10b RESERVE FOR WORST CASE -->
@@ -306,17 +306,14 @@ svg{display:block; width:100%; height:100%; overflow:visible}
 <!-- L3 · IT'S REAL + HOW IT WORKS: horizontal Trainium→Cerebras flow + stat row + press clipping -->
 <section class="slide" data-kicker="Layer 3 · it's real" data-title="Cerebras × AWS Trainium" data-init="awscere">
   <div class="viz" data-reveal id="vizAws" style="flex:1; min-height:0"></div>
-  <div data-reveal style="flex:none; display:flex; align-items:center; gap:7cqh; padding:1.4cqh 1cqh 0">
-    <div>
-      <div style="font-family:var(--disp); font-weight:700; font-size:6.6cqh; color:var(--clay); line-height:1">10×</div>
-      <div style="font-size:1.9cqh; color:var(--ink2); margin-top:.5cqh">faster inference</div>
+  <div data-reveal style="flex:none; display:flex; align-items:center; justify-content:center; gap:9cqh; padding:1.4cqh 1cqh 0">
+    <div style="text-align:right">
+      <div style="font-family:var(--disp); font-weight:700; font-size:9.4cqh; color:var(--ochre); line-height:1">5×</div>
+      <div style="font-size:2.4cqh; color:var(--ink2); margin-top:.6cqh">high-speed token capacity</div>
+      <div style="font-size:1.7cqh; color:var(--soft); margin-top:.2cqh">in the same footprint</div>
     </div>
-    <div>
-      <div style="font-family:var(--disp); font-weight:700; font-size:6.6cqh; color:var(--ochre); line-height:1">5×</div>
-      <div style="font-size:1.9cqh; color:var(--ink2); margin-top:.5cqh">high-speed token capacity</div>
-    </div>
-    <div style="margin-left:auto; display:flex; flex-direction:column; align-items:center; gap:1cqh">
-      <img src="images/amazoncerebras.png" alt="Reuters: Cerebras Systems, Amazon strike deal to offer Cerebras AI chips on Amazon's cloud" style="width:32cqh; border-radius:12px; box-shadow:0 12px 34px rgba(43,38,32,.25); transform:rotate(-1.5deg)"/>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:1cqh">
+      <img src="images/amazoncerebras.png" alt="Reuters: Cerebras Systems, Amazon strike deal to offer Cerebras AI chips on Amazon's cloud" style="width:30cqh; border-radius:12px; box-shadow:0 12px 34px rgba(43,38,32,.25); transform:rotate(-1.5deg)"/>
       <div class="mono" style="font-size:1.4cqh; color:var(--faint)">March 2026 · Amazon Bedrock</div>
     </div>
   </div>
@@ -441,7 +438,7 @@ reqAnatomy:"I slipped a word onto that last slide — prefill — and it's the k
 chunkB:"Now here's the problem, and it's getting worse fast. Coding agents are everywhere now, and they shove enormous context at the model — your whole codebase, two hundred thousand tokens. That makes the prefill huge. Picture the chip as two slots: that one agent's giant prefill grabs a slot and runs for ages, and while it does, everyone else is stalled — their tokens can't get through. One greedy prefill clogs the whole pipeline. So how do we let the long prefill happen without freezing everyone else?",
 chunkFix:"Sarathi's fix, now that you've seen both the clog and why the phases differ. Chop User A's long prefill into small chunks, and slip B's and C's decode steps in between them. The big prompt still finishes about as fast, but everyone keeps getting tokens the whole time — no more stall. This is the first move that treats prefill and decode as different kinds of work, and it sets up the bigger idea: actually splitting them apart.",
 benefits:"And splitting helps even on identical hardware. Once prefill and decode are separate pools you can scale each on its own — add decode servers for long outputs without touching prefill. A big prefill burst can't stall everyone's decode anymore. And you can tune batch size and latency targets per phase. Then, on top of all that, you can also specialize the hardware — which is where Cerebras comes in.",
-roof16:"Here are our two pools again — and notice the decode pool is just an empty box. Nothing says it has to be GPUs. Decode reads the whole model for every token but does tiny math — it's pure memory bandwidth. So what silicon wants that job? Press. A GPU keeps its weights in far-off HBM and drags all 140 GB through a narrow pipe, every token — about three and a third terabytes a second on an H100. A Cerebras wafer keeps the entire model on-chip in SRAM — twenty-one thousand terabytes a second, seven thousand times the bandwidth, nothing to fetch. For decode, that's the whole game.",
+roof16:"Here are our two pools again — and notice the decode pool is just an empty box. Nothing says it has to be GPUs. So before we pick silicon, look closely at what decode actually does. Press. This is the decode tail from Layer 2 — one block per output token — and let's crack one open. Every decode step is the same four moves: take the token you just generated, re-read all 140 gigabytes of weights, do one token's worth of math, and append its K and V to the cache — then emit the token and do it all over again. The math is one token's worth: trivial. The read is the entire model: enormous. Decode is pure memory bandwidth. So what silicon wants that job? Press. A GPU keeps its weights in far-off HBM and drags all 140 GB through a narrow pipe, every token — about three and a third terabytes a second on an H100. A Cerebras wafer keeps the entire model on-chip in SRAM — twenty-one thousand terabytes a second, seven thousand times the bandwidth, nothing to fetch. For decode, that's the whole game.",
 awscere:"And it just became real. In March 2026 AWS and Cerebras announced a disaggregated inference service on Amazon Bedrock — exactly the split we've been building toward. Follow the flow: a request comes in, AWS Trainium does the prefill and computes the KV cache, that cache ships over Amazon's EFA interconnect to the Cerebras CS-3, and the wafer does nothing but decode — thousands of tokens a second instead of hundreds on a GPU. The headline: ten times faster inference and five times the high-speed token capacity in the same footprint.",
 cere:"Watch a decode workload actually run. It's just tokens, generated one at a time, as fast as memory allows. On the same model a GPU manages a few hundred a second; the Cerebras CS-3 streams out around three thousand — five times the tokens. Decode is the workload Cerebras is number one at, and it's exactly what reasoning and agentic coding are starving for.",
 finish:"You've watched three layers of optimization push that curve, each one earned. Here's the uncomfortable part. Agents move the target. Reasoning thinks for ten to a hundred times as many tokens, exactly the long-decode the wafer loves. But the same agents fan out into parallel calls and long context inflates prefill and the KV cache, loading the prefill side right back up. The target lands in the corner that needs high throughput and high interactivity at once — the one corner none of our layers reaches alone. So the curve has to move again. And here's the thought to leave them on: every move so far was hand-engineered by people. What if we used AI for this — to chase the target for us? That's where the last slide goes.",
@@ -957,7 +954,7 @@ function reqAnatomy(host){
         if(i<dN-1)s+=ar(x+dw+4,dy+dh/2,x+dw+dgap-2,dy+dh/2,P.ink2,2.5);}
       s+=`<text x="${dxi(dN-1)+dw+34}" y="${dy+dh/2+12}" font-size="36" fill="${P.soft}">…</text>`;
       s+=`<text x="${dcx}" y="${dy+dh+78}" font-size="23" fill="${P.sage}" text-anchor="middle" font-weight="700">output tokens stream</text>`;
-      s+=caption(['each D: take the token just generated, re-read all 140 GB of weights,','do one token of math, append its K/V — repeat, once per output token'],P.clay);
+      s+=caption(['you decode one token at a time, reusing the KV cache'],P.clay);
       s+=`</svg>`;host.innerHTML=s;
     }
     let st=null;function f(ts){if(!st)st=ts;let p=Math.min(1,(ts-st)/3000);frame(p);if(p<1)reg(requestAnimationFrame(f));}
@@ -1232,7 +1229,6 @@ function decodeRace(host){
         s+=`<rect x="${cxx}" y="${cyy}" width="${chipW}" height="${chipH}" rx="8" fill="${ln.c}" opacity="0.13"/><rect x="${cxx}" y="${cyy}" width="${chipW}" height="${chipH}" rx="8" fill="none" stroke="${ln.c}" stroke-width="2"/>`;
         s+=`<text x="${cxx+chipW/2}" y="${cyy+chipH/2+6}" font-size="16" fill="${ln.c}" text-anchor="middle" font-family="IBM Plex Mono,monospace">${words[i%words.length]}</text>`;}
     });
-    s+=`<text x="${W/2}" y="${H-30}" font-size="38" fill="${P.ochre}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">~5× the tokens</text>`;
     s+=`</svg>`;host.innerHTML=s;
   }
   function play(){let st=null;function f(ts){if(!st)st=ts;let p=Math.min(1,(ts-st)/3000);frame(p);if(p<1)reg(requestAnimationFrame(f));}reg(requestAnimationFrame(f));}
@@ -1440,19 +1436,30 @@ function batchViz(host){
 
 /* ---------- PAGED KV build-up ---------- */
 function kvViz(host,stage){
-  // STAGE 1 — the KV cache grows one block per token (animated)
+  // STAGE 1 — many requests, each KV cache growing, blocks flood the whole screen
   if(stage===1){
-    const W=1060,H=470,y=190,bx=210,bw=78,gap=12,maxN=9;
-    let s=`${kUser(86,y+34,'',P.slate)}`;
-    s+=`<text x="${W/2}" y="108" font-size="40" fill="${P.ink}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">KV cache</text>`;
-    s+=`<text x="${W/2}" y="${y+158}" font-size="26" fill="${P.soft}" text-anchor="middle">+1 block every token — it only grows</text>`;
-    s+=`<g id="kvrow"></g>`;
-    host.innerHTML=`<svg viewBox="0 0 ${W} ${H}">${s}</svg>`;
-    const row=host.querySelector('#kvrow');let n=0;
-    function add(){if(n>=maxN){n=0;row.innerHTML='';}
-      const x=bx+n*(bw+gap);row.insertAdjacentHTML('beforeend',`<rect x="${x}" y="${y}" width="${bw}" height="74" rx="11" fill="${P.slate}" opacity="0"/>`);
-      const el=row.lastElementChild;el.style.transition='opacity .35s';requestAnimationFrame(()=>el.setAttribute('opacity','0.85'));n++;}
-    add();add();add();const kvi=setInterval(()=>{if(n>=maxN)clearInterval(kvi);else add();},750);regT(kvi);return;
+    const W=1220,H=560, lx=44, bx=98, rx=1198, rows=7, top=44, bot=H-54;
+    const rowH=(bot-top)/rows, bh=rowH-12, maxCols=13, gap=9;
+    const bw=(rx-bx-(maxCols-1)*gap)/maxCols;
+    const pal=[P.slate,P.clay,P.ochre,P.sage,P.rose,P.slate,P.ochre];
+    const lens=[13,9,13,7,12,13,10];                 // tokens-so-far per request
+    let s=`<svg viewBox="0 0 ${W} ${H}">`;
+    s+=`<text x="${W/2}" y="${H-18}" font-size="21" fill="${P.soft}" text-anchor="middle" font-family="IBM Plex Mono,monospace">each request grows +1 block per token — pack many in and memory runs out</text>`;
+    for(let r=0;r<rows;r++){const cy=top+r*rowH+rowH/2;
+      s+=kUser(lx,cy,'',pal[r%pal.length]);
+      s+=`<g class="kvr"></g>`;}
+    s+=`</svg>`;
+    host.innerHTML=s;
+    const rowG=[...host.querySelectorAll('.kvr')];
+    let c=0,timer=null;
+    function step(){if(c>=maxCols){clearInterval(timer);return;}   // fill once, then hold — no loop
+      for(let r=0;r<rows;r++){if(c>=lens[r])continue;               // every request grows a block at once
+        const g=rowG[r], y=top+r*rowH+(rowH-bh)/2, x=bx+c*(bw+gap);
+        g.insertAdjacentHTML('beforeend',`<rect x="${x}" y="${y}" width="${bw}" height="${bh}" rx="7" fill="${pal[r%pal.length]}" opacity="0"/>`);
+        const el=g.lastElementChild;el.style.transition='opacity .25s';requestAnimationFrame(()=>el.setAttribute('opacity','0.9'));}
+      c++;}
+    function run(){timer=setInterval(step,150);regT(timer);}
+    run();return;
   }
   // STAGE 2 — reserve for the worst case: 1-1 with the paged slide, but one big contiguous block per request
   if(stage===2){
@@ -1611,17 +1618,89 @@ function whyDecode(host){
       s+=`<line x1="${pf.x+pf.w+14}" y1="${cy}" x2="${dc.x-26}" y2="${cy}" stroke="${P.ochre}" stroke-width="4" stroke-dasharray="10 9"/><polygon points="${dc.x-10},${cy} ${dc.x-28},${cy-10} ${dc.x-28},${cy+10}" fill="${P.ochre}"/>`;
       s+=`<g id="qmark"><circle cx="${dc.x+dc.w/2}" cy="${cy}" r="66" fill="${P.paper}" stroke="${P.clay}" stroke-width="4"/><text x="${dc.x+dc.w/2}" y="${cy+32}" font-size="92" fill="${P.clay}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">?</text></g>`;
       s+=`<text x="${W/2}" y="${H-26}" font-size="30" fill="${P.ink}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">the decode pool can be any silicon — so what does decode want?</text>`;
-      s+=`<text x="${W-30}" y="40" font-size="18" fill="${P.faint}" text-anchor="end" font-family="IBM Plex Mono,monospace">1/2 · press →</text>`;
+      s+=`<text x="${W-30}" y="40" font-size="18" fill="${P.faint}" text-anchor="end" font-family="IBM Plex Mono,monospace">1/3 · press →</text>`;
       s+=`</svg>`;host.innerHTML=s;
       const q=host.querySelector('#qmark'),qcx=dc.x+dc.w/2;let t=0;
       function pulse(){t+=0.045;const sc=1+0.045*Math.sin(t);q.setAttribute('transform',`translate(${qcx*(1-sc)} ${cy*(1-sc)}) scale(${sc})`);reg(requestAnimationFrame(pulse));}
       reg(requestAnimationFrame(pulse));
+    } else if(beat===1){
+      // explode a decode block from the Layer 2 timeline — the four moves inside every decode step
+      const ar=(x1,y1,x2,y2,c,w)=>{const a=Math.atan2(y2-y1,x2-x1),hl=11;const bx=x2-hl*Math.cos(a),by=y2-hl*Math.sin(a);
+        return `<line x1="${x1}" y1="${y1}" x2="${bx}" y2="${by}" stroke="${c}" stroke-width="${w}"/><polygon points="${x2},${y2} ${bx-6.5*Math.sin(a)},${by+6.5*Math.cos(a)} ${bx+6.5*Math.sin(a)},${by-6.5*Math.cos(a)}" fill="${c}"/>`;};
+      const pfx=200,pfy=64,pfw=210,pfh=76,dN=4,dw=76,dgap=26,dx0=pfx+pfw+46,tlMid=pfy+pfh/2;
+      const dxi=i=>dx0+i*(dw+dgap);
+      const px=130,pw=980,py=214,pnH=250;
+      const bw=196,bgap=36,bx0=px+44,by=262,bh=88,rowY=by+bh/2,loopY=by+bh+34;
+      const bxi=i=>bx0+i*(bw+bgap);
+      const STEPS=[
+        {l:'grab last token'},
+        {l:'re-read all 140 GB',hot:true},
+        {l:'1 token of math'},
+        {l:'append K/V'}];
+      let s=`<svg viewBox="0 0 ${W} ${H}">`;
+      s+=`<text x="${W-30}" y="40" font-size="18" fill="${P.faint}" text-anchor="end" font-family="IBM Plex Mono,monospace">2/3 · press →</text>`;
+      // ----- compact timeline from the anatomy slide -----
+      s+=`<g id="dTl" opacity="0">`;
+      s+=`<rect x="${pfx}" y="${pfy}" width="${pfw}" height="${pfh}" rx="12" fill="${P.slate}" opacity="0.4"/>`;
+      s+=`<text x="${pfx+pfw/2}" y="${tlMid+9}" font-size="24" fill="#fff" text-anchor="middle" font-weight="800" font-family="Fraunces,serif">PREFILL</text>`;
+      s+=ar(pfx+pfw+6,tlMid,dx0-8,tlMid,P.ink2,2.5);
+      for(let i=0;i<dN;i++){const x=dxi(i);
+        s+=`<rect x="${x}" y="${pfy}" width="${dw}" height="${pfh}" rx="10" fill="${P.clay}"/>`;
+        s+=`<text x="${x+dw/2}" y="${tlMid+8}" font-size="23" fill="#fff" text-anchor="middle" font-weight="700" font-family="IBM Plex Mono,monospace">D${i+1}</text>`;
+        if(i<dN-1)s+=ar(x+dw+4,tlMid,x+dw+dgap-2,tlMid,P.ink2,2.5);}
+      s+=`<text x="${dxi(dN-1)+dw+30}" y="${tlMid+12}" font-size="32" fill="${P.soft}">…</text>`;
+      s+=`</g>`;
+      // ----- explode lines: D1 cracks open into the panel -----
+      s+=`<g id="dEx" opacity="0">`;
+      s+=`<rect x="${dx0}" y="${pfy}" width="${dw}" height="${pfh}" rx="10" fill="none" stroke="${P.ochre}" stroke-width="3.5"/>`;
+      s+=`<line x1="${dx0}" y1="${pfy+pfh}" x2="${px}" y2="${py}" stroke="${P.ochre}" stroke-width="2" stroke-dasharray="7 6"/>`;
+      s+=`<line x1="${dx0+dw}" y1="${pfy+pfh}" x2="${px+pw}" y2="${py}" stroke="${P.ochre}" stroke-width="2" stroke-dasharray="7 6"/>`;
+      s+=`</g>`;
+      // ----- exploded panel -----
+      s+=`<g id="dPanel" opacity="0">`;
+      s+=`<rect x="${px}" y="${py}" width="${pw}" height="${pnH}" rx="18" fill="${P.clay}" opacity="0.04"/>`;
+      s+=`<rect x="${px}" y="${py}" width="${pw}" height="${pnH}" rx="18" fill="none" stroke="${P.ochre}" stroke-width="2.5"/>`;
+      s+=`</g>`;
+      // ----- the four moves -----
+      STEPS.forEach((stp,i)=>{const x=bxi(i),cx=x+bw/2;
+        s+=`<g class="dStep" opacity="0">`;
+        if(stp.hot)s+=`<rect x="${x}" y="${by}" width="${bw}" height="${bh}" rx="12" fill="${P.clay}"/>`;
+        else s+=`<rect x="${x}" y="${by}" width="${bw}" height="${bh}" rx="12" fill="${P.card}" stroke="${P.clay}" stroke-width="2"/>`;
+        s+=`<circle cx="${cx}" cy="${by}" r="13" fill="${P.paper}" stroke="${stp.hot?P.clay:P.ink2}" stroke-width="2"/><text x="${cx}" y="${by+5}" font-size="15" fill="${stp.hot?P.clay:P.ink2}" text-anchor="middle" font-weight="800" font-family="IBM Plex Mono,monospace">${i+1}</text>`;
+        s+=`<text x="${cx}" y="${rowY+10}" font-size="19" fill="${stp.hot?'#fff':P.ink}" text-anchor="middle" font-weight="700">${stp.l}</text>`;
+        if(i<3)s+=ar(x+bw+5,rowY,x+bw+bgap-6,rowY,P.ink2,2.5);
+        s+=`</g>`;});
+      // ----- loop back: emit and repeat -----
+      s+=`<g id="dLoop" opacity="0">`;
+      s+=`<path d="M${bxi(3)+bw/2} ${by+bh} L${bxi(3)+bw/2} ${loopY} L${bxi(0)+bw/2} ${loopY}" fill="none" stroke="${P.clay}" stroke-width="2.5"/>`;
+      s+=ar(bxi(0)+bw/2,loopY,bxi(0)+bw/2,by+bh+5,P.clay,2.5);
+      s+=`<text x="${px+pw/2}" y="${loopY+32}" font-size="20" fill="${P.clay}" text-anchor="middle" font-weight="700">emit → repeat</text>`;
+      s+=`</g>`;
+      s+=`<circle id="dTok" r="8" fill="${P.ochre}" stroke="${P.paper}" stroke-width="2.5" opacity="0"/>`;
+      s+=`</svg>`;host.innerHTML=s;
+      const g=q=>host.querySelector(q),steps=[...host.querySelectorAll('.dStep')],tok=g('#dTok');
+      const c0=bxi(0)+bw/2,c3=bxi(3)+bw/2,run=c3-c0,drop=loopY-rowY;
+      let st0=null;
+      function f(ts){if(!st0)st0=ts;const t=ts-st0;
+        const F=(el,t0,dur)=>el.setAttribute('opacity',Math.max(0,Math.min(1,(t-t0)/dur)).toFixed(2));
+        F(g('#dTl'),0,300);F(g('#dEx'),320,280);F(g('#dPanel'),520,280);
+        steps.forEach((el,i)=>F(el,760+i*230,250));
+        F(g('#dLoop'),1720,260);
+        if(t>2300){const ph=((t-2300)%4200)/4200;let x,y;
+          if(ph<0.5){x=c0+run*(ph/0.5);y=rowY;}
+          else if(ph<0.58){x=c3;y=rowY+drop*((ph-0.5)/0.08);}
+          else if(ph<0.92){x=c3-run*((ph-0.58)/0.34);y=loopY;}
+          else{x=c0;y=loopY-drop*((ph-0.92)/0.08);}
+          tok.setAttribute('cx',x);tok.setAttribute('cy',y);tok.setAttribute('opacity',1);}
+        reg(requestAnimationFrame(f));}
+      reg(requestAnimationFrame(f));
     } else {
       // anatomy: where the weights live decides the bandwidth
       const cardY=88,cardH=330,gx=80,gw=470,rx=690,rw=470,mid=W/2;
       const dieX=gx+95,dieW=gw-190,dieY=cardY+26,dieH=84;
       const pcx=gx+gw/2,pipeTop=dieY+dieH,hbmY=cardY+206;
       let s=`<svg viewBox="0 0 ${W} ${H}">`;
+      s+=`<text x="${W-30}" y="40" font-size="18" fill="${P.faint}" text-anchor="end" font-family="IBM Plex Mono,monospace">3/3</text>`;
       // ----- GPU card -----
       s+=`<text x="${gx+gw/2}" y="${cardY-24}" font-size="30" fill="${P.slate}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">GPU</text>`;
       s+=`<rect x="${gx}" y="${cardY}" width="${gw}" height="${cardH}" rx="18" fill="${P.card}" stroke="${P.slate}" stroke-width="3"/>`;
@@ -1643,7 +1722,7 @@ function whyDecode(host){
       s+=`<text x="${rx+rw/2}" y="${cardY+cardH+58}" font-size="42" fill="${P.clay}" text-anchor="middle" font-weight="700" font-family="IBM Plex Mono,monospace">21,000 TB/s</text>`;
       s+=`<text x="${rx+rw/2}" y="${cardY+cardH+90}" font-size="18" fill="${P.soft}" text-anchor="middle">memory bandwidth · CS-3</text>`;
       // ----- the multiplier -----
-      s+=`<circle cx="${mid}" cy="${cardY+cardH/2}" r="78" fill="${P.paper}" stroke="${P.ochre}" stroke-width="4"/>`;
+      s+=`<circle cx="${mid}" cy="${cardY+cardH/2}" r="92" fill="${P.paper}" stroke="${P.ochre}" stroke-width="4"/>`;
       s+=`<text x="${mid}" y="${cardY+cardH/2-2}" font-size="44" fill="${P.ochre}" text-anchor="middle" font-weight="800" font-family="Fraunces,serif">7,000×</text>`;
       s+=`<text x="${mid}" y="${cardY+cardH/2+34}" font-size="17" fill="${P.ink2}" text-anchor="middle" font-weight="600">the bandwidth</text>`;
       s+=`</svg>`;host.innerHTML=s;
@@ -1653,7 +1732,7 @@ function whyDecode(host){
     }
   }
   render();
-  return {next(){if(beat<1){beat++;render();return true;}return false;},prev(){if(beat>0){beat--;render();return true;}return false;}};
+  return {next(){if(beat<2){beat++;render();return true;}return false;},prev(){if(beat>0){beat--;render();return true;}return false;}};
 }
 
 /* ---------- prefill compute-bound vs decode memory-bound (tokens per weight-read) ---------- */
