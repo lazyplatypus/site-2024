@@ -284,6 +284,11 @@ svg{display:block; width:100%; height:100%; overflow:visible}
   <div class="viz" data-reveal id="vizChunkFix"></div>
 </section>
 
+<!-- L2→L3 · TRANSITION: zoom out from one worker to the system -->
+<section class="slide" data-kicker="Layer 3 · change of altitude" data-title="Runtime → system-level optimizations" data-init="workerZoom">
+  <div class="viz" data-reveal id="vizWorkerZoom"></div>
+</section>
+
 <!-- L3 · WORKLOAD SHAPES: every request is shaped differently (3 clicks) -->
 <section class="slide" data-kicker="Layer 3 · the breaking point" data-title="Every request is a different shape" data-init="workloadMix">
   <div class="viz" data-reveal id="vizWorkloadMix"></div>
@@ -457,7 +462,7 @@ batchWhy:"Our first move across the frontier — and it pushes the throughput ax
 paperOrca:"It's called continuous batching, and it comes from this paper — Orca, out of OSDI 2022, where it was introduced. I'll show you the mechanism on the next slides, but I want you to see that these aren't folklore — each one is a specific result you can go read.",
 paperVllm:"The second idea is PagedAttention, from the vLLM paper at SOSP 2023. It borrows virtual memory paging from operating systems and applies it to the KV cache. Again — here's the exact source.",
 paperSarathi:"2024's scheduling trick comes from Sarathi: chunked prefill. The title literally describes the mechanism — piggybacking decodes on chunked prefills. Here's the paper.",
-workloadMix:"That same request isn't one shape — it depends on the workload. I'll stack three on top of each other so you can compare the prefill-to-decode ratio directly. One: a long prompt, short answer — summarize this document. Mostly prefill, barely any decode, so it's compute-bound. Press. Two: a short prompt, long answer — write me an essay. Tiny prefill, a long stream of decode, so it's memory-bound. Press. Three: long prompt and long answer — a coding agent reading your whole repo and then generating a lot. Now both halves are heavy. Lined up like this you can see it plainly: prefill and decode are completely different kinds of work, in totally different proportions, and a single chip has to compromise across all of them. The natural question is — how do we cater to each? That's exactly what the next idea answers.",
+workloadMix:"So we're at the system level now, and the first thing a system sees is that requests aren't one shape — it depends on the workload. I'll stack three on top of each other so you can compare the prefill-to-decode ratio directly. One: a long prompt, short answer — summarize this document. Mostly prefill, barely any decode, so it's compute-bound. Press. Two: a short prompt, long answer — write me an essay. Tiny prefill, a long stream of decode, so it's memory-bound. Press. Three: long prompt and long answer — a coding agent reading your whole repo and then generating a lot. Now both halves are heavy. Lined up like this you can see it plainly: prefill and decode are completely different kinds of work, in totally different proportions, and a single chip has to compromise across all of them. The natural question is — how do we cater to each? That's exactly what the next idea answers.",
 paperDisagg:"The answer is to stop forcing one chip to compromise — split prefill and decode into separate pools so each can be sized and tuned for its own shape. That idea comes from Splitwise, out of Microsoft Azure Research at ISCA 2024 — the first paper to put the two phases on separate machines, shipping the KV cache from the prefill machine to the decode machine over the datacenter interconnect. Here's the paper.",
 batch:"Here's the mechanism. One clarification first: the weights don't move in one giant read — they stream through the chip layer by layer, and over one token that stream adds up to the full 140 gigabytes. Beat one: pack four users into the batch, and all of them ride the same stream — the memory bill you were already paying now produces four tokens instead of one. That's the throughput win. Press. Beat two, the catch: requests finish at different times, and in a fixed batch a freed slot sits idle until the whole batch drains. Press. Beat three, continuous batching: the instant a slot frees, the next user drops in — the grid packs solid, and that expensive stream is never wasted again. On the scoreboard, that stretched the frontier right: many times the throughput at the same per-user speed. And there's a second idea that packs it even tighter.",
 kvWhy:"But batching creates a new problem, and to see it you need to know where the memory goes. Attention is why. To predict the next token, the model compares it against every token that came before — the whole conversation, at every layer. Recomputing all of that from scratch for every new token would be madness, so each token's keys and values are computed once and kept for the life of the request. That's the KV cache: the model's memory of the conversation, and it grows by one entry with every token — nothing leaves until the request ends. Press. Do the arithmetic and it escalates fast: on a seventy-billion-parameter model the cache gains about a gigabyte every three thousand tokens. So a thirty-two-thousand-token conversation is ten gigabytes, and a coding agent at hundred-twenty-eight-k context is over forty — one request, a third the size of the weights. And that's one user.",
@@ -467,7 +472,8 @@ kv3:"PagedAttention borrows virtual memory from operating systems. The model sti
 kvShare:"The second payoff is sharing. Beat one: request one has a system prompt — 'you are a helpful assistant', the same few thousand tokens everyone sends — then its own tokens. Each maps to a page. Press. Beat two: request two shows up with the exact same prompt. Instead of storing that prompt again, its page table just points at the very same physical pages — the shared block is stored once, not twice, and only the unique tokens get new pages. And this is everywhere: RAG stuffing in the same documents, a chat re-sending the whole history every turn, agents replaying the same long system prompt on every step — that shared context now costs memory exactly once — and, as it says on the slide, you get to skip its prefill too.",
 reqAnatomy:"I slipped a word onto that last slide — prefill — and it's the key to everything in this layer. Batching and paging maxed out what one weight-stream can do; the next wave of wins came from scheduling the work smarter, and to see that, you need the anatomy of a request. Every request has two phases with opposite personalities. Beat one — prefill: the model reads your whole prompt in one pass, computing a key and value vector for every single prompt token — that's the KV cache — and it produces the first output token. It's a mountain of matrix math done all at once, so the chip is saturated: compute-bound, and it sets your first-token latency, the wait before anything appears. Press. Beat two — decode, and watch the loop. Take the token you just generated, read all 140 gigabytes of weights again, do one token's worth of math, append its K and V to the cache, and emit the next token — then repeat, once for every output token. Every single token re-streams the entire model, so decode is memory-bound and the compute mostly sits idle. So one request is a compute-bound prefill up front, then a long memory-bound tail of decodes. Hold that contrast — the rest of Layer 2 is about catering to each.",
 chunkB:"Now here's the problem, and it's getting worse fast. Coding agents are everywhere now, and they shove enormous context at the model — your whole codebase, two hundred thousand tokens. That makes the prefill huge. Picture the chip as two slots: that one agent's giant prefill grabs a slot and runs for ages, and while it does, everyone else is stalled — their tokens can't get through. One greedy prefill clogs the whole pipeline. So how do we let the long prefill happen without freezing everyone else?",
-chunkFix:"Sarathi's fix, now that you've seen both the clog and why the phases differ. Chop User A's long prefill into small chunks, and slip B's and C's decode steps in between them. The big prompt still finishes about as fast, but everyone keeps getting tokens the whole time — no more stall. This is the first move that treats prefill and decode as different kinds of work, and it sets up the bigger idea: actually splitting them apart.",
+chunkFix:"Sarathi's fix, now that you've seen both the clog and why the phases differ. Chop User A's long prefill into small chunks, and slip B's and C's decode steps in between them. The big prompt still finishes about as fast, but everyone keeps getting tokens the whole time — no more stall. This is the first move that treats prefill and decode as different kinds of work — and it's also the last trick of its kind. To see why, we need to change altitude.",
+workerZoom:"Watch what happens when we pull the camera back. That timeline you were just looking at — batching, paged KV, chunked prefill, this entire chapter — all of it was runtime-level optimization: tricks inside a single worker, scheduling it ever more cleverly. But nobody serves a model on one worker — a real deployment is a fleet of these. And that changes the question. From here on, the optimizations go system-level: which work goes to which worker, and eventually which silicon each worker should even be. So let's start where any system design starts: with what actually arrives at it.",
 benefits:"And splitting helps even on identical hardware. Once prefill and decode are separate pools you can scale each on its own — add decode servers for long outputs without touching prefill. A big prefill burst can't stall everyone's decode anymore. And you can tune batch size and latency targets per phase. Then, on top of all that, you can also specialize the hardware — which is where Cerebras comes in.",
 roof16:"Here are our two pools again — and notice the decode pool is just an empty box. Nothing says it has to be GPUs. So before we pick silicon, look closely at what decode actually does. Press. This is the decode tail from Layer 2 — one block per output token — and let's crack one open. Every decode step is the same four moves: take the token you just generated, re-read all 140 gigabytes of weights, do one token's worth of math, and append its K and V to the cache — then emit the token and do it all over again. The math is one token's worth: trivial. The read is the entire model: enormous. Decode is pure memory bandwidth. So what silicon wants that job? Press. A GPU keeps its weights in far-off HBM and drags all 140 GB through a narrow pipe, every token — about three and a third terabytes a second on an H100. A Cerebras wafer keeps the entire model on-chip in SRAM — twenty-one thousand terabytes a second, seven thousand times the bandwidth, nothing to fetch. For decode, that's the whole game.",
 awscere:"And it just became real. In March 2026 AWS and Cerebras announced a disaggregated inference service on Amazon Bedrock — exactly the split we've been building toward. Follow the flow: a request comes in, AWS Trainium does the prefill and computes the KV cache, that cache ships over Amazon's EFA interconnect to the Cerebras CS-3, and the wafer does nothing but decode — thousands of tokens a second instead of hundreds on a GPU. The headline: ten times faster inference and five times the high-speed token capacity in the same footprint.",
@@ -1053,6 +1059,49 @@ function chunkBlock(host,mode){
     frame(0);regT(setTimeout(play,250));
   }
   render();
+}
+
+/* ---------- WORKER → SYSTEM — camera pulls back: the chunked-prefill worker shrinks into a fleet ---------- */
+function workerZoom(host){
+  const W=1220,H=520;
+  const cols=4,rows=2,cw=252,chh=148,gpx=28,gpy=30;
+  const gw=cols*cw+(cols-1)*gpx,gx0=(W-gw)/2,gy0=(H-(rows*chh+(rows-1)*gpy))/2;
+  // big starting pose for worker 1: same card, scaled up and centered
+  const k0=2.55,bx0=(W-cw*k0)/2,by0=(H-chh*k0)/2;
+  const mcols=[P.slate,P.clay,P.ochre];
+  function card(i,hero){
+    // drawn in local coords (0,0)-(cw,chh); worker 1 echoes the chunkFix interleave pattern
+    let s=`<rect x="0" y="0" width="${cw}" height="${chh}" rx="12" fill="${P.card}" stroke="${hero?P.sage:P.line}" stroke-width="${hero?2.5:2}"/>`;
+    s+=`<text x="14" y="26" font-size="15" fill="${hero?P.sage:P.faint}"${hero?' font-weight="700"':''} font-family="IBM Plex Mono,monospace">worker ${i+1}</text>`;
+    const pad=16,lw=cw-2*pad;
+    for(let li=0;li<2;li++){
+      const yy=44+li*50;
+      s+=`<rect x="${pad}" y="${yy}" width="${lw}" height="36" rx="6" fill="${P.line2}"/>`;
+      const n=hero?10:5+((i+li)%3);
+      for(let b=0;b<n;b++){
+        const c=hero?(li===0?[P.slate,P.clay,P.slate,P.ochre][b%4]:[P.clay,P.ochre][b%2]):mcols[(b+i+li*2)%3];
+        s+=`<rect x="${pad+b*(lw/n)+2}" y="${yy+3}" width="${lw/n-4}" height="30" rx="4" fill="${c}" opacity="0.88"/>`;
+      }
+    }
+    return s;
+  }
+  host.innerHTML=`<svg viewBox="0 0 ${W} ${H}" id="wzsvg"></svg>`;
+  const svg=host.querySelector('#wzsvg');
+  function frame(t){
+    const e=ease(t);
+    const k=k0+(1-k0)*e,x=bx0+(gx0-bx0)*e,y=by0+(gy0-by0)*e;
+    const op=Math.max(0,(t-0.45)/0.55);
+    let s=`<g opacity="${1-e}"><text x="${W/2}" y="${by0-18}" font-size="22" fill="${P.soft}" text-anchor="middle">the slide you just saw…</text></g>`;
+    for(let i=1;i<cols*rows;i++){
+      const cx=gx0+(i%cols)*(cw+gpx),cy=gy0+((i/cols)|0)*(chh+gpy);
+      s+=`<g opacity="${op}" transform="translate(${cx},${cy})">${card(i,false)}</g>`;
+    }
+    s+=`<g transform="translate(${x},${y}) scale(${k})">${card(0,true)}</g>`;
+    svg.innerHTML=s;
+  }
+  function play(){let st=null;function f(ts){if(!st)st=ts;let p=Math.min(1,(ts-st)/1500);frame(p);if(p<1)reg(requestAnimationFrame(f));}reg(requestAnimationFrame(f));}
+  frame(0);
+  regT(setTimeout(play,600));
 }
 
 /* ---------- WORKLOAD SHAPES — three request shapes stacked, revealed one at a time ---------- */
@@ -2448,6 +2497,7 @@ const INIT={
   reqAnatomy:el=>reqAnatomy(el.querySelector('#vizReqAnatomy')),
   chunkB:el=>chunkBlock(el.querySelector('#vizChunkB'),'problem'),
   chunkFix:el=>chunkBlock(el.querySelector('#vizChunkFix'),'fix'),
+  workerZoom:el=>workerZoom(el.querySelector('#vizWorkerZoom')),
   benefits:el=>benefitsViz(el.querySelector('#vizBenefits')),
   awscere:el=>awsFlow(el.querySelector('#vizAws')),
   specDecode:el=>specDecodeTimeline(el.querySelector('#vizSpecDecode')),
@@ -2498,7 +2548,7 @@ function go(n){
   syncingHash=false;
 }
 const ERAS=['Stakes','Foundation','Batching','Scheduling','Disaggregation','Next'];
-const ERAOF={title:0,capex:0,deals:0,tokens:0,pricespeed:0,goals:0,rewind:1,loop:1,util:2,tensionMath:2,batchWhy:2,paperOrca:2,batch:2,kvWhy:2,paperVllm:2,kv1:2,kv2:2,kv3:2,kvShare:2,reqAnatomy:3,chunkB:3,paperSarathi:3,chunkFix:3,workloadMix:4,paperDisagg:4,roof16:4,cere:4,awscere:4,specDecode:4,specResults:4,attnFfn:4,benefits:4,gimlet:4,finish:5,kforge:5,recursive:5,started:5,thanks:5};
+const ERAOF={title:0,capex:0,deals:0,tokens:0,pricespeed:0,goals:0,rewind:1,loop:1,util:2,tensionMath:2,batchWhy:2,paperOrca:2,batch:2,kvWhy:2,paperVllm:2,kv1:2,kv2:2,kv3:2,kvShare:2,reqAnatomy:3,chunkB:3,paperSarathi:3,chunkFix:3,workerZoom:4,workloadMix:4,paperDisagg:4,roof16:4,cere:4,awscere:4,specDecode:4,specResults:4,attnFfn:4,benefits:4,gimlet:4,finish:5,kforge:5,recursive:5,started:5,thanks:5};
 function buildEraRail(){const r=$('#erarail');if(!r)return;r.innerHTML=ERAS.map(e=>`<span class="es">${e}</span>`).join('<span class="sep">›</span>');}
 function buildOverview(){const ov=$('#overview');
   ov.innerHTML=slides.map((s,i)=>`<div class="ovcard" data-go="${i}"><div class="n mono">${String(i+1).padStart(2,'0')}</div><div class="t">${s.dataset.title||'Title'}</div></div>`).join('');
