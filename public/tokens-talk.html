@@ -234,7 +234,12 @@ svg{display:block; width:100%; height:100%; overflow:visible}
   <div class="viz" data-reveal id="vizBatch"></div>
 </section>
 
-<!-- 10a WHAT IS KV CACHE -->
+<!-- 10a WHY THE KV CACHE EXISTS & WHAT IT COSTS (two beats) -->
+<section class="slide" data-slide="11" data-kicker="Layer 1 · KV cache management" data-title="Every token leaves a memory" data-init="kvWhy">
+  <div class="viz" data-reveal id="vizKvWhy"></div>
+</section>
+
+<!-- 10b MANY REQUESTS = EXPLOSION -->
 <section class="slide" data-slide="13" data-kicker="Layer 1 · KV cache management" data-title="More requests = KV cache explodes" data-init="kv1">
   <div class="viz" data-reveal id="vizKv1"></div>
 </section>
@@ -455,7 +460,8 @@ paperSarathi:"2024's scheduling trick comes from Sarathi: chunked prefill. The t
 workloadMix:"That same request isn't one shape — it depends on the workload. I'll stack three on top of each other so you can compare the prefill-to-decode ratio directly. One: a long prompt, short answer — summarize this document. Mostly prefill, barely any decode, so it's compute-bound. Press. Two: a short prompt, long answer — write me an essay. Tiny prefill, a long stream of decode, so it's memory-bound. Press. Three: long prompt and long answer — a coding agent reading your whole repo and then generating a lot. Now both halves are heavy. Lined up like this you can see it plainly: prefill and decode are completely different kinds of work, in totally different proportions, and a single chip has to compromise across all of them. The natural question is — how do we cater to each? That's exactly what the next idea answers.",
 paperDisagg:"The answer is to stop forcing one chip to compromise — split prefill and decode into separate pools so each can be sized and tuned for its own shape. That idea comes from Splitwise, out of Microsoft Azure Research at ISCA 2024 — the first paper to put the two phases on separate machines, shipping the KV cache from the prefill machine to the decode machine over the datacenter interconnect. Here's the paper.",
 batch:"Here's the mechanism. One clarification first: the weights don't move in one giant read — they stream through the chip layer by layer, and over one token that stream adds up to the full 140 gigabytes. Beat one: pack four users into the batch, and all of them ride the same stream — the memory bill you were already paying now produces four tokens instead of one. That's the throughput win. Press. Beat two, the catch: requests finish at different times, and in a fixed batch a freed slot sits idle until the whole batch drains. Press. Beat three, continuous batching: the instant a slot frees, the next user drops in — the grid packs solid, and that expensive stream is never wasted again. On the scoreboard, that stretched the frontier right: many times the throughput at the same per-user speed. And there's a second idea that packs it even tighter.",
-kv1:"But batching creates a new problem. Each request keeps a KV cache — its memory of the conversation so far, so the model never has to recompute the past. It grows with every token. Pack many requests onto one chip and this memory is the thing you run out of first.",
+kvWhy:"But batching creates a new problem, and to see it you need to know where the memory goes. Attention is why. To predict the next token, the model compares it against every token that came before — the whole conversation, at every layer. Recomputing all of that from scratch for every new token would be madness, so each token's keys and values are computed once and kept for the life of the request. That's the KV cache: the model's memory of the conversation, and it grows by one entry with every token — nothing leaves until the request ends. Do the arithmetic and it escalates fast: on a seventy-billion-parameter model each entry is about a third of a megabyte, so a thirty-two-thousand-token conversation is ten gigabytes, and a coding agent at hundred-twenty-eight-k context is over forty — one request, a third the size of the weights. And that's one user.",
+kv1:"Now put that together with batching. Every request we packed in is growing one of these caches at the same time — watch the screen fill up. The weights already claim most of the chip's memory, and whatever is left over is the ceiling on how many requests fit. So memory, not compute, becomes the thing that caps your batch — and with it the throughput win we just earned. And it gets worse: the obvious way to store these caches wastes most of that precious space.",
 kv2:"The straightforward way to store it is wasteful. You reserve one big contiguous block per request, sized for the longest answer it might ever produce. Most of it sits empty — sixty to eighty percent wasted — and because each request hogs a whole region, only a few fit at once.",
 kv3:"PagedAttention borrows virtual memory from operating systems. The model still sees one contiguous sequence — but each block can live anywhere in physical memory; a little block table maps the logical order to scattered physical blocks. Blocks are handed out on demand as the sequence grows, so there's almost nothing reserved-but-empty. Waste drops under four percent and you fit two to four times more requests. And once memory is just pages behind a table, another trick falls out almost for free — that's the next slide.",
 kvShare:"The second payoff is sharing. Beat one: request one has a system prompt — 'you are a helpful assistant', the same few thousand tokens everyone sends — then its own tokens. Each maps to a page. Press. Beat two: request two shows up with the exact same prompt. Instead of storing that prompt again, its page table just points at the very same physical pages — the shared block is stored once, not twice, and only the unique tokens get new pages. And this is everywhere: RAG stuffing in the same documents, a chat re-sending the whole history every turn, agents replaying the same long system prompt on every step — that shared context now costs memory exactly once — and, as it says on the slide, you get to skip its prefill too.",
@@ -1459,6 +1465,33 @@ function batchViz(host){
   return {next(){if(beat>=beats.length-1)return false;beat++;render();return true;}};
 }
 
+/* ---------- WHY KV CACHE — attention reads the whole past, so each token's K·V is stored once ---------- */
+function kvWhyViz(host){
+  const W=1220,H=540;
+  const words=['The','cat','sat','on','the','mat'];
+  const n=words.length,bw=150,gap=22,x0=(W-(n*bw+(n-1)*gap))/2,ty=200,kvY=330;
+  let s=`<svg viewBox="0 0 ${W} ${H}">`;
+  for(let i=0;i<n;i++){const x=x0+i*(bw+gap);
+    s+=`<g class="tok" data-i="${i}" opacity="0">`;
+    s+=`<rect x="${x}" y="${ty}" width="${bw}" height="62" rx="10" fill="${P.card}" stroke="${P.line}" stroke-width="2"/>`;
+    s+=`<text x="${x+bw/2}" y="${ty+41}" font-size="26" fill="${P.ink}" text-anchor="middle" font-family="IBM Plex Mono,monospace">${words[i]}</text>`;
+    s+=`<rect x="${x+18}" y="${kvY}" width="${bw-36}" height="46" rx="8" fill="${P.slate}" opacity="0.9"/>`;
+    s+=`<text x="${x+bw/2}" y="${kvY+30}" font-size="19" fill="#fff" text-anchor="middle" font-family="IBM Plex Mono,monospace">K·V</text>`;
+    s+=`</g>`;}
+  s+=`<g class="arcs"></g>`;
+  s+=`<text x="${W/2}" y="${kvY+92}" font-size="20" fill="${P.soft}" text-anchor="middle" font-family="IBM Plex Mono,monospace">+1 per token · kept for the whole request</text>`;
+  s+=`</svg>`;host.innerHTML=s;
+  const toks=[...host.querySelectorAll('.tok')],arcs=host.querySelector('.arcs');
+  function show(i){if(i>=n)return;
+    const t=toks[i];t.style.transition='opacity .3s';t.setAttribute('opacity','1');
+    arcs.innerHTML='';
+    const xi=x0+i*(bw+gap)+bw/2;
+    for(let j=0;j<i;j++){const xj=x0+j*(bw+gap)+bw/2,mid=(xi+xj)/2,lift=ty-28-(i-j)*13;
+      arcs.insertAdjacentHTML('beforeend',`<path d="M ${xi} ${ty-5} Q ${mid} ${lift} ${xj+14} ${ty-5}" fill="none" stroke="${P.clay}" stroke-width="2.5" opacity="0.75"/>`);}
+    regT(setTimeout(()=>show(i+1),820));}
+  regT(setTimeout(()=>show(0),400));
+}
+
 /* ---------- PAGED KV build-up ---------- */
 function kvViz(host,stage){
   // STAGE 1 — many requests, each KV cache growing, blocks flood the whole screen
@@ -2368,6 +2401,7 @@ const INIT={
   workloadMix:el=>workloadMix(el.querySelector('#vizWorkloadMix')),
   paperDisagg:el=>paperCard(el.querySelector('#vizPaperDisagg'),'disagg'),
   batch:el=>batchViz(el.querySelector('#vizBatch')),
+  kvWhy:el=>kvWhyViz(el.querySelector('#vizKvWhy')),
   kv1:el=>kvViz(el.querySelector('#vizKv1'),1),
   kv2:el=>kvViz(el.querySelector('#vizKv2'),2),
   kv3:el=>kvViz(el.querySelector('#vizKv3'),3),
@@ -2425,7 +2459,7 @@ function go(n){
   syncingHash=false;
 }
 const ERAS=['Stakes','Foundation','Batching','Scheduling','Disaggregation','Next'];
-const ERAOF={title:0,capex:0,deals:0,tokens:0,pricespeed:0,goals:0,rewind:1,loop:1,util:2,tensionMath:2,batchWhy:2,paperOrca:2,batch:2,paperVllm:2,kv1:2,kv2:2,kv3:2,kvShare:2,reqAnatomy:3,chunkB:3,paperSarathi:3,chunkFix:3,workloadMix:4,paperDisagg:4,roof16:4,cere:4,awscere:4,specDecode:4,specResults:4,attnFfn:4,benefits:4,gimlet:4,finish:5,kforge:5,recursive:5,started:5,thanks:5};
+const ERAOF={title:0,capex:0,deals:0,tokens:0,pricespeed:0,goals:0,rewind:1,loop:1,util:2,tensionMath:2,batchWhy:2,paperOrca:2,batch:2,kvWhy:2,paperVllm:2,kv1:2,kv2:2,kv3:2,kvShare:2,reqAnatomy:3,chunkB:3,paperSarathi:3,chunkFix:3,workloadMix:4,paperDisagg:4,roof16:4,cere:4,awscere:4,specDecode:4,specResults:4,attnFfn:4,benefits:4,gimlet:4,finish:5,kforge:5,recursive:5,started:5,thanks:5};
 function buildEraRail(){const r=$('#erarail');if(!r)return;r.innerHTML=ERAS.map(e=>`<span class="es">${e}</span>`).join('<span class="sep">›</span>');}
 function buildOverview(){const ov=$('#overview');
   ov.innerHTML=slides.map((s,i)=>`<div class="ovcard" data-go="${i}"><div class="n mono">${String(i+1).padStart(2,'0')}</div><div class="t">${s.dataset.title||'Title'}</div></div>`).join('');
