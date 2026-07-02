@@ -51,6 +51,9 @@ svg{display:block; width:100%; height:100%; overflow:visible}
 .huge{font-family:var(--mono); font-weight:600; line-height:1}
 
 /* nav + chrome */
+.qr{position:absolute; top:2cqh; right:2cqh; z-index:9100; display:flex; flex-direction:column; align-items:center; gap:.4cqh; pointer-events:none}
+.qr img{width:7cqh; height:7cqh; display:block; border-radius:.6cqh; background:#fff; padding:.5cqh; box-shadow:0 .3cqh 1cqh rgba(43,38,32,.12)}
+.qr span{font-family:var(--mono); font-size:1.15cqh; letter-spacing:.14em; text-transform:uppercase; color:var(--soft)}
 .progress{position:fixed; top:0; left:0; height:3px; background:var(--clay); width:0; z-index:9100; transition:width .4s ease}
 .chrome{position:fixed; z-index:9100; font-family:var(--mono); font-size:1.5cqh; color:var(--soft)}
 .counter{right:2.4cqh; bottom:2cqh; letter-spacing:.12em}
@@ -394,6 +397,7 @@ svg{display:block; width:100%; height:100%; overflow:visible}
   <div class="viz" data-reveal id="vizStarted"></div>
 </section>
 
+<div class="qr"><img src="images/qr-code.png" alt="Scan for slides"><span>slides</span></div>
 </div></div>
 
 <button class="navbtn l" id="navL" aria-label="previous"></button>
@@ -1778,7 +1782,7 @@ function utilRace(host){
     s+=`<text id="g4lbl" x="${x0}" y="266" font-size="21" fill="${P.ink}" font-weight="700" opacity="0">4 GPUs <tspan fill="${P.soft}" font-size="16" font-family="IBM Plex Mono,monospace">· 35 GB each — ¼ of the model</tspan></text>`;
     for(let r=0;r<4;r++)SEG.forEach((sg,j)=>{const y=rY0+r*(rH+rGap);
       s+=`<rect class="seg" x="${x0+sg[1]*bw}" y="${y}" width="0" height="${rH}" rx="9" fill="${sg[0]}" data-w="${(sg[2]-sg[1])*bw}" data-delay="${650+j*150+r*45}"/>`;});
-    s+=`<g class="b2late" opacity="0"><rect x="${chipBx-44}" y="${chipBy-18}" width="88" height="36" rx="18" fill="${P.sage}"/><text x="${chipBx}" y="${chipBy+6}" font-size="18" fill="#fff" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">1 token</text><text x="${chipBx+64}" y="${chipBy+7}" font-size="21" fill="${P.clay}" font-weight="700" font-family="Fraunces,serif">~2× faster — but more total work</text></g>`;
+    s+=`<g class="b2late" opacity="0"><rect x="${chipBx-44}" y="${chipBy-18}" width="88" height="36" rx="18" fill="${P.sage}"/><text x="${chipBx}" y="${chipBy+6}" font-size="18" fill="#fff" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">1 token</text></g>`;
     s+=`<g class="b2late" opacity="0"><rect x="560" y="536" width="18" height="13" rx="3" fill="${P.sage}"/><text x="584" y="548" font-size="16" fill="${P.ink2}">math</text><rect x="650" y="536" width="18" height="13" rx="3" fill="${P.clay}"/><text x="674" y="548" font-size="16" fill="${P.ink2}">weights</text><rect x="760" y="536" width="18" height="13" rx="3" fill="${P.ochre}"/><text x="784" y="548" font-size="16" fill="${P.ink2}">sync (all-reduce)</text></g>`;
     s+=`<text id="hint2" x="1190" y="40" font-size="18" fill="${P.faint}" text-anchor="end" font-family="IBM Plex Mono,monospace" opacity="0">2/2</text>`;
     host.innerHTML=`<svg viewBox="0 0 ${W} ${H}">${s}</svg>`;
