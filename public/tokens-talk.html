@@ -128,21 +128,6 @@ svg{display:block; width:100%; height:100%; overflow:visible}
 .code .fn{color:#F2CD6A}
 .code .nu{color:#E3BC5E}
 .code .cm{color:#9C9079; font-style:italic}
-/* iMessage bubbles (finale) */
-.ichat{height:100%; display:flex; flex-direction:column; justify-content:center; gap:2cqh; padding:0 8cqh; position:relative}
-.imsg{position:relative; width:max-content; max-width:72%; padding:1.5cqh 2.6cqh 1.7cqh; border-radius:2.9cqh;
-  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;
-  transform:scale(0); transition:transform .45s cubic-bezier(.3,1.45,.45,1)}
-.imsg.show{transform:scale(1)}
-.imsg.l{align-self:flex-start; background:#E9E9EB; color:#141414; transform-origin:bottom left}
-.imsg.r{align-self:flex-end; background:#1489FE; color:#fff; transform-origin:bottom right}
-.imsg.l::before{content:''; position:absolute; left:-0.62cqh; bottom:0; width:1.9cqh; height:2.3cqh; background:#E9E9EB; border-bottom-right-radius:1.5cqh 1.3cqh}
-.imsg.l::after{content:''; position:absolute; left:-2.4cqh; bottom:0; width:2.4cqh; height:2.3cqh; background:var(--paper); border-bottom-right-radius:1cqh}
-.imsg.r::before{content:''; position:absolute; right:-0.62cqh; bottom:0; width:1.9cqh; height:2.3cqh; background:#1489FE; border-bottom-left-radius:1.5cqh 1.3cqh}
-.imsg.r::after{content:''; position:absolute; right:-2.4cqh; bottom:0; width:2.4cqh; height:2.3cqh; background:var(--paper); border-bottom-left-radius:1cqh}
-.imsg .ttl{font-weight:700; font-size:2.5cqh; letter-spacing:-.01em; display:flex; align-items:center; gap:1.2cqh}
-.imsg .ttl svg{width:2.7cqh; height:2.7cqh; flex:none}
-.imsg .sub{font-size:1.9cqh; opacity:.82; margin-top:.35cqh; white-space:nowrap}
 </style>
 </head>
 <body>
@@ -153,7 +138,10 @@ svg{display:block; width:100%; height:100%; overflow:visible}
 <section class="slide" data-slide="0" data-kicker="" data-init="title">
   <div class="tstream" id="streamTop" style="top:9%"></div>
   <div class="titlewrap">
-    <video data-reveal src="images/profile.mp4" autoplay loop muted playsinline style="width:26cqh; aspect-ratio:1; object-fit:cover; border-radius:18px; box-shadow:0 14px 34px rgba(43,38,32,.25); margin-bottom:3.4cqh"></video>
+    <div data-reveal style="display:flex; gap:2.6cqh; margin-bottom:3.4cqh">
+      <video src="images/profile.mp4" autoplay loop muted playsinline style="width:26cqh; aspect-ratio:1; object-fit:cover; border-radius:18px; box-shadow:0 14px 34px rgba(43,38,32,.25)"></video>
+      <video src="images/michelle.mp4" autoplay loop muted playsinline style="width:26cqh; aspect-ratio:1; object-fit:cover; border-radius:18px; box-shadow:0 14px 34px rgba(43,38,32,.25)"></video>
+    </div>
     <div class="kicker" data-reveal style="color:var(--clay)">Three layers of optimization — and what's next</div>
     <h1 class="title" data-reveal style="font-size:6.2cqh; max-width:96%">All the things we have to do to satisfy your <span style="font-family:'Caveat',cursive; font-weight:700; font-size:1.32em; color:var(--clay); display:inline-block; transform:rotate(-2.5deg); line-height:0; margin:0 .14em 0 .04em">insatiable</span> need for tokens</h1>
     <div data-reveal style="margin-top:3.2cqh; display:flex; gap:6cqh; font-size:2cqh; color:var(--ink2)">
@@ -165,7 +153,7 @@ svg{display:block; width:100%; height:100%; overflow:visible}
 </section>
 
 <!-- 2 DEMAND -->
-<section class="slide" data-slide="1" data-kicker="The stakes" data-title="Demand is going vertical" data-init="capex">
+<section class="slide" data-slide="1" data-kicker="The stakes" data-title="AI spend is going 🍌" data-init="capex">
   <div class="two">
     <div class="viz" data-reveal id="vizCapex"></div>
     <div data-reveal>
@@ -178,30 +166,38 @@ svg{display:block; width:100%; height:100%; overflow:visible}
   </div>
 </section>
 
-<!-- 3 CONTRADICTION -->
-<section class="slide" data-kicker="The stakes" data-title="AI CapEx is increasing while utilization is low" data-init="gauge">
-  <div class="statwrap">
-    <div data-reveal style="flex:1; text-align:center">
-      <div class="huge" id="bigSpend" style="font-size:13cqh; color:var(--clay)">$0</div>
-      <div style="font-size:2.2cqh; color:var(--ink2); margin-top:1cqh">spent on the hardware</div>
-    </div>
-    <div class="viz" data-reveal id="vizGauge" style="flex:none; width:38%; height:80%"></div>
-  </div>
-</section>
-
 <!-- 4 DEALS -->
-<section class="slide" data-kicker="The stakes" data-title="Labs are brute forcing their way into AGI" data-init="deals">
+<section class="slide" data-kicker="The stakes" data-title="There is a mad dash for compute" data-init="deals">
   <div class="viz" data-reveal id="vizDeals"></div>
 </section>
 
+<!-- 3 SCALE OF DEMAND — collective token consumption -->
+<section class="slide" data-kicker="The stakes" data-title="We generate tokens at absurd scale" data-init="tokens">
+  <div class="two">
+    <div class="viz" data-reveal id="vizTokens"></div>
+    <div data-reveal>
+      <div class="huge" id="tokBig" style="font-size:8.4cqh; color:var(--clay); line-height:1">0.0</div>
+      <div style="font-family:var(--disp); font-weight:700; font-size:2.6cqh; color:var(--ink); margin-top:.4cqh">quadrillion tokens / month</div>
+      <div style="color:var(--ink2); font-size:1.9cqh; margin:.6cqh 0 3.4cqh">Google alone — up <span style="color:var(--ochre); font-weight:700">7×</span> in a single year</div>
+      <div style="font-family:var(--disp); font-style:italic; font-size:2.5cqh; color:var(--ink2); line-height:1.3; max-width:34cqh">≈ every word spoken by every human on Earth — <span style="color:var(--clay)">every month</span></div>
+      <div class="mono" style="color:var(--faint); font-size:1.4cqh; margin-top:3cqh">Sundar Pichai · Google I/O 2026</div>
+    </div>
+  </div>
+</section>
+
 <!-- 4a PAYOFF · price ↓ and speed ↑ for a 70B model, last 3 years -->
-<section class="slide" data-kicker="The stakes · the payoff" data-title="Llama 3.3 70B kept getting cheaper and faster" data-init="pricespeed">
+<section class="slide" data-kicker="The stakes · the payoff" data-title="Models are getting cheaper and faster" data-init="pricespeed">
   <div class="viz" data-reveal id="vizPriceSpeed"></div>
 </section>
 
 <!-- 4b GOAL OF THE TALK -->
-<section class="slide" data-kicker="" data-title="Two questions" data-init="goals">
+<section class="slide" data-kicker="" data-title="Today's Agenda" data-init="goals">
   <div class="viz" data-reveal id="vizGoals"></div>
+</section>
+
+<!-- REWIND — to answer question one, go back to 2022 and rebuild the stack year by year -->
+<section class="slide" data-kicker="How we got here" data-title="Rewind to 2022" data-init="rewind">
+  <div class="viz" data-reveal id="vizRewind"></div>
 </section>
 
 <!-- 6 LOOP -->
@@ -210,8 +206,13 @@ svg{display:block; width:100%; height:100%; overflow:visible}
 </section>
 
 <!-- 7 MEMORY READ + UTILIZATION (tees up Layer 1) -->
-<section class="slide" data-slide="8" data-kicker="Layer 1 · make the hardware work harder" data-title="One token = read the whole model — so the chip waits" data-init="util">
+<section class="slide" data-slide="8" data-kicker="Layer 1 · make the hardware work harder" data-title="One token = read the whole model" data-init="util">
   <div class="viz" data-reveal id="vizUtil"></div>
+</section>
+
+<!-- THE TRADE · the math + the Pareto frontier scoreboard -->
+<section class="slide" data-kicker="Layer 1 · the trade" data-title="Faster tokens cost more energy" data-init="tensionMath">
+  <div class="viz" data-reveal id="vizTensionChart"></div>
 </section>
 
 <!-- L1 · OPPORTUNITY: the read is a fixed cost — amortize it -->
@@ -227,21 +228,6 @@ svg{display:block; width:100%; height:100%; overflow:visible}
 <!-- 9 CONTINUOUS BATCHING (one slide, spacebar steps) -->
 <section class="slide" data-slide="10" data-kicker="Layer 1 · continuous batching" data-title="Continuous batching" data-init="batch">
   <div class="viz" data-reveal id="vizBatch"></div>
-</section>
-
-<!-- L1 · THE TRADE — batching bought throughput; speed is the other thing, and it costs energy -->
-<section class="slide" data-kicker="Layer 1 · the trade" data-title="More tokens vs. faster tokens" data-init="tension">
-  <div class="viz" data-reveal id="vizTension"></div>
-</section>
-
-<!-- L1 · THE TRADE · the math + the Pareto frontier scoreboard -->
-<section class="slide" data-kicker="Layer 1 · the trade" data-title="Faster tokens cost more energy" data-init="tensionMath">
-  <div class="viz" data-reveal id="vizTensionChart"></div>
-</section>
-
-<!-- 8 FRONTIER 2023 — how batching moved the frontier -->
-<section class="slide" data-slide="9" data-kicker="Layer 1 · the payoff" data-title="More tokens, same speed" data-init="f2023">
-  <div class="viz" data-reveal id="vizF2023"></div>
 </section>
 
 <!-- PAPER · VLLM -->
@@ -269,11 +255,6 @@ svg{display:block; width:100%; height:100%; overflow:visible}
   <div class="viz" data-reveal id="vizKvShare"></div>
 </section>
 
-<!-- 11 FRONTIER 2024 -->
-<section class="slide" data-slide="16" data-kicker="Layer 2 · work smarter across requests" data-title="Faster tokens, even under load" data-init="f2024">
-  <div class="viz" data-reveal id="vizF2024"></div>
-</section>
-
 <!-- 12 · L2 ANATOMY: one request = prefill, then a stream of decodes -->
 <section class="slide" data-kicker="Layer 2 · anatomy of a request" data-title="What happens during inference?" data-init="reqAnatomy">
   <div class="viz" data-reveal id="vizReqAnatomy"></div>
@@ -294,17 +275,12 @@ svg{display:block; width:100%; height:100%; overflow:visible}
   <div class="viz" data-reveal id="vizChunkFix"></div>
 </section>
 
-<!-- 13 FRONTIER 2025-26 -->
-<section class="slide" data-slide="18" data-kicker="Layer 3 · break the paradigm" data-title="More tokens AND faster" data-init="f2026">
-  <div class="viz" data-reveal id="vizF2026"></div>
-</section>
-
 <!-- L3 · WORKLOAD SHAPES: every request is shaped differently (3 clicks) -->
 <section class="slide" data-kicker="Layer 3 · the breaking point" data-title="Every request is a different shape" data-init="workloadMix">
   <div class="viz" data-reveal id="vizWorkloadMix"></div>
 </section>
 
-<!-- L3 · IDEA: Mooncake paper -->
+<!-- L3 · IDEA: Splitwise paper -->
 <section class="slide" data-init="paperDisagg">
   <div class="viz" data-reveal id="vizPaperDisagg"></div>
 </section>
@@ -438,31 +414,28 @@ const P={ink:'#2B2620',ink2:'#574F43',soft:'#8A8071',faint:'#B6AB97',line:'#D9CF
 const NOTES={
 title:"The title is half a joke. Every time you type a prompt and hit enter, somewhere a fleet of very expensive silicon lights up to answer you, one token at a time. I want to walk through what actually has to happen for that to work at scale, and how the engineering got from barely works to the disaggregated systems we're building today. By the end I want the throughput numbers to feel inevitable instead of magical.",
 capex:"Start with the money, because the money tells you how serious people are. Goldman's baseline model puts AI capex at about 765 billion dollars this year, climbing toward 1.6 trillion by 2031. Numbers that big stop meaning anything, so here is the one that should stick: this is one of the largest infrastructure build-outs in the history of the planet, and almost all of it exists to move tokens in and out of a model.",
-gauge:"Here's the contradiction at the center of this talk. We spend three quarters of a trillion dollars a year on this hardware, and average fleet utilization sits somewhere between ten and fifty percent. You buy a fifty billion dollar data center and a lot of the time you run it like it cost five. Why? Hold that question — the whole talk is the answer, and the industry clawing that number upward, optimization by optimization.",
+tokens:"And what is all that compute actually doing? Generating tokens — at a scale that's genuinely hard to picture. Google alone: last year at I/O they said they process 480 trillion tokens a month. This year that number is three-point-two quadrillion a month — seven times bigger in a single year. To make that real: three-point-two quadrillion tokens is roughly every word spoken by every human being on the planet, every month. That's one company. Multiply across OpenAI, Azure, everyone else, and the demand is effectively bottomless. So the job for the rest of this talk is simple to state and hard to do: serve all of these tokens — faster, and cheaper.",
 deals:"And here's how the money is being spent — read it as a grid, labs down the side, silicon across the top, and notice every lab is spread across every kind of chip. OpenAI alone stretches from a hundred-billion-dollar NVIDIA deal all the way to custom Broadcom accelerators and Cerebras wafers. Nobody bets the company on one vendor — and the custom-silicon column argues the GPU isn't even the right shape. Hold that thought.",
-pricespeed:"And it's working. Take one fixed model — Llama 3.3 70B, the same weights the whole way — and watch what happened from its launch in December 2024 through today. On the left, the price to serve a million tokens drifted down maybe a quarter; it didn't collapse, because the cheapest GPU providers were already near the floor at launch. The real story is on the right: on GPUs alone — no Groq, no Cerebras, just the same class of chip — average speed more than tripled and the fastest latency-optimized endpoints roughly doubled, from FP8, speculative decoding, and better serving. Same model, same silicon, several times faster. That doesn't happen by accident, and it isn't one trick — it's a stack of them. The rest of the talk is that stack.",
+pricespeed:"And it's working. Take one fixed model — Llama 3.3 70B, the same weights the whole way — and watch what happened from its launch in December 2024 through today. On the left, the price to serve a million tokens drifted down maybe a quarter; it didn't collapse, because the cheapest GPU providers were already near the floor at launch. The real story is on the right: on GPUs alone — no Groq, no Cerebras, just the same class of chip — average speed more than tripled, from FP8, speculative decoding, and better serving. Same model, same silicon, several times faster. That doesn't happen by accident, and it isn't one trick — it's a stack of them. The rest of the talk is that stack.",
 goals:"So here's what I actually want to do in the next twenty minutes. Two questions. One: how have we already optimized inference — the systems tricks that got us the throughput and the speed you just saw? We'll walk the last three years of them, each one a real paper you can go read. Two: how are we juicing performance and throughput even further — the things we're building now, once you stop forcing every job onto the same chip. Keep those two questions in your head; everything else hangs off them.",
-tension:"Notice everything we just did happened inside one GPU — one copy of the weights, one shared read. Batching packed that chip completely full, but it made nobody faster: every token still waits on the same 140 GB read, and sharing the read doesn't shrink it. So the moment a user asks 'can my tokens come faster?', you've run out of moves on a single chip — the only lever left is to make the read smaller by splitting the model across more chips. And that's where the trouble starts. Everyone wants two things at once — more tokens, meaning more throughput per chip, per dollar, per joule — and faster tokens, low latency for the one person waiting on the screen. The trouble is they fight. Watch one model make a single token, two ways. On top, one GPU reads the whole model and grinds the token out — slow, but nothing is wasted. On the bottom, we split that same model across four GPUs; each reads only a quarter, they work in parallel, and the token lands sooner. But look at the orange: every layer, the cards have to stop and sync with each other, and that syncing is pure overhead the single card never paid. So splitting buys you speed, but you do strictly more work to get it. It's the same reason you can walk many miles on the energy it takes to sprint a single one. Faster is always more expensive — next, the actual numbers.",
-tensionMath:"Here are the numbers — one user, a seventy-billion-parameter model, run at different degrees of splitting. The whole trade fits on one line: time per token equals the model read divided by k, the number of cards you split across, plus the sync between them. More cards shrink the read, so you go faster — that's the curve sliding right. But the cards have to talk every layer, and that sync is overhead that only grows the more you split. The key thing to hold onto: you never read less of the model in total, and now you're paying to sync on top — so every step faster costs more energy per token. You can see it on the chart: going from one card to many makes a user roughly ten times faster and burns several times the energy for each token. Now press once and watch the same points flip — put throughput-per-watt on the vertical axis, which is just one over energy-per-token, and the cost curve becomes a frontier: you can be fast, or you can be efficient, never both at once. That frontier is the scoreboard we'll use for the rest of the talk. Press once more and the real systems drop in beneath it — every shipping configuration sits below that line, dominated by it. So that's how we keep score: throughput across the bottom, how fast one user gets their tokens up the side, and for the rest of the talk every innovation shoves this frontier outward — I'll show you where, year by year. Starting with the trick you just watched.",
-loop:"At the core of every model is a loop. It takes everything so far, runs one forward pass, predicts the next token, appends it, and does it again. It's sequential: token five hundred can't exist until token four hundred ninety-nine does. That sequential, one-at-a-time nature is the root of everything that follows.",
-util:"Here's the first thing that should surprise you. To produce a single token, the model has to read every one of its weights out of memory — for a seventy-billion-parameter model in half precision, that's a hundred and forty gigabytes across the memory bus, for every single token. So the compute units finish their little bit of math almost instantly, then sit idle waiting on memory. That idle time IS the low utilization you saw earlier — that's the ten percent. Drag the model size: the memory bill explodes, the math barely moves. This is what people mean by memory-bound.",
-f2023:"So here's 2023 on the scoreboard: the frontier stretched right. Same per-user speed, many times more total throughput. A pure throughput win, and it didn't come from a new chip — that's continuous batching moving the Pareto frontier. And there's a second idea that packs it even tighter.",
-batchWhy:"So what do we do about it? Look again at what we just diagnosed: one token drags all 140 gigabytes of weights out of memory, and while it does, ninety-two percent of the chip's compute sits idle. But here's the pivot — you already paid for that read. It's a fixed cost, and nothing says it can only serve one request. So what if that same read fed a whole batch at once, every idle lane finally doing real work? That's the idea — and it has a name, and a paper.",
+tensionMath:"Here are the numbers — one user, a seventy-billion-parameter model, run at different degrees of splitting. The whole trade is simple: the more cards you split across, the smaller the slice of the model each one streams — so you go faster; that's the curve sliding right. But the cards have to talk every layer, and that sync is overhead that only grows the more you split. The key thing to hold onto: you never read less of the model in total, and now you're paying to sync on top — so every step faster costs more energy per token. You can see it on the chart: going from one card to many makes a user roughly ten times faster and burns several times the energy for each token. Now press once and watch the same points flip — put throughput-per-watt on the vertical axis, which is just one over energy-per-token, and the cost curve becomes a frontier: you can be fast, or you can be efficient, never both at once. That frontier is the scoreboard we'll use for the rest of the talk. Press once more and the real systems drop in beneath it — every shipping configuration sits below that line, dominated by it. So that's how we keep score: throughput across the bottom, how fast one user gets their tokens up the side, and for the rest of the talk every innovation shoves this frontier outward — I'll show you where, year by year. So let's start moving it, beginning in 2023.",
+rewind:"So let's take question one. The way to answer it is to rewind: go back to 2022, when you had model weights, a GPU, and none of the tricks the industry now takes for granted. Everything you saw on that price-and-speed chart was earned one optimization at a time — so we'll rebuild the modern inference stack the way the field actually built it, year by year. First stop: how a token is even made.",
+loop:"It's 2022. At the core of every model is a loop. It takes everything so far, runs one forward pass, predicts the next token, appends it, and does it again. It's sequential: token five hundred can't exist until token four hundred ninety-nine does. That sequential, one-at-a-time nature is the root of everything that follows.",
+util:"Here's the first thing that should surprise you. To produce a single token, the model has to read every one of its weights out of memory — for a seventy-billion-parameter model in half precision, that's a hundred and forty gigabytes streamed through the chip, for every single token. So the compute units finish their little bit of math almost instantly, then sit idle waiting on memory. The chip ends up busy maybe ten percent of the time — this is what people mean by memory-bound. And notice it pins your speed: one user's tokens arrive at exactly the pace one GPU can stream 140 gigabytes. So — how do we make one user faster? Press. The obvious move: split the model across four GPUs, so each one holds and streams just a quarter of the weights — thirty-five gigabytes instead of one-forty. Less to stream per chip, so the token lands sooner. But look at the orange: every layer, the cards stop and sync with each other — overhead the single card never paid. Splitting buys you speed, but you do strictly more work to get it: you never stream less of the model in total, and now you're syncing on top. It's the same reason you can walk many miles on the energy it takes to sprint a single one. Faster is always more expensive — and next, the actual numbers put a shape on that.",
+batchWhy:"2023 — our first move across that frontier, and it pushes the throughput axis. Remember the diagnosis: to make one token, all 140 gigabytes of weights stream through the chip, layer by layer — and while they do, ninety-two percent of the chip's compute sits idle. But here's the pivot — you already paid for that pass. It's a fixed cost, and nothing says it can only serve one user. So what if that same pass fed a whole batch at once, every idle lane finally doing real work? That's the idea — and it has a name, and a paper.",
 paperOrca:"It's called continuous batching, and it comes from this paper — Orca, out of OSDI 2022, where it was introduced. I'll show you the mechanism on the next slides, but I want you to see that these aren't folklore — each one is a specific result you can go read.",
 paperVllm:"The second idea is PagedAttention, from the vLLM paper at SOSP 2023. It borrows virtual memory paging from operating systems and applies it to the KV cache. Again — here's the exact source.",
 paperSarathi:"2024's scheduling trick comes from Sarathi: chunked prefill. The title literally describes the mechanism — piggybacking decodes on chunked prefills. Here's the paper.",
 workloadMix:"That same request isn't one shape — it depends on the workload. I'll stack three on top of each other so you can compare the prefill-to-decode ratio directly. One: a long prompt, short answer — summarize this document. Mostly prefill, barely any decode, so it's compute-bound. Press. Two: a short prompt, long answer — write me an essay. Tiny prefill, a long stream of decode, so it's memory-bound. Press. Three: long prompt and long answer — a coding agent reading your whole repo and then generating a lot. Now both halves are heavy. Lined up like this you can see it plainly: prefill and decode are completely different kinds of work, in totally different proportions, and a single chip has to compromise across all of them. The natural question is — how do we cater to each? That's exactly what the next idea answers.",
-paperDisagg:"The answer is to stop forcing one chip to compromise — split prefill and decode into separate pools so each can be sized and tuned for its own shape. That idea is laid out cleanly in Mooncake — the system behind Kimi. It's a KV-cache-centric design: split prefill and decode into separate pools, and treat the KV cache as the thing you schedule around. Here's the paper.",
-batch:"So let's go straight at the problem we just diagnosed: 140 gigabytes read to make one token, and the chip idle ninety-two percent of the time. The fix follows directly from that. Press the arrow. Beat one: one request — you paid for that whole 140 GB read, and you used it to make a single token. The rest of the chip's compute is the idle ninety-two percent. Now the key idea — each slot you see is another request that can ride that exact same weight-read. Beat two, batching: pack four requests into that one read, and now the read serves all four at once. You're spending the idle compute instead of wasting it — that's the throughput win. Beat three, the catch: a fixed batch finishes at different times, so freed slots sit idle again. Beat four, continuous batching: the instant a slot frees, a new request drops in — the grid packs solid, and that expensive read is never wasted again.",
+paperDisagg:"The answer is to stop forcing one chip to compromise — split prefill and decode into separate pools so each can be sized and tuned for its own shape. That idea comes from Splitwise, out of Microsoft Azure Research at ISCA 2024 — the first paper to put the two phases on separate machines, shipping the KV cache from the prefill machine to the decode machine over the datacenter interconnect. Here's the paper.",
+batch:"Here's the mechanism. One clarification first: the weights don't move in one giant read — they stream through the chip layer by layer, and over one token that stream adds up to the full 140 gigabytes. Beat one: pack four users into the batch, and all of them ride the same stream — the memory bill you were already paying now produces four tokens instead of one. That's the throughput win. Press. Beat two, the catch: requests finish at different times, and in a fixed batch a freed slot sits idle until the whole batch drains. Press. Beat three, continuous batching: the instant a slot frees, the next user drops in — the grid packs solid, and that expensive stream is never wasted again. On the scoreboard, that stretched the frontier right: many times the throughput at the same per-user speed. And there's a second idea that packs it even tighter.",
 kv1:"But batching creates a new problem. Each request keeps a KV cache — its memory of the conversation so far, so the model never has to recompute the past. It grows with every token. Pack many requests onto one chip and this memory is the thing you run out of first.",
 kv2:"The straightforward way to store it is wasteful. You reserve one big contiguous block per request, sized for the longest answer it might ever produce. Most of it sits empty — sixty to eighty percent wasted — and because each request hogs a whole region, only a few fit at once.",
 kv3:"PagedAttention borrows virtual memory from operating systems. The model still sees one contiguous sequence — but each block can live anywhere in physical memory; a little block table maps the logical order to scattered physical blocks. Blocks are handed out on demand as the sequence grows, so there's almost nothing reserved-but-empty. Waste drops under four percent and you fit two to four times more requests. And once memory is just pages behind a table, another trick falls out almost for free — that's the next slide.",
-kvShare:"The second payoff is sharing. Beat one: request one has a system prompt — 'you are a helpful assistant', the same few thousand tokens everyone sends — then its own tokens. Each maps to a page. Press. Beat two: request two shows up with the exact same prompt. Instead of storing that prompt again, its page table just points at the very same physical pages — the shared block is stored once, not twice, and only the unique tokens get new pages. Press. Beat three: now think about where identical prefixes show up — RAG stuffing the same documents in, a chat re-sending the whole history every turn, agents replaying the same long system prompt on every step. Prefix sharing means that shared context costs memory exactly once no matter how many requests ride on it. Higher effective capacity, and the prefill for that shared chunk can be skipped too.",
-f2024:"2024's move was different. The curve lifted up on the right side. Even under heavy load, per-user speed stopped collapsing. The latency cliff went away. That came from scheduling the work smarter.",
-reqAnatomy:"Every request has two phases with opposite personalities. Beat one — prefill: the model reads your whole prompt in a single pass. It's a mountain of matrix math done all at once, so the chip is saturated — this phase is compute-bound — and it's what sets your first-token latency, the wait before anything appears. Press. Beat two — decode: now it generates the answer one token at a time, D1, D2, D3, and each token has to re-read the entire model out of memory, so this phase is memory-bound and the compute mostly sits idle. So one request is a compute-bound prefill up front, then a long memory-bound tail of decodes. Hold that contrast — the rest of Layer 2 is about catering to each.",
+kvShare:"The second payoff is sharing. Beat one: request one has a system prompt — 'you are a helpful assistant', the same few thousand tokens everyone sends — then its own tokens. Each maps to a page. Press. Beat two: request two shows up with the exact same prompt. Instead of storing that prompt again, its page table just points at the very same physical pages — the shared block is stored once, not twice, and only the unique tokens get new pages. And this is everywhere: RAG stuffing in the same documents, a chat re-sending the whole history every turn, agents replaying the same long system prompt on every step — that shared context now costs memory exactly once — and, as it says on the slide, you get to skip its prefill too.",
+reqAnatomy:"I slipped a word onto that last slide — prefill — and it's the key to everything in this layer. Batching and paging maxed out what one weight-stream can do; the next wave of wins came from scheduling the work smarter, and to see that, you need the anatomy of a request. Every request has two phases with opposite personalities. Beat one — prefill: the model reads your whole prompt in one pass, computing a key and value vector for every single prompt token — that's the KV cache — and it produces the first output token. It's a mountain of matrix math done all at once, so the chip is saturated: compute-bound, and it sets your first-token latency, the wait before anything appears. Press. Beat two — decode, and watch the loop. Take the token you just generated, read all 140 gigabytes of weights again, do one token's worth of math, append its K and V to the cache, and emit the next token — then repeat, once for every output token. Every single token re-streams the entire model, so decode is memory-bound and the compute mostly sits idle. So one request is a compute-bound prefill up front, then a long memory-bound tail of decodes. Hold that contrast — the rest of Layer 2 is about catering to each.",
 chunkB:"Now here's the problem, and it's getting worse fast. Coding agents are everywhere now, and they shove enormous context at the model — your whole codebase, two hundred thousand tokens. That makes the prefill huge. Picture the chip as two slots: that one agent's giant prefill grabs a slot and runs for ages, and while it does, everyone else is stalled — their tokens can't get through. One greedy prefill clogs the whole pipeline. So how do we let the long prefill happen without freezing everyone else?",
 chunkFix:"Sarathi's fix, now that you've seen both the clog and why the phases differ. Chop User A's long prefill into small chunks, and slip B's and C's decode steps in between them. The big prompt still finishes about as fast, but everyone keeps getting tokens the whole time — no more stall. This is the first move that treats prefill and decode as different kinds of work, and it sets up the bigger idea: actually splitting them apart.",
-f2026:"And here's 2025 and 2026. The entire curve jumped, up and right at once. More throughput and better interactivity together. You only get a move like that when you stop compromising between two things you'd forced onto the same hardware.",
 benefits:"And splitting helps even on identical hardware. Once prefill and decode are separate pools you can scale each on its own — add decode servers for long outputs without touching prefill. A big prefill burst can't stall everyone's decode anymore. And you can tune batch size and latency targets per phase. Then, on top of all that, you can also specialize the hardware — which is where Cerebras comes in.",
 roof16:"Here are our two pools again — and notice the decode pool is just an empty box. Nothing says it has to be GPUs. Decode reads the whole model for every token but does tiny math — it's pure memory bandwidth. So what silicon wants that job? Press. A GPU keeps its weights in far-off HBM and drags all 140 GB through a narrow pipe, every token — about three and a third terabytes a second on an H100. A Cerebras wafer keeps the entire model on-chip in SRAM — twenty-one thousand terabytes a second, seven thousand times the bandwidth, nothing to fetch. For decode, that's the whole game.",
 awscere:"And it just became real. In March 2026 AWS and Cerebras announced a disaggregated inference service on Amazon Bedrock — exactly the split we've been building toward. Follow the flow: a request comes in, AWS Trainium does the prefill and computes the KV cache, that cache ships over Amazon's EFA interconnect to the Cerebras CS-3, and the wafer does nothing but decode — thousands of tokens a second instead of hundreds on a GPU. The headline: ten times faster inference and five times the high-speed token capacity in the same footprint.",
@@ -474,7 +447,7 @@ attnFfn:"And you can split even finer — inside a single layer. A transformer l
 gimlet:"This is what we're building at Gimlet — a multi-silicon inference cloud. The whole talk has been one idea: no single chip is best for inference. So we don't pick one. We disaggregate each workload across many types of hardware, run every part on the silicon that's best at it, and physically wire it all together into one cloud. The pairs on the right are just examples — NVIDIA with Cerebras, NVIDIA with d-Matrix, AMD with Cerebras, NVIDIA with Gaudi — we mix and match per workload. And the payoff is the number that matters to anyone paying the power bill: three to ten times faster inference for the same power budget as homogeneous systems. And there are many ways to slice a workload — let me show you two more.",
 kforge:"Remember question two — how do we juice performance even further? This is it. So here's the move that chases the target: stop hand-tuning kernels and build an agent that generates them — tuned for the exact workload and the exact hardware it'll run on. That agent is kforge. Here's the idea in miniature. On the left, the PyTorch you write: add a bias, clamp, scale, clamp, divide — five ops, five separate passes over memory. On the right, the same function as one kernel kforge wrote for the target — it fuses the whole chain into a single pass, in bf16, using the hardware's own saturating-clamp instruction. Same math, a fraction of the memory traffic. This is just the flavor; the real win is bigger. Last week kforge sped up gpt-oss-120b on AMD by thirty-three percent end to end.",
 recursive:"And why stop at software? AI-designed silicon is already real — Google's AlphaChip lays out chip floorplans, and the team behind it spun out to chase exactly this loop: AI designs a faster chip, that chip trains a smarter AI, which designs the next chip faster still. Kernel, then silicon — at every layer we stop hand-tuning and start generating. That's recursive self-improvement aimed straight at inference performance, and it's how you chase a target that refuses to sit still.",
-started:"Let me leave you with why I'm optimistic: we are just getting started, and the same agentic playbook applies at every single layer of this stack. Press. Incident response — every minute of uptime is tokens served; agents that detect and heal incidents faster turn reliability directly into throughput. Press. Model bring-up — when a new model drops, agents bring it up and optimize it in a fraction of the time. Press. Compilers — agents writing the low-level compiler optimizations, tuned to the exact model being served. Press. Silicon — AI accelerating tape-out itself, the loop you just saw. Press. And data centers — procurement and manufacturing, closing every efficiency gap between a purchase order and a serving fleet. Every layer has this much headroom left, and now we have agents to chase all of it. Thank you."
+started:"Let me leave you with why I'm optimistic: we are just getting started, and the same agentic playbook applies at every single level of the stack — walk it with me, top to bottom. Press. Incident response — every minute of uptime is tokens served; agents that detect and heal incidents faster turn reliability directly into throughput. Press. Model bring-up — when a new model drops, agents bring it up and optimize it in a fraction of the time. Press. Compilers — agents writing the low-level compiler optimizations, tuned to the exact model being served. Press. Silicon — AI accelerating tape-out itself, the loop you just saw. Press. And data centers — procurement and manufacturing, closing every efficiency gap between a purchase order and a serving fleet. Every layer has this much headroom left, and now we have agents to chase all of it. Thank you."
 };
 
 /* ---------- helpers ---------- */
@@ -602,21 +575,29 @@ function capex(host){
 }
 
 /* ---------- GAUGE ---------- */
-function gauge(host){
-  const W=420,H=420,cx=W/2,cy=H/2,r=150;
-  const a0=Math.PI*0.75,a1=Math.PI*2.25,span=a1-a0;
-  const pt=(a)=>[cx+r*Math.cos(a),cy+r*Math.sin(a)];
-  function arc(s0,s1){const[x0,y0]=pt(s0),[x1,y1]=pt(s1);const large=(s1-s0)>Math.PI?1:0;return`M ${x0} ${y0} A ${r} ${r} 0 ${large} 1 ${x1} ${y1}`;}
-  const f0=a0+span*0.10,f1=a0+span*0.50;
-  host.innerHTML=`<svg viewBox="0 0 ${W} ${H}">
-    <path d="${arc(a0,a1)}" fill="none" stroke="${P.line}" stroke-width="26" stroke-linecap="round"/>
-    <path id="gband" d="${arc(f0,f1)}" fill="none" stroke="${P.clay}" stroke-width="26" stroke-linecap="round"/>
-    <text id="gnum" class="mono" x="${cx}" y="${cy+6}" font-size="56" fill="${P.clay}" text-anchor="middle" font-weight="600">10%</text>
-    <text x="${cx}" y="${cy+44}" font-size="18" fill="${P.soft}" text-anchor="middle">avg fleet utilization</text></svg>`;
-  const band=host.querySelector('#gband');const len=band.getTotalLength();
-  band.style.strokeDasharray=len;band.style.strokeDashoffset=len;band.getBoundingClientRect();
-  band.style.transition='stroke-dashoffset 1.1s ease';band.style.strokeDashoffset=0;
-  const gn=host.querySelector('#gnum');animNum(gn,10,50,1100,v=>'10–'+Math.round(v)+'%');
+function tokensViz(host){
+  // Google's monthly token volume exploding — log-scaled bars so all four milestones read
+  const W=680,H=520,x0=70,x1=650,y0=452,yTop=70,bw=104;
+  const data=[
+    {d:'I/O 2024',lab:'9.7T',t:9.7,c:P.ghost},
+    {d:'May 2025',lab:'480T',t:480,c:P.ochre},
+    {d:'Jul 2025',lab:'980T',t:980,c:P.ochre},
+    {d:'I/O 2026',lab:'3.2Q',t:3200,c:P.clay}
+  ];
+  const lo=Math.log10(5),hi=Math.log10(3200);
+  const hfrac=t=>(Math.log10(t)-lo)/(hi-lo);
+  const gap=(x1-x0-bw*data.length)/(data.length-1);
+  let s=`<svg viewBox="0 0 ${W} ${H}">`;
+  s+=`<line x1="${x0-14}" y1="${y0}" x2="${x1+14}" y2="${y0}" stroke="${P.line}" stroke-width="2"/>`;
+  data.forEach((d,i)=>{const bx=x0+i*(bw+gap),h=(y0-yTop)*hfrac(d.t),by=y0-h;
+    s+=`<rect class="tbar" x="${bx}" y="${y0}" width="${bw}" height="0" rx="10" fill="${d.c}" data-y="${by}" data-h="${h}" style="transition:all .8s cubic-bezier(.2,.7,.2,1); transition-delay:${i*140}ms"/>`;
+    s+=`<text class="tlab" x="${bx+bw/2}" y="${by-14}" font-size="26" fill="${d.c===P.ghost?P.soft:d.c}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif" opacity="0" style="transition:opacity .5s; transition-delay:${i*140+400}ms">${d.lab}</text>`;
+    s+=`<text x="${bx+bw/2}" y="${y0+30}" font-size="17" fill="${P.soft}" text-anchor="middle" font-family="IBM Plex Mono,monospace">${d.d}</text>`;});
+  s+=`<text x="${x0-14}" y="${yTop-24}" font-size="18" fill="${P.ink2}" font-weight="600">Google · tokens processed / month</text>`;
+  s+=`</svg>`;
+  host.innerHTML=s;
+  host.querySelectorAll('.tbar').forEach(b=>{b.getBoundingClientRect();b.setAttribute('height',b.dataset.h);b.setAttribute('y',b.dataset.y);});
+  host.querySelectorAll('.tlab').forEach(t=>{t.getBoundingClientRect();t.style.opacity=1;});
 }
 
 /* ---------- DEALS — silicon columns, one logo circle per lab (lab logos via images/logos/<key>.png) ---------- */
@@ -679,8 +660,8 @@ function priceSpeed(host){
       legend+=`<g transform="translate(${X0},${40+si*22})"><circle cx="7" cy="-5" r="6" fill="${s.color}" opacity="${op}"/><text x="20" y="0" font-size="16" fill="${P.ink2}" font-weight="${s.emph?700:400}">${s.name}</text></g>`;
     });
     return `<svg viewBox="0 0 ${W} ${H}">
-      <text x="${(X0+X1)/2}" y="26" font-size="23" fill="${P.ink}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">${cfg.title}</text>
-      ${legend}${grid}
+      <text x="${(X0+X1)/2}" y="30" font-size="24" fill="${P.ink}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">${cfg.title}</text>
+      ${grid}
       <line x1="${X0}" y1="${Y0}" x2="${X1}" y2="${Y0}" stroke="${P.line}" stroke-width="2"/>
       <line x1="${X0}" y1="${Y0}" x2="${X0}" y2="${Y1}" stroke="${P.line}" stroke-width="2"/>
       <text x="18" y="${(Y0+Y1)/2}" font-size="15" fill="${P.soft}" text-anchor="middle" transform="rotate(-90 18 ${(Y0+Y1)/2})" font-weight="600">${cfg.yLabel}</text>
@@ -688,12 +669,12 @@ function priceSpeed(host){
       <text x="${X1}" y="${Y1-14}" font-size="21" fill="${cfg.callC}" text-anchor="end" font-weight="700" font-family="Fraunces,serif">${cfg.callout}</text>
     </svg>`;
   }
-  const left=panel({title:'Price to serve',yLabel:'$ / 1M output tokens',yMax:1.0,fmt:v=>'$'+v.toFixed(2),
+  const left=panel({title:'Price to serve (median)',yLabel:'$ / 1M output tokens',yMax:1.0,fmt:v=>'$'+v.toFixed(2),
     callout:'↓ ~25% cheaper',callC:P.clay,
-    series:[{pts:priceMed,color:P.clay,name:'median price',emph:true},{pts:priceCheap,color:P.slate,name:'cheapest (FP8)',labBelow:true}]});
-  const right=panel({title:'Speed you get',yLabel:'output tokens / sec',yMax:320,fmt:v=>Math.round(v),
+    series:[{pts:priceMed,color:P.clay,name:'median price',emph:true}]});
+  const right=panel({title:'Speed you get (average)',yLabel:'output tokens / sec',yMax:120,fmt:v=>Math.round(v)+' tps',
     callout:'↑ ~3.6× faster',callC:P.ochre,
-    series:[{pts:speedAvg,color:P.clay,name:'average GPU speed',emph:true,labBelow:true},{pts:speedFast,color:P.ochre,name:'fastest GPU speed'}]});
+    series:[{pts:speedAvg,color:P.ochre,name:'average GPU speed',emph:true}]});
   host.innerHTML=`<div style="height:100%;display:flex;flex-direction:column">
     <div style="flex:1;min-height:0;display:flex;gap:2cqw;align-items:center;justify-content:center">
       <div style="flex:1;height:100%">${left}</div><div style="flex:1;height:100%">${right}</div></div>
@@ -705,8 +686,6 @@ function priceSpeed(host){
 
 /* ---------- GOAL OF THE TALK — two questions, no title, stacked vertically ---------- */
 function goalsViz(host){
-  // this slide carries no heading — strip the auto-injected kicker/title
-  const sl=host.closest('.slide'); if(sl)sl.querySelectorAll('h1.title,.kicker').forEach(e=>e.remove());
   const items=[
     {n:'01',c:P.clay,q:'How have we already optimized inference?'},
     {n:'02',c:P.ochre,q:'How are we juicing perf &amp; throughput even further?'}
@@ -729,6 +708,41 @@ function kModel(x,y,w,h,opt){opt=opt||{};
   return s;}
 function kTok(x,y,w,h,label,color){return `<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="8" fill="${color||P.paper}" stroke="${color?'none':P.line}" stroke-width="2"/>`+(label!=null&&label!==''?`<text x="${x+w/2}" y="${y+h/2+8}" font-size="22" fill="${color?'#fff':P.ink2}" text-anchor="middle" font-family="IBM Plex Mono,monospace">${label}</text>`:'');}
 function kUser(x,y,label,color){const c=color||P.ink2;return `<circle cx="${x}" cy="${y-12}" r="13" fill="${c}"/><path d="M ${x-23} ${y+22} Q ${x} ${y-6} ${x+23} ${y+22} Z" fill="${c}"/>`+(label?`<text x="${x}" y="${y+48}" font-size="24" fill="${c}" text-anchor="middle" font-weight="600">${label}</text>`:'');}
+
+/* ---------- REWIND — timeline back to 2022, rebuild the stack year by year ---------- */
+function rewindViz(host){
+  const W=1240,H=520,ly=272,x0=170,x1=1000;
+  const stops=[
+    {yr:'2022',sub:'the naive serve'},
+    {yr:'2023',sub:'batching + paging'},
+    {yr:'2024',sub:'smarter scheduling'},
+    {yr:'2025–26',sub:'split the work apart'}
+  ];
+  const xs=stops.map((_,i)=>x0+i*(x1-x0)/3);
+  let s=`<svg viewBox="0 0 ${W} ${H}">`;
+  s+=`<line x1="${x0-26}" y1="${ly}" x2="${x1+96}" y2="${ly}" stroke="${P.line}" stroke-width="2.5"/>`;
+  stops.forEach((st,i)=>{const x=xs[i],hot=i===0;
+    s+=`<circle cx="${x}" cy="${ly}" r="${hot?12:9}" fill="${hot?P.clay:P.ghost}"/>`;
+    s+=`<text x="${x}" y="${ly+54}" font-size="${hot?30:24}" fill="${hot?P.clay:P.soft}" text-anchor="middle" font-weight="700" font-family="IBM Plex Mono,monospace">${st.yr}</text>`;
+    s+=`<text x="${x}" y="${ly+90}" font-size="18" fill="${hot?P.ink2:P.faint}" text-anchor="middle">${st.sub}</text>`;});
+  // where we are now
+  s+=`<circle cx="${x1+90}" cy="${ly}" r="7" fill="${P.ink2}"/>`;
+  s+=`<text x="${x1+90}" y="${ly+54}" font-size="20" fill="${P.ink2}" text-anchor="middle" font-weight="600">today</text>`;
+  // the rewind arc, today → 2022
+  const arcY=ly-150;
+  s+=`<path id="rwArc" d="M ${x1+84} ${ly-22} C ${x1-140} ${arcY}, ${x0+180} ${arcY}, ${x0+8} ${ly-24}" fill="none" stroke="${P.clay}" stroke-width="4" stroke-dasharray="11 10"/>`;
+  s+=`<polygon points="${x0+2},${ly-14} ${x0+30},${ly-24} ${x0+16},${ly-40}" fill="${P.clay}"/>`;
+  s+=`<text x="${(x0+x1)/2}" y="${arcY-26}" font-size="19" fill="${P.clay}" text-anchor="middle" font-weight="700" font-family="IBM Plex Mono,monospace" letter-spacing=".3em">REWIND</text>`;
+  s+=`<circle id="rwDot" cx="${x1+84}" cy="${ly-22}" r="9" fill="${P.clay}"/>`;
+  s+=`<text x="${W/2}" y="${H-34}" font-size="27" fill="${P.ink2}" text-anchor="middle" font-family="Fraunces,serif" font-style="italic">we'll rebuild the modern stack — one year at a time</text>`;
+  s+=`</svg>`;host.innerHTML=s;
+  const arc=host.querySelector('#rwArc'),dot=host.querySelector('#rwDot'),len=arc.getTotalLength();
+  let t=0,dash=0;
+  function f(){t=(t+0.006)%1.15;dash=(dash+0.9)%21;arc.setAttribute('stroke-dashoffset',dash);
+    const q=arc.getPointAtLength(Math.min(1,t)*len);dot.setAttribute('cx',q.x);dot.setAttribute('cy',q.y);
+    reg(requestAnimationFrame(f));}
+  reg(requestAnimationFrame(f));
+}
 
 /* ---------- LOOP ---------- */
 function loop(host){
@@ -770,13 +784,12 @@ function loop(host){
         let st=null;function f(ts){if(!st)st=ts;let p=Math.min(1,(ts-st)/950),e=ease(p);const pt=arcEl.getPointAtLength(e*arcLen);
           fly.setAttribute('transform',`translate(${pt.x},${pt.y})`);
           if(p<1)reg(requestAnimationFrame(f));else{fly.style.opacity=0;
-            if(chips.length>=cap)chips=['The','cat'];
-            chips.push(w);render();}
+            if(chips.length<cap){chips.push(w);render();}else clearInterval(iv);}
         }reg(requestAnimationFrame(f));
       },540));
     });
   }
-  regT(setTimeout(tick,500));regT(setInterval(tick,2000));
+  regT(setTimeout(tick,500));const iv=setInterval(tick,2000);regT(iv);
 }
 
 /* ---------- ROOFLINE ---------- */
@@ -877,54 +890,77 @@ function paged(host){
 /* ---------- CHUNKED PREFILL: beat 1 long prompt blocks · beat 2 chunk + interleave ---------- */
 /* ---------- ANATOMY OF A REQUEST — prefill block, then a stream of decode steps ---------- */
 function reqAnatomy(host){
-  const W=1220,H=560,pfx=150,pfy=214,pfw=330,pfh=120,dN=4,dw=92,dh=120,dgap=34,dx0=pfx+pfw+96,dy=pfy;
-  const dxi=i=>dx0+i*(dw+dgap);
+  const W=1220,H=560;
   const ar=(x1,y1,x2,y2,c,w)=>{const a=Math.atan2(y2-y1,x2-x1),hl=12;const bx=x2-hl*Math.cos(a),by=y2-hl*Math.sin(a);
     return `<line x1="${x1}" y1="${y1}" x2="${bx}" y2="${by}" stroke="${c}" stroke-width="${w}"/><polygon points="${x2},${y2} ${bx-7*Math.sin(a)},${by+7*Math.cos(a)} ${bx+7*Math.sin(a)},${by-7*Math.cos(a)}" fill="${c}"/>`;};
   function pill(cx,y,label,color,on){const w=label.length*13.2+40,x=cx-w/2;
     return `<g opacity="${on.toFixed(2)}"><rect x="${x}" y="${y}" width="${w}" height="38" rx="19" fill="${color}" opacity="0.12"/><rect x="${x}" y="${y}" width="${w}" height="38" rx="19" fill="none" stroke="${color}" stroke-width="2"/><text x="${cx}" y="${y+26}" font-size="20" fill="${color}" text-anchor="middle" font-weight="800" font-family="IBM Plex Mono,monospace" letter-spacing="0.05em">${label}</text></g>`;}
+  function caption(lines,color){return lines.map((ln,i)=>`<text x="${W/2}" y="${H-24-(lines.length-1-i)*30}" font-size="24" fill="${color}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">${ln}</text>`).join('');}
   let beat=0;
-  function render(){
+
+  // ---- BEAT 0 · PREFILL ----
+  function renderPrefill(){
     clearAnims();
+    const pfx=150,pfy=214,pfw=330,pfh=120;
     function frame(prog){
-      const pfill=beat===0?prog:1, dRev=beat===0?0:prog;
-      const dcx=(dxi(0)+dxi(dN-1)+dw)/2;
       let s=`<svg viewBox="0 0 ${W} ${H}">`;
-      // time axis + beat counter
       s+=`<text x="60" y="70" font-size="20" fill="${P.soft}" font-family="IBM Plex Mono,monospace">time</text>`;
       s+=ar(130,64,1150,64,P.line,2);
-      s+=`<text x="${W-26}" y="40" font-size="18" fill="${P.faint}" text-anchor="end" font-family="IBM Plex Mono,monospace">${beat+1}/2 · press →</text>`;
-      // request arrives
+      s+=`<text x="${W-26}" y="40" font-size="18" fill="${P.faint}" text-anchor="end" font-family="IBM Plex Mono,monospace">1/2 · press →</text>`;
       s+=`<text x="${pfx}" y="128" font-size="24" fill="${P.ink}" font-weight="700">Request arrives</text>`;
       s+=ar(pfx+34,140,pfx+34,pfy-8,P.ink2,2.5);
-      // COMPUTE-BOUND pill above prefill
-      s+=pill(pfx+pfw/2,152,'COMPUTE-BOUND',P.slate, beat===0?Math.max(0,(pfill-0.4)/0.4):0.5);
-      // prefill block
+      s+=pill(pfx+pfw/2,152,'COMPUTE-BOUND',P.slate,Math.max(0,(prog-0.4)/0.4));
       s+=`<rect x="${pfx}" y="${pfy}" width="${pfw}" height="${pfh}" rx="14" fill="${P.line2}"/>`;
-      s+=`<rect x="${pfx}" y="${pfy}" width="${pfw*pfill}" height="${pfh}" rx="14" fill="${P.slate}"/>`;
-      s+=`<text x="${pfx+pfw/2}" y="${pfy+pfh/2+11}" font-size="34" fill="${pfill>0.5?'#fff':P.slate}" text-anchor="middle" font-weight="800" font-family="Fraunces,serif">PREFILL</text>`;
-      // first-token latency under prefill
+      s+=`<rect x="${pfx}" y="${pfy}" width="${pfw*prog}" height="${pfh}" rx="14" fill="${P.slate}"/>`;
+      s+=`<text x="${pfx+pfw/2}" y="${pfy+pfh/2+11}" font-size="34" fill="${prog>0.5?'#fff':P.slate}" text-anchor="middle" font-weight="800" font-family="Fraunces,serif">PREFILL</text>`;
+      // first output token pops out at the end
+      const tok=Math.max(0,(prog-0.75)/0.25);
+      s+=ar(pfx+pfw+6,pfy+pfh/2,pfx+pfw+88,pfy+pfh/2,P.clay,3);
+      s+=`<g opacity="${tok.toFixed(2)}"><rect x="${pfx+pfw+96}" y="${pfy+pfh/2-27}" width="150" height="54" rx="12" fill="${P.clay}"/><text x="${pfx+pfw+171}" y="${pfy+pfh/2+8}" font-size="20" fill="#fff" text-anchor="middle" font-weight="700" font-family="IBM Plex Mono,monospace">1st token</text></g>`;
       s+=ar(pfx+pfw/2,pfy+pfh+8,pfx+pfw/2,pfy+pfh+42,P.ochre,2.5);
       s+=`<text x="${pfx+pfw/2}" y="${pfy+pfh+78}" font-size="23" fill="${P.ochre}" text-anchor="middle" font-weight="700">first-token latency</text>`;
-      // decode phase — only beat 1
-      if(beat>=1){
-        s+=ar(pfx+pfw+6,pfy+pfh/2,dx0-10,pfy+pfh/2,P.ink2,3);
-        s+=pill(dcx,152,'MEMORY-BOUND',P.clay, Math.max(0,(dRev-0.5)/0.4));
-        for(let i=0;i<dN;i++){const on=dRev*dN>i,x=dxi(i);
-          s+=`<rect x="${x}" y="${dy}" width="${dw}" height="${dh}" rx="12" fill="${on?P.clay:P.line2}"/>`;
-          s+=`<text x="${x+dw/2}" y="${dy+dh/2+9}" font-size="26" fill="${on?'#fff':P.faint}" text-anchor="middle" font-weight="700" font-family="IBM Plex Mono,monospace">D${i+1}</text>`;
-          if(i<dN-1)s+=ar(x+dw+4,dy+dh/2,x+dw+dgap-2,dy+dh/2,P.ink2,2.5);}
-        s+=`<text x="${dxi(dN-1)+dw+34}" y="${dy+dh/2+12}" font-size="36" fill="${P.soft}">…</text>`;
-        s+=`<text x="${dcx}" y="${dy+dh+78}" font-size="23" fill="${P.sage}" text-anchor="middle" font-weight="700">output tokens stream</text>`;
-      }
-      // caption
-      const cap=beat===0?'whole prompt, one pass — compute-bound':'one token at a time, re-reading the model — memory-bound';
-      s+=`<text x="${W/2}" y="${H-22}" font-size="26" fill="${beat===0?P.slate:P.clay}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">${cap}</text>`;
+      s+=caption(['computes K and V vectors for every single prompt token','and produces the first output token'],P.slate);
+      s+=`</svg>`;host.innerHTML=s;
+    }
+    let st=null;function f(ts){if(!st)st=ts;let p=Math.min(1,(ts-st)/2600);frame(p);if(p<1)reg(requestAnimationFrame(f));}
+    reg(requestAnimationFrame(f));
+  }
+
+  // ---- BEAT 1 · DECODE — same timeline, decode blocks continue after prefill; the loop lives in the caption ----
+  function renderDecode(){
+    clearAnims();
+    const pfx=150,pfy=214,pfw=330,pfh=120,dN=4,dw=92,dh=120,dgap=34,dx0=pfx+pfw+96,dy=pfy;
+    const dxi=i=>dx0+i*(dw+dgap);
+    const dcx=(dxi(0)+dxi(dN-1)+dw)/2;
+    function frame(prog){
+      let s=`<svg viewBox="0 0 ${W} ${H}">`;
+      s+=`<text x="60" y="70" font-size="20" fill="${P.soft}" font-family="IBM Plex Mono,monospace">time</text>`;
+      s+=ar(130,64,1150,64,P.line,2);
+      s+=`<text x="${W-26}" y="40" font-size="18" fill="${P.faint}" text-anchor="end" font-family="IBM Plex Mono,monospace">2/2</text>`;
+      s+=`<text x="${pfx}" y="128" font-size="24" fill="${P.ink}" font-weight="700">Request arrives</text>`;
+      s+=ar(pfx+34,140,pfx+34,pfy-8,P.ink2,2.5);
+      s+=pill(pfx+pfw/2,152,'COMPUTE-BOUND',P.slate,0.5);
+      s+=`<rect x="${pfx}" y="${pfy}" width="${pfw}" height="${pfh}" rx="14" fill="${P.slate}"/>`;
+      s+=`<text x="${pfx+pfw/2}" y="${pfy+pfh/2+11}" font-size="34" fill="#fff" text-anchor="middle" font-weight="800" font-family="Fraunces,serif">PREFILL</text>`;
+      s+=ar(pfx+pfw/2,pfy+pfh+8,pfx+pfw/2,pfy+pfh+42,P.ochre,2.5);
+      s+=`<text x="${pfx+pfw/2}" y="${pfy+pfh+78}" font-size="23" fill="${P.ochre}" text-anchor="middle" font-weight="700">first-token latency</text>`;
+      // decode blocks stream out on the same axis
+      s+=ar(pfx+pfw+6,pfy+pfh/2,dx0-10,pfy+pfh/2,P.ink2,3);
+      s+=pill(dcx,152,'MEMORY-BOUND',P.clay,Math.max(0,(prog-0.5)/0.4));
+      for(let i=0;i<dN;i++){const on=prog*dN>i,x=dxi(i);
+        s+=`<rect x="${x}" y="${dy}" width="${dw}" height="${dh}" rx="12" fill="${on?P.clay:P.line2}"/>`;
+        s+=`<text x="${x+dw/2}" y="${dy+dh/2+9}" font-size="26" fill="${on?'#fff':P.faint}" text-anchor="middle" font-weight="700" font-family="IBM Plex Mono,monospace">D${i+1}</text>`;
+        if(i<dN-1)s+=ar(x+dw+4,dy+dh/2,x+dw+dgap-2,dy+dh/2,P.ink2,2.5);}
+      s+=`<text x="${dxi(dN-1)+dw+34}" y="${dy+dh/2+12}" font-size="36" fill="${P.soft}">…</text>`;
+      s+=`<text x="${dcx}" y="${dy+dh+78}" font-size="23" fill="${P.sage}" text-anchor="middle" font-weight="700">output tokens stream</text>`;
+      s+=caption(['each D: take the token just generated, re-read all 140 GB of weights,','do one token of math, append its K/V — repeat, once per output token'],P.clay);
       s+=`</svg>`;host.innerHTML=s;
     }
     let st=null;function f(ts){if(!st)st=ts;let p=Math.min(1,(ts-st)/3000);frame(p);if(p<1)reg(requestAnimationFrame(f));}
     reg(requestAnimationFrame(f));
   }
+
+  function render(){ beat===0?renderPrefill():renderDecode(); }
   render();
   return {
     next(){if(beat>=1)return false;beat++;render();return true;},
@@ -982,7 +1018,7 @@ function chunkBlock(host,mode){
       s+=`</svg>`;host.innerHTML=s;
     }
     function play(){let st=null;function f(ts){if(!st)st=ts;let p=Math.min(1,(ts-st)/3600);frame(p);if(p<1)reg(requestAnimationFrame(f));}reg(requestAnimationFrame(f));}
-    frame(0);regT(setTimeout(play,250));regT(setInterval(play,4400));
+    frame(0);regT(setTimeout(play,250));
   }
   render();
 }
@@ -1196,7 +1232,7 @@ function decodeRace(host){
     s+=`</svg>`;host.innerHTML=s;
   }
   function play(){let st=null;function f(ts){if(!st)st=ts;let p=Math.min(1,(ts-st)/3000);frame(p);if(p<1)reg(requestAnimationFrame(f));}reg(requestAnimationFrame(f));}
-  frame(0);regT(setTimeout(play,300));regT(setInterval(play,4600));
+  frame(0);regT(setTimeout(play,300));
 }
 
 /* ---------- PRODUCTION CARDS ---------- */
@@ -1237,19 +1273,30 @@ function startedViz(host){
     for(let i=0;i<3;i++){const y=-11+i*11;s+=`<line x1="-10" y1="${y}" x2="5" y2="${y}" ${o}/><circle cx="12" cy="${y}" r="2.6" fill="currentColor"/>`;}
     return s+`</svg>`;
   }
+  const cols=[P.clay,P.ochre,P.slate,P.sage,P.rose];
+  const W=1240,H=560,sx=280,sw=740,lh=82,gap=8,y0=30;
+  const stackH=items.length*lh+(items.length-1)*gap;
   let beat=0;
   function render(pop){
-    let s=`<div class="ichat">`;
+    let s=`<svg viewBox="0 0 ${W} ${H}">`;
+    // the stack rail: top of the stack → bottom of the stack
+    s+=`<text x="${sx-32}" y="${y0+16}" font-size="15" fill="${P.soft}" text-anchor="end" font-family="IBM Plex Mono,monospace">top of</text><text x="${sx-32}" y="${y0+36}" font-size="15" fill="${P.soft}" text-anchor="end" font-family="IBM Plex Mono,monospace">the stack</text>`;
+    s+=`<line x1="${sx-58}" y1="${y0+52}" x2="${sx-58}" y2="${y0+stackH-56}" stroke="${P.line}" stroke-width="2"/><polygon points="${sx-58},${y0+stackH-42} ${sx-65},${y0+stackH-58} ${sx-51},${y0+stackH-58}" fill="${P.line}"/>`;
+    s+=`<text x="${sx-32}" y="${y0+stackH-26}" font-size="15" fill="${P.soft}" text-anchor="end" font-family="IBM Plex Mono,monospace">bottom of</text><text x="${sx-32}" y="${y0+stackH-6}" font-size="15" fill="${P.soft}" text-anchor="end" font-family="IBM Plex Mono,monospace">the stack</text>`;
     items.forEach((it,i)=>{
       if(i>=beat)return;
-      const isNew=pop&&i===beat-1;
-      s+=`<div class="imsg ${i%2===0?'l':'r'}${isNew?'':' show'}">`;
-      s+=`<div class="ttl">${icon(it.icon)}${it.label}</div><div class="sub">${it.sub}</div></div>`;
+      const y=y0+i*(lh+gap), c=cols[i], isNew=pop&&i===beat-1;
+      s+=`<g class="lay${isNew?' new':''}" style="transform-box:fill-box;transform-origin:center;${isNew?'transform:scale(0);':''}transition:transform .5s cubic-bezier(.3,1.4,.5,1)">`;
+      s+=`<rect x="${sx}" y="${y}" width="${sw}" height="${lh}" rx="14" fill="${c}"/>`;
+      s+=`<g transform="translate(${sx+54} ${y+lh/2})" style="color:#FBF6EC">${icon(it.icon).replace('<svg viewBox="-30 -30 60 60">','<g transform="scale(0.82)">').replace('</svg>','</g>')}</g>`;
+      s+=`<text x="${sx+104}" y="${y+lh/2-4}" font-size="25" fill="#FBF6EC" font-weight="700" font-family="Fraunces,serif">${it.label}</text>`;
+      s+=`<text x="${sx+104}" y="${y+lh/2+26}" font-size="16.5" fill="#FBF6EC" opacity="0.85">${it.sub}</text>`;
+      s+=`</g>`;
     });
-    if(beat>=items.length)s+=`<div style="text-align:center; font-family:var(--disp); font-weight:700; font-size:3cqh; color:var(--ink); margin-top:1.6cqh">agents chasing optimizations at <em style="font-style:italic; color:var(--clay)">every single layer</em></div>`;
-    else s+=`<div class="mono" style="position:absolute; top:0; right:1cqh; color:var(--faint); font-size:1.6cqh">${beat}/${items.length} · press →</div>`;
-    s+=`</div>`;host.innerHTML=s;
-    if(pop){const nb=host.querySelector('.imsg:not(.show)');if(nb)reg(requestAnimationFrame(()=>nb.classList.add('show')));}
+    if(beat>=items.length)s+=`<text x="${W/2}" y="${H-14}" font-size="30" fill="${P.ink}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">agents chasing optimizations at <tspan fill="${P.clay}" font-style="italic">every single layer</tspan></text>`;
+    else s+=`<text x="${W-26}" y="34" font-size="18" fill="${P.faint}" text-anchor="end" font-family="IBM Plex Mono,monospace">${beat}/${items.length} · press →</text>`;
+    s+=`</svg>`;host.innerHTML=s;
+    if(pop){const nb=host.querySelector('.lay.new');if(nb)reg(requestAnimationFrame(()=>{nb.style.transform='scale(1)';}));}
   }
   render(false);
   return {next(){if(beat<items.length){beat++;render(true);return true;}return false;},prev(){if(beat>0){beat--;render(false);return true;}return false;}};
@@ -1275,7 +1322,7 @@ function whyViz(host,stage){
     function cyc(){bars.forEach((b,i)=>regT(setTimeout(()=>{b.setAttribute('fill',P.clay);b.setAttribute('opacity','0.95');},i*44)));
       regT(setTimeout(()=>{tok.style.transition='opacity .3s';tok.style.opacity=1;},bars.length*44+220));
       regT(setTimeout(()=>{tok.style.opacity=0;bars.forEach(b=>{b.setAttribute('fill',P.slate);b.setAttribute('opacity','0.55');});},bars.length*44+1400));}
-    cyc();regT(setInterval(cyc,bars.length*44+2000));return;
+    cyc();return;
   }
   // "the chip waits" — one token on one time axis: a sliver of math, the rest waiting on the read
   const VB='0 0 1220 560',x0=80,xr=812,bw=xr-x0,px=(xr+1180)/2;
@@ -1289,7 +1336,7 @@ function whyViz(host,stage){
   s+=`<text id="memLbl" x="${x0+20}" y="436" font-size="22" fill="#fff" font-weight="600" font-family="IBM Plex Mono,monospace" opacity="0">streaming 140 GB of weights</text>`;
   s+=`<text id="memTime" x="${xr-20}" y="436" font-size="40" fill="#fff" text-anchor="end" font-weight="700" font-family="IBM Plex Mono,monospace"></text>`;
   s+=`<line x1="${x0}" y1="516" x2="${xr-16}" y2="516" stroke="${P.line}" stroke-width="2.5"/><polygon points="${xr},516 ${xr-18},508 ${xr-18},524" fill="${P.line}"/>`;
-  s+=`<text x="${x0}" y="550" font-size="21" fill="${P.soft}" font-family="IBM Plex Mono,monospace">time — one token</text>`;
+  s+=`<text x="${x0}" y="550" font-size="21" fill="${P.soft}" font-family="IBM Plex Mono,monospace">time to serve one token</text>`;
   s+=`<g id="tokChip" opacity="0"><rect x="${px-78}" y="254" width="156" height="88" rx="14" fill="#F3E0D4" stroke="${P.clay}" stroke-width="3"/><text x="${px}" y="308" font-size="30" fill="${P.clay}" text-anchor="middle" font-weight="700" font-family="IBM Plex Mono,monospace">1 token</text></g>`;
   s+=`<text x="${px}" y="452" font-size="104" fill="${P.clay}" text-anchor="middle" font-weight="800" font-family="Fraunces,serif" id="bigPct" opacity="0">10%</text>`;
   s+=`<text x="${px}" y="498" font-size="25" fill="${P.ink2}" text-anchor="middle" id="bigSub" opacity="0">of the chip was busy</text>`;
@@ -1306,7 +1353,7 @@ function whyViz(host,stage){
         regT(setTimeout(()=>{bigPct.style.transition='opacity .4s';bigSub.style.transition='opacity .4s';bigPct.style.opacity=1;bigSub.style.opacity=1;},320));}}
     reg(requestAnimationFrame(mf));
   }
-  run();regT(setInterval(run,4800));
+  run();
 }
 function bindModel(el){
   const sl=el.querySelector('#modelSlider'),gb=el.querySelector('#modelGB'),tp=el.querySelector('#modelTPS'),host=el.querySelector('#vizUtil');
@@ -1323,26 +1370,33 @@ function batchWhy(host){
   const sx=760,sy=118,sw=384,sh=64,sgap=20,N=4;         // right: slots that could ride it
   let s=`<svg viewBox="0 0 ${W} ${H}">`;
   s+=`<text x="${mx}" y="96" font-size="24" fill="${P.ink2}" font-weight="600">the fixed cost</text>`;
-  s+=`<text x="${sx}" y="96" font-size="24" fill="${P.ink2}" font-weight="600">what that one read could serve</text>`;
+  s+=`<text x="${sx}" y="96" font-size="24" fill="${P.ink2}" font-weight="600">what that one pass could serve</text>`;
   // model: read the whole thing once
-  s+=kModel(mx,my,mw,mh,{weights:16,wlabel:'140 GB · the whole model',label:'read once'});
+  s+=kModel(mx,my,mw,mh,{weights:16,wlabel:'140 GB · the whole model',label:'one pass per token'});
   // one read → the slot stack
   const ax0=mx+mw+10,ax1=sx-14;
   s+=`<line x1="${ax0}" y1="${oy}" x2="${ax1}" y2="${oy}" stroke="${P.clay}" stroke-width="5"/>`;
   s+=`<polygon points="${ax1+14},${oy} ${ax1-6},${oy-13} ${ax1-6},${oy+13}" fill="${P.clay}"/>`;
-  s+=`<text x="${(ax0+ax1)/2}" y="${oy-20}" font-size="19" fill="${P.soft}" text-anchor="middle" font-family="IBM Plex Mono,monospace">one read</text>`;
-  // slot 0 filled, 1..3 ghosted (foreshadows the batch grid)
-  for(let i=0;i<N;i++){const y=sy+i*(sh+sgap);
-    if(i===0){s+=`<rect x="${sx}" y="${y}" width="${sw}" height="${sh}" rx="10" fill="${P.clay}" opacity="0.92"/>`;
-      s+=`<text x="${sx+sw/2}" y="${y+sh/2+8}" font-size="23" fill="#fff" text-anchor="middle" font-weight="700" font-family="IBM Plex Mono,monospace">R1 — the one you served</text>`;}
-    else{s+=`<rect class="ghost" x="${sx}" y="${y}" width="${sw}" height="${sh}" rx="10" fill="none" stroke="${P.line}" stroke-width="2" stroke-dasharray="8 8" opacity="0"/>`;
-      s+=`<text class="ghost" x="${sx+sw/2}" y="${y+sh/2+8}" font-size="22" fill="${P.faint}" text-anchor="middle" font-family="IBM Plex Mono,monospace" opacity="0">R${i+1} — idle capacity</text>`;}}
-  s+=`<text x="${W/2}" y="${H-34}" font-size="34" fill="${P.sage}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif" id="qline" opacity="0">what if that one read served all of them?</text>`;
+  s+=`<text x="${(ax0+ax1)/2}" y="${oy-20}" font-size="19" fill="${P.soft}" text-anchor="middle" font-family="IBM Plex Mono,monospace">adds up to 140 GB</text>`;
+  // user 1 is being served; users 2..4 ghost in — the same read could feed them all
+  for(let i=0;i<N;i++){const y=sy+i*(sh+sgap),cyy=y+sh/2;
+    if(i===0){s+=`<rect x="${sx}" y="${y}" width="${sw}" height="${sh}" rx="12" fill="${P.clay}" opacity="0.1"/><rect x="${sx}" y="${y}" width="${sw}" height="${sh}" rx="12" fill="none" stroke="${P.clay}" stroke-width="2.5"/>`;
+      s+=kUser(sx+38,cyy,'',P.clay);
+      s+=`<text x="${sx+76}" y="${cyy+8}" font-size="21" fill="${P.ink}" font-weight="700" font-family="IBM Plex Mono,monospace">user 1 · being served</text>`;}
+    else{s+=`<g class="ghost" opacity="0"><rect x="${sx}" y="${y}" width="${sw}" height="${sh}" rx="12" fill="none" stroke="${P.line}" stroke-width="2" stroke-dasharray="8 8"/>`;
+      s+=kUser(sx+38,cyy,'',P.faint);
+      s+=`<text x="${sx+76}" y="${cyy+8}" font-size="21" fill="${P.faint}" font-family="IBM Plex Mono,monospace">user ${i+1} · waiting…</text></g>`;}}
+  s+=`<text x="${W/2}" y="${H-34}" font-size="34" fill="${P.sage}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif" id="qline" opacity="0">what if that one pass served all of them?</text>`;
   s+=`</svg>`;
   host.innerHTML=s;
+  // one-time sweep: the whole model lights up, bar by bar, and stays lit
+  const bars=[...host.querySelectorAll('.wbar')];
+  bars.forEach((b,i)=>{b.style.transition='fill .3s ease, opacity .3s ease';
+    regT(setTimeout(()=>{b.style.fill=P.clay;b.style.opacity=0.95;},250+i*48));});
+  const sweepEnd=250+bars.length*48+250;
   const ghosts=[...host.querySelectorAll('.ghost')];
-  ghosts.forEach((g,i)=>{g.style.transition='opacity .4s';regT(setTimeout(()=>g.style.opacity=1,520+i*240));});
-  const q=host.querySelector('#qline');q.style.transition='opacity .5s';regT(setTimeout(()=>q.style.opacity=1,520+ghosts.length*240+280));
+  ghosts.forEach((g,i)=>{g.style.transition='opacity .4s';regT(setTimeout(()=>g.style.opacity=1,sweepEnd+i*240));});
+  const q=host.querySelector('#qline');q.style.transition='opacity .5s';regT(setTimeout(()=>q.style.opacity=1,sweepEnd+ghosts.length*240+280));
 }
 
 /* ---------- CONTINUOUS BATCHING — one slide, spacebar steps (slots × time, numbered requests) ---------- */
@@ -1351,8 +1405,7 @@ function batchViz(host){
   const pal=[P.clay,P.slate,P.ochre,P.sage,P.rose];
   const sg=(slot,s,e,req)=>({slot,s,e,req});
   const beats=[
-    {label:'one read · one request',col:P.clay,segs:[sg(0,0,10,1)]},
-    {label:'one read · four requests',col:P.slate,segs:[sg(0,0,10,1),sg(1,0,10,2),sg(2,0,10,3),sg(3,0,10,4)]},
+    {label:'four users share every pass',col:P.slate,segs:[sg(0,0,10,1),sg(1,0,10,2),sg(2,0,10,3),sg(3,0,10,4)]},
     {label:'fixed batch → freed slots idle',col:P.ochre,segs:[sg(0,0,5,1),sg(1,0,8,2),sg(2,0,3,3),sg(3,0,6,4)]},
     {label:'continuous → refill instantly',col:P.sage,segs:[sg(0,0,5,1),sg(0,5,8,5),sg(0,8,10,9),sg(1,0,8,2),sg(1,8,10,6),sg(2,0,3,3),sg(2,3,7,7),sg(2,7,10,8),sg(3,0,6,4),sg(3,6,10,10)]}
   ];
@@ -1362,23 +1415,23 @@ function batchViz(host){
     function frame(prog){
       const phX=gx+prog*gw;
       let s=`<svg viewBox="0 0 ${W} ${H}">`;
-      s+=`<text x="${gx}" y="${gy-30}" font-size="22" fill="${P.ink2}" font-weight="600">batch slots — one shared weight-read</text>`;
+      s+=`<text x="${gx}" y="${gy-30}" font-size="22" fill="${P.ink2}" font-weight="600">batch slots — every user rides the same weight stream</text>`;
       s+=`<text x="${gx+gw-4}" y="${gy+gh+40}" font-size="20" fill="${P.soft}" text-anchor="end">time →</text>`;
       for(let r=0;r<N;r++){const y=gy+r*rh;s+=`<rect x="${gx}" y="${y+3}" width="${gw}" height="${rh-6}" rx="8" fill="${P.line2}"/>`;}
       B.segs.forEach(sgm=>{const x=gx+(sgm.s/T)*gw,w=((sgm.e-sgm.s)/T)*gw,y=gy+sgm.slot*rh,vis=Math.max(0,Math.min(w,phX-x));
         if(vis>4){const c=pal[(sgm.req-1)%pal.length];
           s+=`<rect x="${x+3}" y="${y+5}" width="${Math.max(0,vis-6)}" height="${rh-10}" rx="7" fill="${c}" opacity="0.92"/>`;
-          if(vis>w*0.5)s+=`<text x="${x+w/2}" y="${y+rh/2+8}" font-size="23" fill="#fff" text-anchor="middle" font-weight="700" font-family="IBM Plex Mono,monospace">R${sgm.req}</text>`;}});
+          if(vis>w*0.5)s+=`<text x="${x+w/2}" y="${y+rh/2+8}" font-size="23" fill="#fff" text-anchor="middle" font-weight="700" font-family="IBM Plex Mono,monospace">user ${sgm.req}</text>`;}});
       const phx=Math.min(gx+gw,phX);s+=`<line x1="${phx}" y1="${gy-8}" x2="${phx}" y2="${gy+gh+8}" stroke="${P.ink2}" stroke-width="2"/>`;
       s+=`<text x="${W/2}" y="${H-30}" font-size="34" fill="${B.col}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">${B.label}</text>`;
-      s+=`<text x="${W-30}" y="44" font-size="18" fill="${P.faint}" text-anchor="end" font-family="IBM Plex Mono,monospace">${beat+1}/4 · press →</text>`;
+      s+=`<text x="${W-30}" y="44" font-size="18" fill="${P.faint}" text-anchor="end" font-family="IBM Plex Mono,monospace">${beat+1}/${beats.length} · press →</text>`;
       s+=`</svg>`;host.innerHTML=s;
     }
     let st=null;function f(ts){if(!st)st=ts;let p=Math.min(1,(ts-st)/2400);frame(p);if(p<1)reg(requestAnimationFrame(f));}
     reg(requestAnimationFrame(f));
   }
   render();
-  return {next(){if(beat>=3)return false;beat++;render();return true;}};
+  return {next(){if(beat>=beats.length-1)return false;beat++;render();return true;}};
 }
 
 /* ---------- PAGED KV build-up ---------- */
@@ -1395,7 +1448,7 @@ function kvViz(host,stage){
     function add(){if(n>=maxN){n=0;row.innerHTML='';}
       const x=bx+n*(bw+gap);row.insertAdjacentHTML('beforeend',`<rect x="${x}" y="${y}" width="${bw}" height="74" rx="11" fill="${P.slate}" opacity="0"/>`);
       const el=row.lastElementChild;el.style.transition='opacity .35s';requestAnimationFrame(()=>el.setAttribute('opacity','0.85'));n++;}
-    add();add();add();regT(setInterval(add,750));return;
+    add();add();add();const kvi=setInterval(()=>{if(n>=maxN)clearInterval(kvi);else add();},750);regT(kvi);return;
   }
   // STAGE 2 — reserve for the worst case: 1-1 with the paged slide, but one big contiguous block per request
   if(stage===2){
@@ -1479,8 +1532,7 @@ function kvShare(host){
     return s;}
   const caps=[
     ['every chunk gets a page',P.ink2],
-    ['same prompt → the very same pages',P.sage],
-    ['stored once, shared by all',P.sage]
+    ['same prompt → the very same pages, stored once · skip its prefill',P.sage]
   ];
   const bandX=cellX(0)-8, bandY=cellY(2)+cell/2;   // left edge of the shared band, mid-height
   const pStart=bx(shared-1)+bw-24;                 // prompt arrows leave near the prompt group's right end
@@ -1489,7 +1541,7 @@ function kvShare(host){
     clearAnims();
     let s=`<svg viewBox="0 0 ${W} ${H}">`;
     s+=`<text x="${gx}" y="108" font-size="20" fill="${P.soft}" font-family="IBM Plex Mono,monospace">actual memory</text>`;
-    s+=`<text x="${W-26}" y="46" font-size="18" fill="${P.faint}" text-anchor="end" font-family="IBM Plex Mono,monospace">${beat+1}/3 · press →</text>`;
+    s+=`<text x="${W-26}" y="46" font-size="18" fill="${P.faint}" text-anchor="end" font-family="IBM Plex Mono,monospace">${beat+1}/2 · press →</text>`;
     // shared halo (once R2 shares)
     if(beat>=1)s+=`<rect x="${cellX(0)-7}" y="${cellY(2)-7}" width="${shared*(cell+pgap)-pgap+14}" height="${cell+14}" rx="13" fill="none" stroke="${P.sage}" stroke-width="3" stroke-dasharray="8 6"/>`;
     // grid cells — color-matched to the request rows, no labels
@@ -1509,7 +1561,7 @@ function kvShare(host){
     s+=`</svg>`;host.innerHTML=s;
   }
   render();
-  return {next(){if(beat>=2)return false;beat++;render();return true;},prev(){if(beat<=0)return false;beat--;render();return true;}};
+  return {next(){if(beat>=1)return false;beat++;render();return true;},prev(){if(beat<=0)return false;beat--;render();return true;}};
 }
 
 /* ---------- PREFILL vs DECODE (problem) ---------- */
@@ -1691,51 +1743,94 @@ function mapViz(host){
 
 /* ---------- PARETO FRONTIER (scoreboard setup) ---------- */
 /* ---------- SPLIT RACE (premise) — 1 GPU vs k GPUs: faster but with comms overhead ---------- */
-function splitRace(host){
-  const W=1220,H=545,x0=214,x1=1066,bw=x1-x0;
-  const yA=112,hA=58;                          // 1-GPU row
-  const yB=206,laneH=58,laneGap=7,nL=4;        // 4-GPU row — each lane as thick as the 1-GPU bar = 4× the silicon
-  const bandB=nL*laneH+(nL-1)*laneGap;
-  // wall-clock fractions [0..1]: split does 3 rounds of (compute || , then all-reduce)
-  const rounds=[[0,0.13],[0.17,0.30],[0.34,0.47]];
-  const comms =[[0.13,0.17],[0.30,0.34],[0.47,0.51]];
-  const splitEnd=0.51;
-  const mx=f=>x0+bw*f;
-  const tokenChip=(cx,cy)=>`<rect x="${cx-44}" y="${cy-18}" width="88" height="36" rx="18" fill="${P.sage}"/><text x="${cx}" y="${cy+6}" font-size="18" fill="#fff" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">1 token</text>`;
-  function render(){
-    clearAnims();
-    function frame(p){
-      let s=`<svg viewBox="0 0 ${W} ${H}">`;
-      s+=`<text x="${x0}" y="78" font-size="19" fill="${P.soft}" font-family="IBM Plex Mono,monospace">time →</text>`;
-      s+=`<line x1="${x0}" y1="94" x2="${x1+48}" y2="94" stroke="${P.line}" stroke-width="2"/><polygon points="${x1+62},94 ${x1+48},87 ${x1+48},101" fill="${P.line}"/>`;
-      // ---- Row A: one GPU ----
-      s+=`<text x="${x0-24}" y="${yA+hA/2+8}" font-size="22" fill="${P.ink}" text-anchor="end" font-weight="700">1 GPU</text>`;
-      s+=`<rect x="${x0}" y="${yA}" width="${bw}" height="${hA}" rx="12" fill="${P.line2}"/>`;
-      const aVis=Math.min(1,p)*bw;
-      s+=`<rect x="${x0}" y="${yA}" width="${aVis}" height="${hA}" rx="12" fill="${P.clay}"/>`;
-      if(aVis>140)s+=`<text x="${x0+Math.min(aVis,bw)/2}" y="${yA+hA/2+9}" font-size="26" fill="#fff" text-anchor="middle" font-weight="800" font-family="Fraunces,serif">compute</text>`;
-      if(p>=1){s+=tokenChip(x1+60,yA+hA/2);s+=`<text x="${x1+60}" y="${yA-6}" font-size="18" fill="${P.soft}" text-anchor="middle" font-weight="700">slow</text>`;}
-      // ---- Row B: four GPUs split ----
-      s+=`<text x="${x0-24}" y="${yB+bandB/2+8}" font-size="22" fill="${P.ink}" text-anchor="end" font-weight="700">4 GPUs</text>`;
-      for(let l=0;l<nL;l++){const ly=yB+l*(laneH+laneGap);s+=`<rect x="${x0}" y="${ly}" width="${bw*splitEnd}" height="${laneH}" rx="5" fill="${P.line2}"/>`;}
-      rounds.forEach(r=>{const sx=mx(r[0]),sw=bw*(r[1]-r[0]),vis=Math.max(0,Math.min(sw,mx(Math.min(p,r[1]))-sx));
-        if(vis>0)for(let l=0;l<nL;l++){const ly=yB+l*(laneH+laneGap);s+=`<rect x="${sx}" y="${ly}" width="${vis}" height="${laneH}" rx="5" fill="${P.clay}"/>`;}});
-      comms.forEach(c=>{const sx=mx(c[0]),sw=bw*(c[1]-c[0]),vis=Math.max(0,Math.min(sw,mx(Math.min(p,c[1]))-sx));
-        if(vis>0)s+=`<rect x="${sx}" y="${yB}" width="${vis}" height="${bandB}" rx="4" fill="${P.ochre}"/>`;
-        if(vis>=sw*0.85){const cx=sx+sw/2,cy=yB+bandB/2;s+=`<text x="${cx}" y="${cy}" font-size="15" fill="#fff" text-anchor="middle" font-weight="700" transform="rotate(-90 ${cx} ${cy})" font-family="IBM Plex Mono,monospace">sync</text>`;}});
-      if(p>=splitEnd){s+=tokenChip(mx(splitEnd)+60,yB+bandB/2);s+=`<text x="${mx(splitEnd)+60}" y="${yB-8}" font-size="18" fill="${P.clay}" text-anchor="middle" font-weight="700">~2× faster</text>`;}
-      // playhead
-      const phx=mx(Math.min(1,p));
-      s+=`<line x1="${phx}" y1="118" x2="${phx}" y2="${yB+bandB+16}" stroke="${P.ink2}" stroke-width="2" opacity="0.45"/>`;
-      // legend + caption
-      s+=`<rect x="${x0}" y="${H-40}" width="20" height="14" rx="3" fill="${P.clay}"/><text x="${x0+28}" y="${H-28}" font-size="17" fill="${P.ink2}">compute</text>`;
-      s+=`<rect x="${x0+148}" y="${H-40}" width="20" height="14" rx="3" fill="${P.ochre}"/><text x="${x0+176}" y="${H-28}" font-size="17" fill="${P.ink2}">sync (all-reduce)</text>`;
-      s+=`</svg>`;host.innerHTML=s;
-    }
-    function play(){let st=null;function f(ts){if(!st)st=ts;let p=Math.min(1,(ts-st)/3200);frame(p);if(p<1)reg(requestAnimationFrame(f));}reg(requestAnimationFrame(f));}
-    frame(0);regT(setTimeout(play,250));regT(setInterval(play,4400));
+function utilRace(host){
+  // one persistent SVG. beat 1 = the one-token anatomy (compute sliver + 140 GB stream).
+  // press → the two rows MORPH into a stacked "1 GPU" time bar (green math + clay weights)
+  // and four ¼-weight GPU bars grow in beneath, with ochre sync segments. No re-render.
+  const W=1220,H=560,x0=80,xr=812,bw=xr-x0,px=(xr+1180)/2,cmpFrac=0.08;
+  const g1y=150,g1h=70,gLead=28;                          // beat-2 "1 GPU" stacked bar
+  const rY0=278,rH=46,rGap=16;                            // beat-2 four GPU rows
+  const SEG=[[P.sage,0,0.035],[P.clay,0.035,0.305],[P.ochre,0.305,0.355],[P.clay,0.355,0.475],[P.ochre,0.475,0.525]];
+  const chipBx=x0+0.525*bw+56, chipBy=rY0+(4*rH+3*rGap)/2;
+  let beat=0;
+  function build(){
+    let s='';
+    // ---- beat 1 · anatomy ----
+    s+=`<line id="finline" x1="${xr}" y1="112" x2="${xr}" y2="500" stroke="${P.line}" stroke-width="2" stroke-dasharray="7 7"/>`;
+    s+=`<text id="lblCmp" x="${x0}" y="124" font-size="32" fill="${P.sage}" font-weight="700" font-family="Fraunces,serif">compute</text>`;
+    s+=`<rect id="cmpTrack" x="${x0}" y="144" width="${bw}" height="120" rx="16" fill="${P.line2}"/>`;
+    s+=`<text id="lblMem" x="${x0}" y="344" font-size="32" fill="${P.clay}" font-weight="700" font-family="Fraunces,serif">memory</text>`;
+    s+=`<rect id="memTrack" x="${x0}" y="364" width="${bw}" height="120" rx="16" fill="${P.line2}"/>`;
+    s+=`<rect id="memRun" x="${x0}" y="364" width="0" height="120" rx="14" fill="${P.clay}"/>`;
+    s+=`<rect id="cmpRun" x="${x0}" y="144" width="0" height="120" rx="14" fill="${P.sage}"/>`;
+    s+=`<g id="cmpIdle" opacity="0"><rect x="${x0+bw*cmpFrac+10}" y="152" width="${bw*(1-cmpFrac)-20}" height="104" rx="12" fill="none" stroke="${P.faint}" stroke-width="2.5" stroke-dasharray="9 9"/><text x="${x0+bw*(1+cmpFrac)/2}" y="212" font-size="27" fill="${P.soft}" text-anchor="middle" font-weight="600">idle — waiting on the read</text></g>`;
+    s+=`<text id="memLbl" x="${x0+20}" y="436" font-size="22" fill="#fff" font-weight="600" font-family="IBM Plex Mono,monospace" opacity="0">streaming 140 GB of weights</text>`;
+    s+=`<text id="memTime" x="${xr-20}" y="436" font-size="40" fill="#fff" text-anchor="end" font-weight="700" font-family="IBM Plex Mono,monospace"></text>`;
+    s+=`<line x1="${x0}" y1="516" x2="${xr-16}" y2="516" stroke="${P.line}" stroke-width="2.5"/><polygon points="${xr},516 ${xr-18},508 ${xr-18},524" fill="${P.line}"/>`;
+    s+=`<text x="${x0}" y="550" font-size="21" fill="${P.soft}" font-family="IBM Plex Mono,monospace">time to serve one token</text>`;
+    s+=`<g id="tokChip" opacity="0"><rect x="${px-78}" y="254" width="156" height="88" rx="14" fill="#F3E0D4" stroke="${P.clay}" stroke-width="3"/><text x="${px}" y="308" font-size="30" fill="${P.clay}" text-anchor="middle" font-weight="700" font-family="IBM Plex Mono,monospace">1 token</text></g>`;
+    s+=`<text id="bigPct" x="${px}" y="452" font-size="104" fill="${P.clay}" text-anchor="middle" font-weight="800" font-family="Fraunces,serif" opacity="0">10%</text>`;
+    s+=`<text id="bigSub" x="${px}" y="498" font-size="25" fill="${P.ink2}" text-anchor="middle" opacity="0">of the chip was busy</text>`;
+    s+=`<text id="uq" x="${px}" y="546" font-size="24" fill="${P.sage}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif" opacity="0">how do we make one user faster?</text>`;
+    s+=`<text id="hint1" x="1190" y="40" font-size="18" fill="${P.faint}" text-anchor="end" font-family="IBM Plex Mono,monospace">1/2 · press →</text>`;
+    // ---- beat 2 · pre-placed, hidden ----
+    s+=`<text id="g1lbl" x="${x0}" y="140" font-size="21" fill="${P.ink}" font-weight="700" opacity="0">1 GPU <tspan fill="${P.soft}" font-size="16" font-family="IBM Plex Mono,monospace">· streams all 140 GB</tspan></text>`;
+    s+=`<text id="g4lbl" x="${x0}" y="266" font-size="21" fill="${P.ink}" font-weight="700" opacity="0">4 GPUs <tspan fill="${P.soft}" font-size="16" font-family="IBM Plex Mono,monospace">· 35 GB each — ¼ of the model</tspan></text>`;
+    for(let r=0;r<4;r++)SEG.forEach((sg,j)=>{const y=rY0+r*(rH+rGap);
+      s+=`<rect class="seg" x="${x0+sg[1]*bw}" y="${y}" width="0" height="${rH}" rx="9" fill="${sg[0]}" data-w="${(sg[2]-sg[1])*bw}" data-delay="${650+j*150+r*45}"/>`;});
+    s+=`<g class="b2late" opacity="0"><rect x="${chipBx-44}" y="${chipBy-18}" width="88" height="36" rx="18" fill="${P.sage}"/><text x="${chipBx}" y="${chipBy+6}" font-size="18" fill="#fff" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">1 token</text><text x="${chipBx+64}" y="${chipBy+7}" font-size="21" fill="${P.clay}" font-weight="700" font-family="Fraunces,serif">~2× faster — but more total work</text></g>`;
+    s+=`<g class="b2late" opacity="0"><rect x="560" y="536" width="18" height="13" rx="3" fill="${P.sage}"/><text x="584" y="548" font-size="16" fill="${P.ink2}">math</text><rect x="650" y="536" width="18" height="13" rx="3" fill="${P.clay}"/><text x="674" y="548" font-size="16" fill="${P.ink2}">weights</text><rect x="760" y="536" width="18" height="13" rx="3" fill="${P.ochre}"/><text x="784" y="548" font-size="16" fill="${P.ink2}">sync (all-reduce)</text></g>`;
+    s+=`<text id="hint2" x="1190" y="40" font-size="18" fill="${P.faint}" text-anchor="end" font-family="IBM Plex Mono,monospace" opacity="0">2/2</text>`;
+    host.innerHTML=`<svg viewBox="0 0 ${W} ${H}">${s}</svg>`;
   }
-  render();
+  const g=id=>host.querySelector('#'+id);
+  function run(){
+    const memRun=g('memRun'),cmpRun=g('cmpRun'),memTime=g('memTime'),memLbl=g('memLbl'),cmpIdle=g('cmpIdle'),tokChip=g('tokChip'),bigPct=g('bigPct'),bigSub=g('bigSub'),uq=g('uq');
+    let st=null;function cf(ts){if(!st)st=ts;let p=Math.min(1,(ts-st)/300);cmpRun.setAttribute('width',bw*cmpFrac*p);if(p<1)reg(requestAnimationFrame(cf));else{cmpIdle.style.transition='opacity .3s';cmpIdle.style.opacity=1;}}
+    reg(requestAnimationFrame(cf));
+    let mt=null;function mf(ts){if(!mt)mt=ts;let p=Math.min(1,(ts-mt)/3200);memRun.setAttribute('width',bw*p);memTime.textContent=Math.round(40*p)+' ms';
+      if(p>0.32){memLbl.style.transition='opacity .3s';memLbl.style.opacity=1;}
+      if(p<1)reg(requestAnimationFrame(mf));
+      else{tokChip.style.transition='opacity .35s';tokChip.style.opacity=1;
+        regT(setTimeout(()=>{bigPct.style.transition='opacity .4s';bigSub.style.transition='opacity .4s';bigPct.style.opacity=1;bigSub.style.opacity=1;},320));
+        regT(setTimeout(()=>{uq.style.transition='opacity .5s';uq.style.opacity=1;},900));}}
+    reg(requestAnimationFrame(mf));
+  }
+  const EASE='cubic-bezier(.2,.7,.2,1)';
+  const MORPH=`x .85s ${EASE}, y .85s ${EASE}, width .85s ${EASE}, height .85s ${EASE}`;
+  function goSplit(){
+    clearAnims();
+    const memRun=g('memRun'),cmpRun=g('cmpRun'),chip=g('tokChip');
+    // snap beat 1 to its finished state so the morph starts clean
+    memRun.style.transition='none';cmpRun.style.transition='none';
+    memRun.setAttribute('width',bw);cmpRun.setAttribute('width',bw*cmpFrac);
+    host.querySelector('svg').getBoundingClientRect();
+    // fade the anatomy chrome away
+    ['lblCmp','lblMem','cmpTrack','memTrack','cmpIdle','memLbl','memTime','bigPct','bigSub','uq','hint1','finline'].forEach(id=>{const el=g(id);el.style.transition='opacity .45s';el.style.opacity=0;});
+    // the two rows collapse into one stacked "1 GPU" bar
+    memRun.style.transition=MORPH;cmpRun.style.transition=MORPH;
+    memRun.style.x=(x0+gLead)+'px';memRun.style.y=g1y+'px';memRun.style.width=(bw-gLead)+'px';memRun.style.height=g1h+'px';
+    cmpRun.style.x=x0+'px';cmpRun.style.y=g1y+'px';cmpRun.style.width=gLead+'px';cmpRun.style.height=g1h+'px';
+    // the token rides up next to the bar
+    chip.style.transition=`transform .85s ${EASE}`;chip.style.transform='translate(-116px,-113px)';
+    ['g1lbl','g4lbl','hint2'].forEach((id,i)=>{const el=g(id);el.style.transition=`opacity .5s ${350+i*120}ms`;el.style.opacity=1;});
+    host.querySelectorAll('.seg').forEach(sg=>{sg.style.transition=`width .3s ease ${sg.dataset.delay}ms`;sg.style.width=sg.dataset.w+'px';});
+    host.querySelectorAll('.b2late').forEach(el=>{el.style.transition='opacity .5s 1550ms';el.style.opacity=1;});
+  }
+  function goBack(){
+    clearAnims();
+    host.querySelectorAll('.seg').forEach(sg=>{sg.style.transition='width .25s';sg.style.width='0px';});
+    host.querySelectorAll('.b2late').forEach(el=>{el.style.transition='opacity .25s';el.style.opacity=0;});
+    ['g1lbl','g4lbl','hint2'].forEach(id=>{const el=g(id);el.style.transition='opacity .25s';el.style.opacity=0;});
+    const memRun=g('memRun'),cmpRun=g('cmpRun'),chip=g('tokChip');
+    memRun.style.transition=MORPH;cmpRun.style.transition=MORPH;
+    memRun.style.x=x0+'px';memRun.style.y='364px';memRun.style.width=bw+'px';memRun.style.height='120px';
+    cmpRun.style.x=x0+'px';cmpRun.style.y='144px';cmpRun.style.width=(bw*cmpFrac)+'px';cmpRun.style.height='120px';
+    chip.style.transition=`transform .85s ${EASE}`;chip.style.transform='none';
+    ['lblCmp','lblMem','cmpTrack','memTrack','cmpIdle','memLbl','memTime','bigPct','bigSub','uq','hint1','finline'].forEach(id=>{const el=g(id);el.style.transition='opacity .5s .3s';el.style.opacity=1;});
+  }
+  build();run();
+  return {next(){if(beat<1){beat=1;goSplit();return true;}return false;},prev(){if(beat>0){beat=0;goBack();return true;}return false;}};
 }
 
 /* ---------- SINGLE-USER PARETO (premise) — modeled, Llama-70B FP8, NVL72 ----------
@@ -1770,8 +1865,6 @@ function paretoSingle(host){
   function render(){
     const te=cl(phase), ue=cl(phase-1), lerp=(a,b)=>a+(b-a)*te;   // te: cost↔frontier · ue: frontier↔scoreboard
     let s=`<svg viewBox="0 0 ${W} ${H}">`;
-    // equation, anchored above the plot — fades out once we abstract into the scoreboard
-    s+=`<text x="${(X0+X1)/2}" y="46" font-size="27" text-anchor="middle" font-family="IBM Plex Mono,monospace" fill="${P.ink}" opacity="${1-ue}">time per token = <tspan fill="${P.clay}" font-weight="700">read ÷ k</tspan> + <tspan fill="${P.ochre}" font-weight="700">sync</tspan></text>`;
     // grid fades back on morph, then away in the scoreboard; y ticks fade out on morph
     for(let i=1;i<=5;i++){const y=Y0-(i/5)*(Y0-Y1);s+=`<line x1="${X0}" y1="${y}" x2="${X1}" y2="${y}" stroke="${P.line2}" stroke-width="1" opacity="${(1-0.65*te)*(1-ue)}"/>`;}
     for(let i=0;i<=5;i++){const y=my(i/5);s+=`<text class="mono" x="${X0-14}" y="${y+6}" font-size="17" fill="${P.soft}" text-anchor="end" opacity="${1-te}">${Math.round(maxYA*i/5)}</text>`;}
@@ -1839,7 +1932,7 @@ const PAPERS={
  orca:{title:'Orca: A Distributed Serving System for Transformer-Based Generative Models',authors:'Yu et al.',venue:'USENIX OSDI 2022',badge:'OSDI ’22',tag:'origin of continuous batching'},
  vllm:{title:'Efficient Memory Management for Large Language Model Serving with PagedAttention',authors:'Kwon et al.',venue:'SOSP 2023',badge:'arXiv:2309.06180',tag:'origin of the paged KV cache · vLLM'},
  sarathi:{title:'SARATHI: Efficient LLM Inference by Piggybacking Decodes with Chunked Prefills',authors:'Agrawal et al.',venue:'2023',badge:'arXiv:2308.16369',tag:'origin of chunked prefill'},
- disagg:{title:'Mooncake: A KVCache-centric Disaggregated Architecture for LLM Serving',authors:'Qin et al. · Moonshot AI (Kimi)',venue:'2024',badge:'arXiv:2407.00079',tag:'KV-centric prefill / decode disaggregation'},
+ disagg:{title:'Splitwise: Efficient Generative LLM Inference Using Phase Splitting',authors:'Patel et al. · Microsoft Azure Research',venue:'ISCA 2024',badge:'arXiv:2311.18677',tag:'the first paper to disaggregate prefill from decode'},
  specdecode:{title:'Fast Inference from Transformers via Speculative Decoding',authors:'Leviathan, Kalman & Matias · Google Research',venue:'ICML 2023',badge:'arXiv:2211.17192',tag:'origin of speculative decoding'},
  attnffn:{title:'MegaScale-Infer: Serving Mixture-of-Experts at Scale with Disaggregated Expert Parallelism',authors:'ByteDance',venue:'SIGCOMM 2025',badge:'arXiv:2504.02263',tag:'disaggregating attention from FFN / expert pools'}};
 function paperCard(host,key){
@@ -1917,7 +2010,7 @@ function specDecodeDisagg(host){
     s+=`</svg>`;host.innerHTML=s;
   }
   function play(){let st=null;function f(ts){if(!st)st=ts;let p=Math.min(1,(ts-st)/4400);frame(p);if(p<1)reg(requestAnimationFrame(f));}reg(requestAnimationFrame(f));}
-  frame(0);regT(setTimeout(play,300));regT(setInterval(play,5600));
+  frame(0);regT(setTimeout(play,300));
 }
 
 /* ---------- SPEC-DECODE RESULTS — Gimlet × d-Matrix Corsair (source: gimletlabs.ai) ----------
@@ -2160,15 +2253,14 @@ function recursiveViz(host){
 
 const INIT={
   capex:el=>{capex(el.querySelector('#vizCapex'));animNum($('#capexA'),0,765,1300,usd);regT(setTimeout(()=>animNum($('#capexB'),0,1600,1300,usd),200));},
-  gauge:el=>{gauge(el.querySelector('#vizGauge'));animNum($('#bigSpend'),0,765,1400,usd);},
+  tokens:el=>{tokensViz(el.querySelector('#vizTokens'));animNum($('#tokBig'),0,3.2,1600,v=>v.toFixed(1));},
   deals:el=>deals(el.querySelector('#vizDeals')),
   pricespeed:el=>priceSpeed(el.querySelector('#vizPriceSpeed')),
   goals:el=>goalsViz(el.querySelector('#vizGoals')),
-  tension:el=>splitRace(el.querySelector('#vizTension')),
+  rewind:el=>rewindViz(el.querySelector('#vizRewind')),
   tensionMath:el=>paretoSingle(el.querySelector('#vizTensionChart')),
   loop:el=>loop(el.querySelector('#vizLoop')),
-  util:el=>whyViz(el.querySelector('#vizUtil'),3),
-  f2023:el=>frontier(el.querySelector('#vizF2023'),{ghosts:['2022'],current:'2023',from:'2022'}).play(),
+  util:el=>utilRace(el.querySelector('#vizUtil')),
   batchWhy:el=>batchWhy(el.querySelector('#vizBatchWhy')),
   paperOrca:el=>paperCard(el.querySelector('#vizPaperOrca'),'orca'),
   paperVllm:el=>paperCard(el.querySelector('#vizPaperVllm'),'vllm'),
@@ -2180,11 +2272,9 @@ const INIT={
   kv2:el=>kvViz(el.querySelector('#vizKv2'),2),
   kv3:el=>kvViz(el.querySelector('#vizKv3'),3),
   kvShare:el=>kvShare(el.querySelector('#vizKvShare')),
-  f2024:el=>frontier(el.querySelector('#vizF2024'),{ghosts:['2022','2023'],current:'2024',from:'2023'}).play(),
   reqAnatomy:el=>reqAnatomy(el.querySelector('#vizReqAnatomy')),
   chunkB:el=>chunkBlock(el.querySelector('#vizChunkB'),'problem'),
   chunkFix:el=>chunkBlock(el.querySelector('#vizChunkFix'),'fix'),
-  f2026:el=>frontier(el.querySelector('#vizF2026'),{ghosts:['2022','2023','2024'],current:'2026',from:'2024'}).play(),
   benefits:el=>benefitsViz(el.querySelector('#vizBenefits')),
   awscere:el=>awsFlow(el.querySelector('#vizAws')),
   specDecode:el=>specDecodeDisagg(el.querySelector('#vizSpecDecode')),
@@ -2234,8 +2324,8 @@ function go(n){
   if(('#'+SLUGS[idx])!==location.hash){history.replaceState(null,'','#'+SLUGS[idx]);}
   syncingHash=false;
 }
-const ERAS=['Stakes','Foundation','2023','2024','2025–26','Next'];
-const ERAOF={title:0,capex:0,gauge:0,deals:0,pricespeed:0,goals:0,loop:1,util:2,tension:2,tensionMath:2,f2023:2,batchWhy:2,paperOrca:2,batch:2,paperVllm:2,kv1:2,kv2:2,kv3:2,kvShare:2,f2024:3,reqAnatomy:3,chunkB:3,paperSarathi:3,chunkFix:3,f2026:4,workloadMix:4,paperDisagg:4,roof16:4,cere:4,awscere:4,specDecode:4,specResults:4,attnFfn:4,benefits:4,gimlet:4,finish:5,kforge:5,recursive:5,started:5};
+const ERAS=['Stakes','Foundation','Batching','Scheduling','Disaggregation','Next'];
+const ERAOF={title:0,capex:0,deals:0,tokens:0,pricespeed:0,goals:0,rewind:1,loop:1,util:2,tensionMath:2,batchWhy:2,paperOrca:2,batch:2,paperVllm:2,kv1:2,kv2:2,kv3:2,kvShare:2,reqAnatomy:3,chunkB:3,paperSarathi:3,chunkFix:3,workloadMix:4,paperDisagg:4,roof16:4,cere:4,awscere:4,specDecode:4,specResults:4,attnFfn:4,benefits:4,gimlet:4,finish:5,kforge:5,recursive:5,started:5};
 function buildEraRail(){const r=$('#erarail');if(!r)return;r.innerHTML=ERAS.map(e=>`<span class="es">${e}</span>`).join('<span class="sep">›</span>');}
 function buildOverview(){const ov=$('#overview');
   ov.innerHTML=slides.map((s,i)=>`<div class="ovcard" data-go="${i}"><div class="n mono">${String(i+1).padStart(2,'0')}</div><div class="t">${s.dataset.title||'Title'}</div></div>`).join('');
