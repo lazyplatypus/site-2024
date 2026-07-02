@@ -460,7 +460,7 @@ paperSarathi:"2024's scheduling trick comes from Sarathi: chunked prefill. The t
 workloadMix:"That same request isn't one shape — it depends on the workload. I'll stack three on top of each other so you can compare the prefill-to-decode ratio directly. One: a long prompt, short answer — summarize this document. Mostly prefill, barely any decode, so it's compute-bound. Press. Two: a short prompt, long answer — write me an essay. Tiny prefill, a long stream of decode, so it's memory-bound. Press. Three: long prompt and long answer — a coding agent reading your whole repo and then generating a lot. Now both halves are heavy. Lined up like this you can see it plainly: prefill and decode are completely different kinds of work, in totally different proportions, and a single chip has to compromise across all of them. The natural question is — how do we cater to each? That's exactly what the next idea answers.",
 paperDisagg:"The answer is to stop forcing one chip to compromise — split prefill and decode into separate pools so each can be sized and tuned for its own shape. That idea comes from Splitwise, out of Microsoft Azure Research at ISCA 2024 — the first paper to put the two phases on separate machines, shipping the KV cache from the prefill machine to the decode machine over the datacenter interconnect. Here's the paper.",
 batch:"Here's the mechanism. One clarification first: the weights don't move in one giant read — they stream through the chip layer by layer, and over one token that stream adds up to the full 140 gigabytes. Beat one: pack four users into the batch, and all of them ride the same stream — the memory bill you were already paying now produces four tokens instead of one. That's the throughput win. Press. Beat two, the catch: requests finish at different times, and in a fixed batch a freed slot sits idle until the whole batch drains. Press. Beat three, continuous batching: the instant a slot frees, the next user drops in — the grid packs solid, and that expensive stream is never wasted again. On the scoreboard, that stretched the frontier right: many times the throughput at the same per-user speed. And there's a second idea that packs it even tighter.",
-kvWhy:"But batching creates a new problem, and to see it you need to know where the memory goes. Attention is why. To predict the next token, the model compares it against every token that came before — the whole conversation, at every layer. Recomputing all of that from scratch for every new token would be madness, so each token's keys and values are computed once and kept for the life of the request. That's the KV cache: the model's memory of the conversation, and it grows by one entry with every token — nothing leaves until the request ends. Do the arithmetic and it escalates fast: on a seventy-billion-parameter model each entry is about a third of a megabyte, so a thirty-two-thousand-token conversation is ten gigabytes, and a coding agent at hundred-twenty-eight-k context is over forty — one request, a third the size of the weights. And that's one user.",
+kvWhy:"But batching creates a new problem, and to see it you need to know where the memory goes. Attention is why. To predict the next token, the model compares it against every token that came before — the whole conversation, at every layer. Recomputing all of that from scratch for every new token would be madness, so each token's keys and values are computed once and kept for the life of the request. That's the KV cache: the model's memory of the conversation, and it grows by one entry with every token — nothing leaves until the request ends. Press. Do the arithmetic and it escalates fast: on a seventy-billion-parameter model the cache gains about a gigabyte every three thousand tokens. So a thirty-two-thousand-token conversation is ten gigabytes, and a coding agent at hundred-twenty-eight-k context is over forty — one request, a third the size of the weights. And that's one user.",
 kv1:"Now put that together with batching. Every request we packed in is growing one of these caches at the same time — watch the screen fill up. The weights already claim most of the chip's memory, and whatever is left over is the ceiling on how many requests fit. So memory, not compute, becomes the thing that caps your batch — and with it the throughput win we just earned. And it gets worse: the obvious way to store these caches wastes most of that precious space.",
 kv2:"The straightforward way to store it is wasteful. You reserve one big contiguous block per request, sized for the longest answer it might ever produce. Most of it sits empty — sixty to eighty percent wasted — and because each request hogs a whole region, only a few fit at once.",
 kv3:"PagedAttention borrows virtual memory from operating systems. The model still sees one contiguous sequence — but each block can live anywhere in physical memory; a little block table maps the logical order to scattered physical blocks. Blocks are handed out on demand as the sequence grows, so there's almost nothing reserved-but-empty. Waste drops under four percent and you fit two to four times more requests. And once memory is just pages behind a table, another trick falls out almost for free — that's the next slide.",
@@ -1465,31 +1465,70 @@ function batchViz(host){
   return {next(){if(beat>=beats.length-1)return false;beat++;render();return true;}};
 }
 
-/* ---------- WHY KV CACHE — attention reads the whole past, so each token's K·V is stored once ---------- */
+/* ---------- WHY KV CACHE — beat 1: attention reads the whole past, so each token's K·V is
+   stored once; beat 2: ×context length, one request's cache next to the weights ---------- */
 function kvWhyViz(host){
   const W=1220,H=540;
-  const words=['The','cat','sat','on','the','mat'];
-  const n=words.length,bw=150,gap=22,x0=(W-(n*bw+(n-1)*gap))/2,ty=200,kvY=330;
-  let s=`<svg viewBox="0 0 ${W} ${H}">`;
-  for(let i=0;i<n;i++){const x=x0+i*(bw+gap);
-    s+=`<g class="tok" data-i="${i}" opacity="0">`;
-    s+=`<rect x="${x}" y="${ty}" width="${bw}" height="62" rx="10" fill="${P.card}" stroke="${P.line}" stroke-width="2"/>`;
-    s+=`<text x="${x+bw/2}" y="${ty+41}" font-size="26" fill="${P.ink}" text-anchor="middle" font-family="IBM Plex Mono,monospace">${words[i]}</text>`;
-    s+=`<rect x="${x+18}" y="${kvY}" width="${bw-36}" height="46" rx="8" fill="${P.slate}" opacity="0.9"/>`;
-    s+=`<text x="${x+bw/2}" y="${kvY+30}" font-size="19" fill="#fff" text-anchor="middle" font-family="IBM Plex Mono,monospace">K·V</text>`;
-    s+=`</g>`;}
-  s+=`<g class="arcs"></g>`;
-  s+=`<text x="${W/2}" y="${kvY+92}" font-size="20" fill="${P.soft}" text-anchor="middle" font-family="IBM Plex Mono,monospace">+1 per token · kept for the whole request</text>`;
-  s+=`</svg>`;host.innerHTML=s;
-  const toks=[...host.querySelectorAll('.tok')],arcs=host.querySelector('.arcs');
-  function show(i){if(i>=n)return;
-    const t=toks[i];t.style.transition='opacity .3s';t.setAttribute('opacity','1');
-    arcs.innerHTML='';
-    const xi=x0+i*(bw+gap)+bw/2;
-    for(let j=0;j<i;j++){const xj=x0+j*(bw+gap)+bw/2,mid=(xi+xj)/2,lift=ty-28-(i-j)*13;
-      arcs.insertAdjacentHTML('beforeend',`<path d="M ${xi} ${ty-5} Q ${mid} ${lift} ${xj+14} ${ty-5}" fill="none" stroke="${P.clay}" stroke-width="2.5" opacity="0.75"/>`);}
-    regT(setTimeout(()=>show(i+1),820));}
-  regT(setTimeout(()=>show(0),400));
+  let beat=0;
+  const press=n=>`<text x="${W-30}" y="44" font-size="18" fill="${P.faint}" text-anchor="end" font-family="IBM Plex Mono,monospace">${n}/2 · press →</text>`;
+  function beat1(){
+    clearAnims();
+    const words=['The','cat','sat','on','the','mat'];
+    const n=words.length,bw=150,gap=22,x0=(W-(n*bw+(n-1)*gap))/2,ty=200,kvY=330;
+    let s=`<svg viewBox="0 0 ${W} ${H}">`;
+    for(let i=0;i<n;i++){const x=x0+i*(bw+gap);
+      s+=`<g class="tok" data-i="${i}" opacity="0">`;
+      s+=`<rect x="${x}" y="${ty}" width="${bw}" height="62" rx="10" fill="${P.card}" stroke="${P.line}" stroke-width="2"/>`;
+      s+=`<text x="${x+bw/2}" y="${ty+41}" font-size="26" fill="${P.ink}" text-anchor="middle" font-family="IBM Plex Mono,monospace">${words[i]}</text>`;
+      s+=`<rect x="${x+18}" y="${kvY}" width="${bw-36}" height="46" rx="8" fill="${P.slate}" opacity="0.9"/>`;
+      s+=`<text x="${x+bw/2}" y="${kvY+30}" font-size="19" fill="#fff" text-anchor="middle" font-family="IBM Plex Mono,monospace">K·V</text>`;
+      s+=`</g>`;}
+    s+=`<g class="arcs"></g>`;
+    s+=`<text x="${W/2}" y="${kvY+92}" font-size="20" fill="${P.soft}" text-anchor="middle" font-family="IBM Plex Mono,monospace">+1 per token · kept for the whole request</text>`;
+    s+=press(1);
+    s+=`</svg>`;host.innerHTML=s;
+    const toks=[...host.querySelectorAll('.tok')],arcs=host.querySelector('.arcs');
+    function show(i){if(i>=n)return;
+      const t=toks[i];t.style.transition='opacity .3s';t.setAttribute('opacity','1');
+      arcs.innerHTML='';
+      const xi=x0+i*(bw+gap)+bw/2;
+      for(let j=0;j<i;j++){const xj=x0+j*(bw+gap)+bw/2,mid=(xi+xj)/2,lift=ty-28-(i-j)*13;
+        arcs.insertAdjacentHTML('beforeend',`<path d="M ${xi} ${ty-5} Q ${mid} ${lift} ${xj+14} ${ty-5}" fill="none" stroke="${P.clay}" stroke-width="2.5" opacity="0.75"/>`);}
+      regT(setTimeout(()=>show(i+1),820));}
+    regT(setTimeout(()=>show(0),400));
+  }
+  function beat2(){
+    clearAnims();
+    const lab0=430,right=1140,by=124,rh=56,rgap=26,maxGb=140,full=right-lab0;
+    const items=[
+      {lab:'chat · 1k tok',gb:0.3,txt:'0.3 GB',col:P.slate},
+      {lab:'long doc · 32k',gb:10,txt:'10 GB',col:P.ochre},
+      {lab:'agent · 128k',gb:42,txt:'42 GB',col:P.clay},
+      {lab:'weights',gb:140,txt:'140 GB',col:P.ghost}];
+    let s=`<svg viewBox="0 0 ${W} ${H}">`;
+    s+=`<text x="${W/2}" y="82" font-size="30" fill="${P.ink2}" text-anchor="middle" font-weight="600" font-family="IBM Plex Mono,monospace">70B model · +1 GB every ~3,000 tokens</text>`;
+    items.forEach((it,i)=>{const y=by+i*(rh+rgap);
+      s+=`<text x="${lab0-16}" y="${y+rh/2+7}" font-size="21" fill="${P.ink2}" text-anchor="end" font-family="IBM Plex Mono,monospace">${it.lab}</text>`;
+      s+=`<rect x="${lab0}" y="${y}" width="${full}" height="${rh}" rx="9" fill="${P.line2}"/>`;
+      s+=`<rect class="gbar" data-i="${i}" x="${lab0}" y="${y}" width="0" height="${rh}" rx="9" fill="${it.col}" opacity="0.92"/>`;
+      s+=`<text class="gtxt" data-i="${i}" x="0" y="${y+rh/2+8}" font-size="22" fill="${it.col}" font-weight="700" font-family="IBM Plex Mono,monospace" opacity="0"></text>`;});
+    s+=`<text x="${W/2}" y="${H-30}" font-size="34" fill="${P.clay}" text-anchor="middle" font-weight="700" font-family="Fraunces,serif">and that's one user</text>`;
+    s+=press(2);
+    s+=`</svg>`;host.innerHTML=s;
+    const bars=[...host.querySelectorAll('.gbar')],txts=[...host.querySelectorAll('.gtxt')];
+    function grow(i){if(i>=items.length)return;
+      const bar=bars[i],txt=txts[i],w=Math.max(6,items[i].gb/maxGb*full);
+      let st=null;function f(ts){if(!st)st=ts;const p=Math.min(1,(ts-st)/700);
+        bar.setAttribute('width',w*p);
+        if(p>=1){txt.setAttribute('x',lab0+w+14);txt.textContent=items[i].txt;txt.style.transition='opacity .3s';txt.setAttribute('opacity','1');
+          regT(setTimeout(()=>grow(i+1),260));}
+        else reg(requestAnimationFrame(f));}
+      reg(requestAnimationFrame(f));}
+    regT(setTimeout(()=>grow(0),400));
+  }
+  function render(){beat===0?beat1():beat2();}
+  render();
+  return {next(){if(beat>=1)return false;beat=1;render();return true;}};
 }
 
 /* ---------- PAGED KV build-up ---------- */
