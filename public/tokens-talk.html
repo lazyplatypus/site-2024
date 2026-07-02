@@ -2230,7 +2230,7 @@ function specDecodeTimeline(host){
     s+=`</svg>`;host.innerHTML=s;
   }
   function play(){let st=null;function f(ts){if(!st)st=ts;const p=Math.min(1,(ts-st)/7600);frame(p);if(p<1)reg(requestAnimationFrame(f));}reg(requestAnimationFrame(f));}
-  frame(0);regT(setTimeout(play,300));regT(setInterval(play,9800));
+  frame(0);regT(setTimeout(play,300));
 }
 
 /* ---------- SPEC-DECODE RESULTS — Gimlet × d-Matrix Corsair (source: gimletlabs.ai) ----------
