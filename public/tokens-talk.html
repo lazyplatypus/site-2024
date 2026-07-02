@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>All the things we have to do to satisfy your need for tokens</title>
+<title>All the things we have to do to satisfy your insatiable need for tokens</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Caveat:wght@700&display=swap" rel="stylesheet">
 <style>
 :root{
   --paper:#EFE8D9; --paper2:#F6F0E3; --card:#FBF6EC;
@@ -128,6 +128,21 @@ svg{display:block; width:100%; height:100%; overflow:visible}
 .code .fn{color:#F2CD6A}
 .code .nu{color:#E3BC5E}
 .code .cm{color:#9C9079; font-style:italic}
+/* iMessage bubbles (finale) */
+.ichat{height:100%; display:flex; flex-direction:column; justify-content:center; gap:2cqh; padding:0 8cqh; position:relative}
+.imsg{position:relative; width:max-content; max-width:72%; padding:1.5cqh 2.6cqh 1.7cqh; border-radius:2.9cqh;
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;
+  transform:scale(0); transition:transform .45s cubic-bezier(.3,1.45,.45,1)}
+.imsg.show{transform:scale(1)}
+.imsg.l{align-self:flex-start; background:#E9E9EB; color:#141414; transform-origin:bottom left}
+.imsg.r{align-self:flex-end; background:#1489FE; color:#fff; transform-origin:bottom right}
+.imsg.l::before{content:''; position:absolute; left:-0.62cqh; bottom:0; width:1.9cqh; height:2.3cqh; background:#E9E9EB; border-bottom-right-radius:1.5cqh 1.3cqh}
+.imsg.l::after{content:''; position:absolute; left:-2.4cqh; bottom:0; width:2.4cqh; height:2.3cqh; background:var(--paper); border-bottom-right-radius:1cqh}
+.imsg.r::before{content:''; position:absolute; right:-0.62cqh; bottom:0; width:1.9cqh; height:2.3cqh; background:#1489FE; border-bottom-left-radius:1.5cqh 1.3cqh}
+.imsg.r::after{content:''; position:absolute; right:-2.4cqh; bottom:0; width:2.4cqh; height:2.3cqh; background:var(--paper); border-bottom-left-radius:1cqh}
+.imsg .ttl{font-weight:700; font-size:2.5cqh; letter-spacing:-.01em; display:flex; align-items:center; gap:1.2cqh}
+.imsg .ttl svg{width:2.7cqh; height:2.7cqh; flex:none}
+.imsg .sub{font-size:1.9cqh; opacity:.82; margin-top:.35cqh; white-space:nowrap}
 </style>
 </head>
 <body>
@@ -138,8 +153,13 @@ svg{display:block; width:100%; height:100%; overflow:visible}
 <section class="slide" data-slide="0" data-kicker="" data-init="title">
   <div class="tstream" id="streamTop" style="top:9%"></div>
   <div class="titlewrap">
+    <video data-reveal src="images/profile.mp4" autoplay loop muted playsinline style="width:26cqh; aspect-ratio:1; object-fit:cover; border-radius:18px; box-shadow:0 14px 34px rgba(43,38,32,.25); margin-bottom:3.4cqh"></video>
     <div class="kicker" data-reveal style="color:var(--clay)">Three layers of optimization — and what's next</div>
-    <h1 class="title" data-reveal style="font-size:6.2cqh; max-width:92%">All the things we have to do<br>to satisfy your need for <em style="font-style:italic; color:var(--clay)">tokens</em></h1>
+    <h1 class="title" data-reveal style="font-size:6.2cqh; max-width:96%">All the things we have to do to satisfy your <span style="font-family:'Caveat',cursive; font-weight:700; font-size:1.32em; color:var(--clay); display:inline-block; transform:rotate(-2.5deg); line-height:0; margin:0 .14em 0 .04em">insatiable</span> need for tokens</h1>
+    <div data-reveal style="margin-top:3.2cqh; display:flex; gap:6cqh; font-size:2cqh; color:var(--ink2)">
+      <div><span style="font-weight:600; color:var(--ink)">Daniel Kim</span> · AI @ Cerebras</div>
+      <div><span style="font-weight:600; color:var(--ink)">Michelle Nguyen</span> · Cofounder at Gimlet Labs</div>
+    </div>
   </div>
   <div class="tstream" id="streamBot" style="bottom:8%"></div>
 </section>
@@ -393,10 +413,9 @@ svg{display:block; width:100%; height:100%; overflow:visible}
   <div class="viz" data-reveal id="vizRecursive"></div>
 </section>
 
-<!-- FINALE 3 · RECAP — the scoreboard, one last time -->
-<section class="slide" data-kicker="The thesis" data-title="The scoreboard, one last time" data-init="recap">
-  <div class="viz" data-reveal id="vizRecap" style="height:72%"></div>
-  <p data-reveal style="text-align:center; font-family:var(--disp); font-weight:700; font-size:3.2cqh; color:var(--ink); margin-top:1.6cqh">No single chip is best at inference — <em style="font-style:italic; color:var(--clay)">so we stopped pretending one is.</em></p>
+<!-- FINALE 3 · JUST GETTING STARTED — agentic optimization at every layer (5 pops) -->
+<section class="slide" data-kicker="What's next · every layer" data-title="We're just getting started" data-init="started">
+  <div class="viz" data-reveal id="vizStarted"></div>
 </section>
 
 </div></div>
@@ -455,7 +474,7 @@ attnFfn:"And you can split even finer — inside a single layer. A transformer l
 gimlet:"This is what we're building at Gimlet — a multi-silicon inference cloud. The whole talk has been one idea: no single chip is best for inference. So we don't pick one. We disaggregate each workload across many types of hardware, run every part on the silicon that's best at it, and physically wire it all together into one cloud. The pairs on the right are just examples — NVIDIA with Cerebras, NVIDIA with d-Matrix, AMD with Cerebras, NVIDIA with Gaudi — we mix and match per workload. And the payoff is the number that matters to anyone paying the power bill: three to ten times faster inference for the same power budget as homogeneous systems. And there are many ways to slice a workload — let me show you two more.",
 kforge:"Remember question two — how do we juice performance even further? This is it. So here's the move that chases the target: stop hand-tuning kernels and build an agent that generates them — tuned for the exact workload and the exact hardware it'll run on. That agent is kforge. Here's the idea in miniature. On the left, the PyTorch you write: add a bias, clamp, scale, clamp, divide — five ops, five separate passes over memory. On the right, the same function as one kernel kforge wrote for the target — it fuses the whole chain into a single pass, in bf16, using the hardware's own saturating-clamp instruction. Same math, a fraction of the memory traffic. This is just the flavor; the real win is bigger. Last week kforge sped up gpt-oss-120b on AMD by thirty-three percent end to end.",
 recursive:"And why stop at software? AI-designed silicon is already real — Google's AlphaChip lays out chip floorplans, and the team behind it spun out to chase exactly this loop: AI designs a faster chip, that chip trains a smarter AI, which designs the next chip faster still. Kernel, then silicon — at every layer we stop hand-tuning and start generating. That's recursive self-improvement aimed straight at inference performance, and it's how you chase a target that refuses to sit still.",
-recap:"So, one last look at the scoreboard. Three years of systems work pushed this frontier out — batching, paging, scheduling, and finally splitting the work apart — and agents have already moved the target again. The lesson of the whole talk fits in one line: no single chip is best at inference, so we stopped pretending one is. We run every piece of the workload on the silicon that's best at it — and next, we let AI generate the kernels and the chips that push the frontier for us. Thank you."
+started:"Let me leave you with why I'm optimistic: we are just getting started, and the same agentic playbook applies at every single layer of this stack. Press. Incident response — every minute of uptime is tokens served; agents that detect and heal incidents faster turn reliability directly into throughput. Press. Model bring-up — when a new model drops, agents bring it up and optimize it in a fraction of the time. Press. Compilers — agents writing the low-level compiler optimizations, tuned to the exact model being served. Press. Silicon — AI accelerating tape-out itself, the loop you just saw. Press. And data centers — procurement and manufacturing, closing every efficiency gap between a purchase order and a serving fleet. Every layer has this much headroom left, and now we have agents to chase all of it. Thank you."
 };
 
 /* ---------- helpers ---------- */
@@ -1195,6 +1214,45 @@ function recap(){
   const host=$('#recap');if(host.dataset.done)return;host.dataset.done=1;
   const L=[['·','The loop','one token at a time · memory-bound'],['1','Batching + paging','one weight-read feeds many users'],['2','Chunked prefill','interleave the two phases'],['3','Disaggregation','decode on bandwidth, prefill on compute']];
   host.innerHTML=L.map((l,i)=>`<div class="rrow ${i===3?'hot':''}"><div class="rnum">${l[0]}</div><div><div class="rk">${l[1]}</div><div class="rd">${l[2]}</div></div></div>`).join('');
+}
+
+/* ---------- JUST GETTING STARTED — five layers arrive as iMessage bubbles ---------- */
+function startedViz(host){
+  const items=[
+    {label:'Incident response',sub:'uptime is tokens — agents heal the fleet',icon:'pulse'},
+    {label:'Model bring-up',sub:'agents optimize every new model',icon:'gauge'},
+    {label:'Compilers',sub:'model-tuned, agent-built',icon:'code'},
+    {label:'Silicon',sub:'AI-accelerated tape-out',icon:'chip'},
+    {label:'Data centers',sub:'procurement · closing efficiency gaps',icon:'rack'}
+  ];
+  function icon(kind){
+    const o='fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"';
+    if(kind==='pulse')return `<svg viewBox="-30 -30 60 60"><polyline points="-26,0 -12,0 -6,-15 3,14 8,0 26,0" ${o}/></svg>`;
+    if(kind==='gauge')return `<svg viewBox="-30 -30 60 60"><path d="M -21 9 A 22 22 0 1 1 21 9" ${o}/><line x1="0" y1="8" x2="13" y2="-9" ${o}/><circle cx="0" cy="8" r="4" fill="currentColor"/></svg>`;
+    if(kind==='code')return `<svg viewBox="-30 -30 60 60"><polyline points="-10,-12 -24,0 -10,12" ${o}/><polyline points="10,-12 24,0 10,12" ${o}/></svg>`;
+    if(kind==='chip'){let s=`<svg viewBox="-30 -30 60 60"><rect x="-15" y="-15" width="30" height="30" rx="5" ${o}/><rect x="-6" y="-6" width="12" height="12" rx="2" fill="currentColor"/>`;
+      for(let i=0;i<3;i++){const p=-9+i*9;s+=`<line x1="${p}" y1="-15" x2="${p}" y2="-24" ${o}/><line x1="${p}" y1="15" x2="${p}" y2="24" ${o}/><line x1="-15" y1="${p}" x2="-24" y2="${p}" ${o}/><line x1="15" y1="${p}" x2="24" y2="${p}" ${o}/>`;}
+      return s+`</svg>`;}
+    let s=`<svg viewBox="-30 -30 60 60"><rect x="-18" y="-22" width="36" height="44" rx="6" ${o}/>`;
+    for(let i=0;i<3;i++){const y=-11+i*11;s+=`<line x1="-10" y1="${y}" x2="5" y2="${y}" ${o}/><circle cx="12" cy="${y}" r="2.6" fill="currentColor"/>`;}
+    return s+`</svg>`;
+  }
+  let beat=0;
+  function render(pop){
+    let s=`<div class="ichat">`;
+    items.forEach((it,i)=>{
+      if(i>=beat)return;
+      const isNew=pop&&i===beat-1;
+      s+=`<div class="imsg ${i%2===0?'l':'r'}${isNew?'':' show'}">`;
+      s+=`<div class="ttl">${icon(it.icon)}${it.label}</div><div class="sub">${it.sub}</div></div>`;
+    });
+    if(beat>=items.length)s+=`<div style="text-align:center; font-family:var(--disp); font-weight:700; font-size:3cqh; color:var(--ink); margin-top:1.6cqh">agents chasing optimizations at <em style="font-style:italic; color:var(--clay)">every single layer</em></div>`;
+    else s+=`<div class="mono" style="position:absolute; top:0; right:1cqh; color:var(--faint); font-size:1.6cqh">${beat}/${items.length} · press →</div>`;
+    s+=`</div>`;host.innerHTML=s;
+    if(pop){const nb=host.querySelector('.imsg:not(.show)');if(nb)reg(requestAnimationFrame(()=>nb.classList.add('show')));}
+  }
+  render(false);
+  return {next(){if(beat<items.length){beat++;render(true);return true;}return false;},prev(){if(beat>0){beat--;render(false);return true;}return false;}};
 }
 
 /* ---------- token stream ---------- */
@@ -2138,7 +2196,7 @@ const INIT={
   finish:el=>{frFinish=frontier(el.querySelector('#vizFinish'),{ghosts:['2022','2023','2024','2026'],current:null,target:true,interactive:true});frFinish.play();},
   kforge:el=>kforgeFanout(el.querySelector('#vizKforge')),
   recursive:el=>recursiveViz(el.querySelector('#vizRecursive')),
-  recap:el=>{const f=frontier(el.querySelector('#vizRecap'),{ghosts:['2022','2023','2024','2026'],current:null,target:true});if(f&&f.play)f.play();}
+  started:el=>startedViz(el.querySelector('#vizStarted'))
 };
 let stepper=null;
 function initSlide(i,el){const k=el.dataset.init;stepper=null;if(k&&INIT[k]){const r=INIT[k](el);if(r&&typeof r.next==='function')stepper=r;}}
@@ -2177,7 +2235,7 @@ function go(n){
   syncingHash=false;
 }
 const ERAS=['Stakes','Foundation','2023','2024','2025–26','Next'];
-const ERAOF={title:0,capex:0,gauge:0,deals:0,pricespeed:0,goals:0,loop:1,util:2,tension:2,tensionMath:2,f2023:2,batchWhy:2,paperOrca:2,batch:2,paperVllm:2,kv1:2,kv2:2,kv3:2,kvShare:2,f2024:3,reqAnatomy:3,chunkB:3,paperSarathi:3,chunkFix:3,f2026:4,workloadMix:4,paperDisagg:4,roof16:4,cere:4,awscere:4,specDecode:4,specResults:4,attnFfn:4,benefits:4,gimlet:4,finish:5,kforge:5,recursive:5,recap:5};
+const ERAOF={title:0,capex:0,gauge:0,deals:0,pricespeed:0,goals:0,loop:1,util:2,tension:2,tensionMath:2,f2023:2,batchWhy:2,paperOrca:2,batch:2,paperVllm:2,kv1:2,kv2:2,kv3:2,kvShare:2,f2024:3,reqAnatomy:3,chunkB:3,paperSarathi:3,chunkFix:3,f2026:4,workloadMix:4,paperDisagg:4,roof16:4,cere:4,awscere:4,specDecode:4,specResults:4,attnFfn:4,benefits:4,gimlet:4,finish:5,kforge:5,recursive:5,started:5};
 function buildEraRail(){const r=$('#erarail');if(!r)return;r.innerHTML=ERAS.map(e=>`<span class="es">${e}</span>`).join('<span class="sep">›</span>');}
 function buildOverview(){const ov=$('#overview');
   ov.innerHTML=slides.map((s,i)=>`<div class="ovcard" data-go="${i}"><div class="n mono">${String(i+1).padStart(2,'0')}</div><div class="t">${s.dataset.title||'Title'}</div></div>`).join('');
